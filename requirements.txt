@@ -1,0 +1,5 @@
+psycopg2==2.9.10
+psycopg2-binary==2.9.10
+Faker==37.8.0
+neo4j==5.28.1
+vinagent==0.0.6

@@ -1,0 +1,1202 @@
+[
+  {
+    "query": "Find the top 5 customers with the highest total account balance across all their accounts.",
+    "sql_command": "SELECT c.customer_id, c.customer_name, SUM(a.account_balance) AS total_balance FROM banking_new.\"Customers\" c JOIN banking_new.\"Accounts\" a ON c.customer_id = a.customer_id GROUP BY c.customer_id, c.customer_name ORDER BY total_balance DESC LIMIT 5;",
+    "answer": "",
+    "id": "6841c300-5521-4c6a-a60b-27607be76a46"
+  },
+  {
+    "query": "Retrieve customers who have both loans and deposits, listing their total loan balance and total deposit balance.",
+    "sql_command": "SELECT c.customer_id, c.customer_name, COALESCE(SUM(l.balance),0) AS total_loans, COALESCE(SUM(d.balance),0) AS total_deposits FROM banking_new.\"Customers\" c LEFT JOIN banking_new.\"Loans\" l ON c.customer_id = l.customer_id LEFT JOIN banking_new.\"Deposits\" d ON c.customer_id = d.customer_id GROUP BY c.customer_id, c.customer_name HAVING SUM(l.balance) IS NOT NULL AND SUM(d.balance) IS NOT NULL;",
+    "answer": "",
+    "id": "980f382a-ff1b-4dd4-a16d-0243a0dba7ba"
+  },
+  {
+    "query": "List all branches with the number of customers, number of accounts, and total balance across accounts.",
+    "sql_command": "SELECT b.branch_id, b.branch_code, COUNT(DISTINCT c.customer_id) AS num_customers, COUNT(a.account_id) AS num_accounts, SUM(a.account_balance) AS total_balance FROM banking_new.\"Branches\" b JOIN banking_new.\"Customers\" c ON b.branch_id = c.branch_id LEFT JOIN banking_new.\"Accounts\" a ON c.customer_id = a.customer_id GROUP BY b.branch_id, b.branch_code;",
+    "answer": "",
+    "id": "53bffb4d-841a-4d55-8664-2114b4089b35"
+  },
+  {
+    "query": "Find customers whose total deposits are greater than twice their total loans.",
+    "sql_command": "SELECT c.customer_id, c.customer_name FROM banking_new.\"Customers\" c LEFT JOIN banking_new.\"Deposits\" d ON c.customer_id = d.customer_id LEFT JOIN banking_new.\"Loans\" l ON c.customer_id = l.customer_id GROUP BY c.customer_id, c.customer_name HAVING COALESCE(SUM(d.balance),0) > 2 * COALESCE(SUM(l.balance),0);",
+    "answer": "",
+    "id": "d6e31c95-30ca-4cc3-b0c8-a687adbdff5a"
+  },
+  {
+    "query": "Get the top 10 customers who made the largest number of transactions in the last year.",
+    "sql_command": "SELECT c.customer_id, c.customer_name, COUNT(t.transaction_id) AS num_transactions FROM banking_new.\"Customers\" c JOIN banking_new.\"Accounts\" a ON c.customer_id = a.customer_id JOIN banking_new.\"Transactions\" t ON a.account_id = t.account_id WHERE t.transaction_date >= NOW() - INTERVAL '1 year' GROUP BY c.customer_id, c.customer_name ORDER BY num_transactions DESC LIMIT 10;",
+    "answer": "",
+    "id": "70172d66-64a4-4fe4-9289-f0ce15ea20b8"
+  },
+  {
+    "query": "Identify accounts that have never had a transaction.",
+    "sql_command": "SELECT a.account_id, a.account_number FROM banking_new.\"Accounts\" a LEFT JOIN banking_new.\"Transactions\" t ON a.account_id = t.account_id WHERE t.transaction_id IS NULL;",
+    "answer": "",
+    "id": "06ed3285-8f23-4611-a5f0-65f86ad18bda"
+  },
+  {
+    "query": "Find the average loan balance by loan type and branch.",
+    "sql_command": "SELECT lt.type AS loan_type, b.branch_code, AVG(l.balance) AS avg_balance FROM banking_new.\"Loans\" l JOIN banking_new.\"LoanTypes\" lt ON l.loan_type_id = lt.loan_type_id JOIN banking_new.\"Customers\" c ON l.customer_id = c.customer_id JOIN banking_new.\"Branches\" b ON c.branch_id = b.branch_id GROUP BY lt.type, b.branch_code;",
+    "answer": "",
+    "id": "3f048d7f-a3fb-41b1-8f05-816511b034cf"
+  },
+  {
+    "query": "Retrieve customers who own more than 2 cards and at least 1 loan.",
+    "sql_command": "SELECT c.customer_id, c.customer_name FROM banking_new.\"Customers\" c JOIN banking_new.\"Cards\" ca ON c.customer_id = ca.customer_id JOIN banking_new.\"Loans\" l ON c.customer_id = l.customer_id GROUP BY c.customer_id, c.customer_name HAVING COUNT(DISTINCT ca.card_id) > 2 AND COUNT(DISTINCT l.loan_id) >= 1;",
+    "answer": "",
+    "id": "b526346f-b67e-4272-956f-870e09b62c84"
+  },
+  {
+    "query": "Find customers who made a transaction larger than their account balance at that time.",
+    "sql_command": "SELECT c.customer_id, c.customer_name, t.transaction_amount, a.account_balance FROM banking_new.\"Customers\" c JOIN banking_new.\"Accounts\" a ON c.customer_id = a.customer_id JOIN banking_new.\"Transactions\" t ON a.account_id = t.account_id WHERE t.transaction_amount > a.account_balance;",
+    "answer": "",
+    "id": "4d26d1a3-1d00-4092-959f-aac6ad166f59"
+  },
+  {
+    "query": "Calculate the percentage of blocked cards per branch.",
+    "sql_command": "SELECT b.branch_code, ROUND(100.0 * SUM(CASE WHEN ca.is_blocked THEN 1 ELSE 0 END) / COUNT(ca.card_id),2) AS blocked_percentage FROM banking_new.\"Branches\" b JOIN banking_new.\"Customers\" c ON b.branch_id = c.branch_id JOIN banking_new.\"Cards\" ca ON c.customer_id = ca.customer_id GROUP BY b.branch_code;",
+    "answer": "",
+    "id": "0350d041-93ef-40c6-90ea-bbd209f91b42"
+  },
+  {
+    "query": "Find deposits that have already matured but are not yet closed.",
+    "sql_command": "SELECT d.deposit_id, d.deposit_identifier, d.end_date FROM banking_new.\"Deposits\" d WHERE d.end_date IS NOT NULL AND d.end_date < CURRENT_DATE;",
+    "answer": "",
+    "id": "a3847704-b831-4bfe-87d9-cbf2419cd082"
+  },
+  {
+    "query": "List the top 3 branches with the highest number of loans disbursed in the past 2 years.",
+    "sql_command": "SELECT b.branch_id, b.branch_code, COUNT(l.loan_id) AS num_loans FROM banking_new.\"Branches\" b JOIN banking_new.\"Customers\" c ON b.branch_id = c.branch_id JOIN banking_new.\"Loans\" l ON c.customer_id = l.customer_id WHERE l.start_date >= NOW() - INTERVAL '2 years' GROUP BY b.branch_id, b.branch_code ORDER BY num_loans DESC LIMIT 3;",
+    "answer": "",
+    "id": "c7afc597-21b4-40c5-97f4-6224ed8dca78"
+  },
+  {
+    "query": "Find customers who have deposits and loans in different branches.",
+    "sql_command": "SELECT DISTINCT c.customer_id, c.customer_name FROM banking_new.\"Customers\" c JOIN banking_new.\"Deposits\" d ON c.customer_id = d.customer_id JOIN banking_new.\"Loans\" l ON c.customer_id = l.customer_id JOIN banking_new.\"Branches\" b1 ON c.branch_id = b1.branch_id JOIN banking_new.\"Branches\" b2 ON c.branch_id = b2.branch_id WHERE b1.branch_id <> b2.branch_id;",
+    "answer": "",
+    "id": "a63095c7-05af-4172-aca3-f840884e0bb9"
+  },
+  {
+    "query": "Retrieve customers who have the same phone number registered more than once.",
+    "sql_command": "SELECT phone, COUNT(*) AS occurrences FROM banking_new.\"Customers\" GROUP BY phone HAVING COUNT(*) > 1;",
+    "answer": "",
+    "id": "dd1b60c1-e281-46af-9118-05284de526d2"
+  },
+  {
+    "query": "Find the average account balance for customers aged above 60.",
+    "sql_command": "SELECT AVG(a.account_balance) AS avg_balance FROM banking_new.\"Customers\" c JOIN banking_new.\"Accounts\" a ON c.customer_id = a.customer_id WHERE AGE(c.date_of_birth) > INTERVAL '60 years';",
+    "answer": "",
+    "id": "c8f6b356-6f2d-4f81-9229-f029f8f0e0e2"
+  },
+  {
+    "query": "List transactions that occurred on the same day a loan was disbursed for that customer.",
+    "sql_command": "SELECT t.transaction_id, t.transaction_date, l.start_date FROM banking_new.\"Transactions\" t JOIN banking_new.\"Accounts\" a ON t.account_id = a.account_id JOIN banking_new.\"Loans\" l ON a.customer_id = l.customer_id WHERE DATE(t.transaction_date) = DATE(l.start_date);",
+    "answer": "",
+    "id": "17c7e0a4-4aa3-410b-848a-16b9f74e05da"
+  },
+  {
+    "query": "Identify the loan type with the highest average interest rate.",
+    "sql_command": "SELECT lt.type, AVG(l.interest_rate) AS avg_interest FROM banking_new.\"Loans\" l JOIN banking_new.\"LoanTypes\" lt ON l.loan_type_id = lt.loan_type_id GROUP BY lt.type ORDER BY avg_interest DESC LIMIT 1;",
+    "answer": "",
+    "id": "8976fa04-b55c-4d6e-8fc1-25ebad52d8b6"
+  },
+  {
+    "query": "List customers whose account balance is below the average balance of all customers in their branch.",
+    "sql_command": "SELECT c.customer_id, c.customer_name, a.account_balance FROM banking_new.\"Customers\" c JOIN banking_new.\"Accounts\" a ON c.customer_id = a.customer_id JOIN banking_new.\"Branches\" b ON c.branch_id = b.branch_id WHERE a.account_balance < (SELECT AVG(a2.account_balance) FROM banking_new.\"Accounts\" a2 JOIN banking_new.\"Customers\" c2 ON a2.customer_id = c2.customer_id WHERE c2.branch_id = b.branch_id);",
+    "answer": "",
+    "id": "337d8b8e-db0a-4a7b-b150-9b251b879dc9"
+  },
+  {
+    "query": "Find customers with at least one expired card but who are still active with deposits.",
+    "sql_command": "SELECT DISTINCT c.customer_id, c.customer_name FROM banking_new.\"Customers\" c JOIN banking_new.\"Cards\" ca ON c.customer_id = ca.customer_id JOIN banking_new.\"Deposits\" d ON c.customer_id = d.customer_id WHERE ca.expiration_date < CURRENT_DATE;",
+    "answer": "",
+    "id": "9124138d-a542-42ff-b59b-ba33ec7fd4bf"
+  },
+  {
+    "query": "Get the total number of unique customers who hold both accounts and cards.",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id) AS num_customers FROM banking_new.\"Customers\" c JOIN banking_new.\"Accounts\" a ON c.customer_id = a.customer_id JOIN banking_new.\"Cards\" ca ON c.customer_id = ca.customer_id;",
+    "answer": "",
+    "id": "222b8ed5-bf56-4398-bc1a-4fa9635987cc"
+  },
+  {
+    "query": "How many customers have more than one bank account?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT customer_id FROM Accounts GROUP BY customer_id HAVING COUNT(account_id) > 1) AS multi_account_customers;",
+    "id": "e49a989a-baca-43f8-933b-ab85b2aa217c"
+  },
+  {
+    "query": "What is the total balance of accounts for customers from the branch with code 'NYC-01'?",
+    "sql_command": "SELECT SUM(a.account_balance) FROM Accounts a JOIN Customers c ON a.customer_id = c.customer_id JOIN Branches b ON c.branch_id = b.branch_id WHERE b.branch_code = 'NYC-01';",
+    "id": "48bcafd5-c2c3-4dbe-9f3b-1385b3f022c6"
+  },
+  {
+    "query": "How many transactions were made by customers over the age of 60?",
+    "sql_command": "SELECT COUNT(t.transaction_id) FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id JOIN Customers c ON a.customer_id = c.customer_id WHERE EXTRACT(YEAR FROM AGE(c.date_of_birth)) > 60;",
+    "id": "70f898e2-fd8c-4912-ad27-ce882dbab545"
+  },
+  {
+    "query": "What's the average transaction amount for accounts with over $20,000 in balance?",
+    "sql_command": "SELECT AVG(t.transaction_amount) FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id WHERE a.account_balance > 20000;",
+    "id": "83ed444e-5fe7-4d20-938d-87dccbe65d21"
+  },
+  {
+    "query": "How many customers have a loan but do not have any deposits?",
+    "sql_command": "SELECT COUNT(DISTINCT l.customer_id) FROM Loans l WHERE l.customer_id NOT IN (SELECT DISTINCT customer_id FROM Deposits);",
+    "id": "67f715a8-aa25-425d-98e3-999ea9790404"
+  },
+  {
+    "query": "What is the total loan balance for customers who have at least one blocked card?",
+    "sql_command": "SELECT SUM(l.balance) FROM Loans l WHERE l.customer_id IN (SELECT customer_id FROM Cards WHERE is_blocked = TRUE);",
+    "id": "855fc08f-a499-417a-8a5f-8e0d957e1b29"
+  },
+  {
+    "query": "How many distinct customers have taken out a 'Mortgage'?",
+    "sql_command": "SELECT COUNT(DISTINCT l.customer_id) FROM Loans l JOIN LoanTypes lt ON l.loan_type_id = lt.loan_type_id WHERE lt.type = 'Mortgage';",
+    "id": "af133fa5-9a44-4995-907e-d684aea61bca"
+  },
+  {
+    "query": "What is the total number of transactions made by the customer 'Robert Williams'?",
+    "sql_command": "SELECT COUNT(t.transaction_id) FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id JOIN Customers c ON a.customer_id = c.customer_id WHERE c.customer_name = 'Robert Williams';",
+    "id": "65d6c97b-cdde-4005-bd6e-21e6ae438a28"
+  },
+  {
+    "query": "What is the average account balance for customers who also have a loan?",
+    "sql_command": "SELECT AVG(a.account_balance) FROM Accounts a WHERE a.customer_id IN (SELECT DISTINCT customer_id FROM Loans);",
+    "id": "6cbc7b5f-d42e-45aa-8011-ff1aaebe2ccd"
+  },
+  {
+    "query": "How many customers have both a 'Personal Loan' and a 'Fixed Deposit'?",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id) FROM Customers c WHERE c.customer_id IN (SELECT l.customer_id FROM Loans l JOIN LoanTypes lt ON l.loan_type_id = lt.loan_type_id WHERE lt.type = 'Personal Loan') AND c.customer_id IN (SELECT d.customer_id FROM Deposits d JOIN DepositTypes dt ON d.deposit_type_id = dt.deposit_type_id WHERE dt.type = 'Fixed Deposit');",
+    "id": "5de81322-aab6-4f26-8c2a-4522e3da4cfd"
+  },
+  {
+    "query": "What was the total transaction amount last month for all customers in the 'CHI-03' branch?",
+    "sql_command": "SELECT SUM(t.transaction_amount) FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id JOIN Customers c ON a.customer_id = c.customer_id JOIN Branches b ON c.branch_id = b.branch_id WHERE b.branch_code = 'CHI-03' AND t.transaction_date >= date_trunc('month', current_date - interval '1 month') AND t.transaction_date < date_trunc('month', current_date);",
+    "id": "e117f86a-c98a-4f1c-995e-ac2f4a89b71e"
+  },
+  {
+    "query": "How many accounts have not had any transactions in the last year?",
+    "sql_command": "SELECT COUNT(a.account_id) FROM Accounts a WHERE a.account_id NOT IN (SELECT DISTINCT t.account_id FROM Transactions t WHERE t.transaction_date >= CURRENT_DATE - INTERVAL '1 year');",
+    "id": "82de93a1-f3e3-4e0b-9ac8-e5390a04989e"
+  },
+  {
+    "query": "How many customers have a total account balance that is greater than their total loan balance?",
+    "sql_command": "SELECT COUNT(c.customer_id) FROM Customers c WHERE (SELECT SUM(a.account_balance) FROM Accounts a WHERE a.customer_id = c.customer_id) > (SELECT SUM(l.balance) FROM Loans l WHERE l.customer_id = c.customer_id);",
+    "id": "7548bcfc-fb66-4035-9484-7544b45ab267"
+  },
+  {
+    "query": "How many customers hold more than 3 cards?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT customer_id FROM Cards GROUP BY customer_id HAVING COUNT(card_id) > 3) AS customers_with_many_cards;",
+    "id": "7688245d-59fd-40e0-95b8-a37fa8becc69"
+  },
+  {
+    "query": "What is the highest total transaction amount generated by a single customer?",
+    "sql_command": "SELECT MAX(total_transactions) FROM (SELECT SUM(t.transaction_amount) AS total_transactions FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id GROUP BY a.customer_id) AS customer_transactions;",
+    "id": "d458323b-4ebd-42f3-9f1c-e26b56ec8251"
+  },
+  {
+    "query": "How many customers have a total deposit balance exceeding $250,000?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT customer_id FROM Deposits GROUP BY customer_id HAVING SUM(balance) > 250000) AS high_deposit_customers;",
+    "id": "01f3fe1b-18fe-4dc6-baf2-16ee7d8d44e6"
+  },
+  {
+    "query": "What is the total number of 'Student' loans given to customers under 25 years old?",
+    "sql_command": "SELECT COUNT(l.loan_id) FROM Loans l JOIN Customers c ON l.customer_id = c.customer_id JOIN LoanTypes lt ON l.loan_type_id = lt.loan_type_id WHERE lt.type = 'Student' AND EXTRACT(YEAR FROM AGE(c.date_of_birth)) < 25;",
+    "id": "c9844da0-4ebd-42c9-a391-1c06a6138a25"
+  },
+  {
+    "query": "How many customers with an expired card have made a transaction in the last 30 days?",
+    "sql_command": "SELECT COUNT(DISTINCT a.customer_id) FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id WHERE t.transaction_date >= CURRENT_DATE - INTERVAL '1 month' AND a.customer_id IN (SELECT customer_id FROM Cards WHERE expiration_date < CURRENT_DATE);",
+    "id": "cd542037-1b9a-4bb7-8672-d5fc5cc7d7ed"
+  },
+  {
+    "query": "What is the average loan interest rate for customers whose total account balance is over $75,000?",
+    "sql_command": "SELECT AVG(l.interest_rate) FROM Loans l WHERE l.customer_id IN (SELECT customer_id FROM Accounts GROUP BY customer_id HAVING SUM(account_balance) > 75000);",
+    "id": "f5940574-a101-48f0-bb4c-d0287f6a0a46"
+  },
+  {
+    "query": "How many branches serve more than 500 customers?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT branch_id FROM Customers GROUP BY branch_id HAVING COUNT(customer_id) > 500) AS large_branches;",
+    "id": "f8b5fcc5-be16-4d2d-91b7-fdb9d4d9574a"
+  },
+  {
+    "query": "How many customers have taken out a loan but have never made a deposit?",
+    "sql_command": "SELECT COUNT(DISTINCT l.customer_id) FROM Loans l LEFT JOIN Deposits d ON l.customer_id = d.customer_id WHERE d.deposit_id IS NULL;",
+    "id": "95667c8e-76d8-41da-b70d-a2c9a3bba065"
+  },
+  {
+    "query": "How many accounts were opened in the same month as the owner's birthday?",
+    "sql_command": "SELECT COUNT(a.account_id) FROM Accounts a JOIN Customers c ON a.customer_id = c.customer_id WHERE EXTRACT(MONTH FROM a.created_at) = EXTRACT(MONTH FROM c.date_of_birth);",
+    "id": "46816891-e1ca-4ca9-9a6d-03e940ba56ea"
+  },
+  {
+    "query": "What is the sum of balances for all deposits of the 'Retirement' type?",
+    "sql_command": "SELECT SUM(d.balance) FROM Deposits d JOIN DepositTypes dt ON d.deposit_type_id = dt.deposit_type_id WHERE dt.type = 'Retirement';",
+    "id": "23088e50-0046-41e6-a538-855495b04e81"
+  },
+  {
+    "query": "How many customers have an average transaction amount of more than $500?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT a.customer_id FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id GROUP BY a.customer_id HAVING AVG(t.transaction_amount) > 500) AS high_avg_customers;",
+    "id": "456179fa-ec79-40ea-ba55-8b623348c286"
+  },
+  {
+    "query": "How many loans are set to be fully paid off by the end of the current calendar year?",
+    "sql_command": "SELECT COUNT(*) FROM Loans WHERE end_date BETWEEN CURRENT_DATE AND date_trunc('year', current_date) + interval '1 year' - interval '1 day';",
+    "id": "a809f911-3ebb-44ba-bfce-bc198a5de8a9"
+  },
+  {
+    "query": "How many customers have a phone number with the '310' area code?",
+    "sql_command": "SELECT COUNT(*) FROM Customers WHERE phone LIKE '310%';",
+    "id": "2fda6341-45fe-4beb-8d71-be0164de7445"
+  },
+  {
+    "query": "What was the total value of all transactions made during the last calendar week?",
+    "sql_command": "SELECT SUM(transaction_amount) FROM Transactions WHERE transaction_date >= date_trunc('week', current_date - interval '1 week') AND transaction_date < date_trunc('week', current_date);",
+    "id": "bdc47a3d-3a76-49e0-8665-c16cf1669f4a"
+  },
+  {
+    "query": "How many customers have a deposit with an interest rate lower than the bank's lowest loan rate?",
+    "sql_command": "SELECT COUNT(DISTINCT d.customer_id) FROM Deposits d WHERE d.interest_rate < (SELECT MIN(interest_rate) FROM Loans);",
+    "id": "edb628a6-f4b7-48ba-8853-6a703c3fcdf0"
+  },
+  {
+    "query": "How many unique customers performed a transaction in the last 24 hours?",
+    "sql_command": "SELECT COUNT(DISTINCT a.customer_id) FROM Accounts a JOIN Transactions t ON a.account_id = t.account_id WHERE t.transaction_date >= CURRENT_DATE - INTERVAL '1 day';",
+    "id": "2faed1c9-ffb1-41a8-93e1-a4b08f5031bc"
+  },
+  {
+    "query": "How many customers share a birthday with at least one other customer?",
+    "sql_command": "SELECT SUM(customer_count) FROM (SELECT COUNT(customer_id) as customer_count FROM Customers GROUP BY date_of_birth HAVING COUNT(customer_id) > 1) as birthday_groups;",
+    "id": "e9a1672e-4f3f-40e8-bd5e-9aa12f4322de"
+  },
+  {
+    "query": "How many unblocked cards have a balance greater than $10,000?",
+    "sql_command": "SELECT COUNT(*) FROM Cards WHERE is_blocked = FALSE AND balance > 10000;",
+    "id": "6fa40624-43dc-4f0a-a8c9-5f9f6f215970"
+  },
+  {
+    "query": "Find the number of customers who have an account but do not possess any cards.",
+    "sql_command": "SELECT COUNT(c.customer_id) FROM Customers c WHERE EXISTS (SELECT 1 FROM Accounts WHERE customer_id = c.customer_id) AND NOT EXISTS (SELECT 1 FROM Cards WHERE customer_id = c.customer_id);",
+    "id": "5b4f1d50-b084-4a81-b1bf-abd8f7a6ff00"
+  },
+  {
+    "query": "What is the total account balance for accounts with more than 20 transactions this month?",
+    "sql_command": "SELECT SUM(a.account_balance) FROM Accounts a WHERE a.account_id IN (SELECT account_id FROM Transactions WHERE transaction_date >= date_trunc('month', current_date) GROUP BY account_id HAVING COUNT(transaction_id) > 20);",
+    "id": "7039d0d1-4b47-43e2-bb52-63b94dd68994"
+  },
+  {
+    "query": "How many customers opened their first account with the bank over 5 years ago?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT customer_id, MIN(created_at) as first_account_date FROM Accounts GROUP BY customer_id) AS first_accounts WHERE first_account_date < CURRENT_DATE - INTERVAL '5 years';",
+    "id": "5790f94b-af47-4258-9992-51f23159628d"
+  },
+  {
+    "query": "How many 'Auto Loan' types were granted in the year 2024?",
+    "sql_command": "SELECT COUNT(l.loan_id) FROM Loans l JOIN LoanTypes lt ON l.loan_type_id = lt.loan_type_id WHERE lt.type = 'Auto Loan' AND EXTRACT(YEAR FROM l.start_date) = 2024;",
+    "id": "3547cddf-e91c-440a-88bd-945e5bb9cf85"
+  },
+  {
+    "query": "What is the count of customers with the last name 'Jones'?",
+    "sql_command": "SELECT COUNT(*) FROM Customers WHERE customer_name LIKE '% Jones';",
+    "id": "358d142c-c1ff-439d-b24c-f906b54cc8de"
+  },
+  {
+    "query": "How many accounts have a balance higher than the average account balance of their branch?",
+    "sql_command": "SELECT COUNT(a1.account_id) FROM Accounts a1 JOIN Customers c1 ON a1.customer_id = c1.customer_id WHERE a1.account_balance > (SELECT AVG(a2.account_balance) FROM Accounts a2 JOIN Customers c2 ON a2.customer_id = c2.customer_id WHERE c2.branch_id = c1.branch_id);",
+    "id": "e635330a-21d5-44db-b6b1-9772ca476a95"
+  },
+  {
+    "query": "Count how many customers have all of their associated cards active (not blocked).",
+    "sql_command": "SELECT COUNT(c.customer_id) FROM Customers c WHERE EXISTS (SELECT 1 FROM Cards WHERE customer_id = c.customer_id) AND NOT EXISTS (SELECT 1 FROM Cards WHERE customer_id = c.customer_id AND is_blocked = TRUE);",
+    "id": "f3c2b1ac-e01e-4c5a-94e4-69876896396d"
+  },
+  {
+    "query": "How many deposits are scheduled to mature in the next calendar quarter?",
+    "sql_command": "SELECT COUNT(*) FROM Deposits WHERE end_date BETWEEN date_trunc('quarter', current_date) AND date_trunc('quarter', current_date) + interval '3 months' - interval '1 day';",
+    "id": "803e9b7b-8a76-4e58-a291-577818758f24"
+  },
+  {
+    "query": "What is the total number of transactions made by customers who currently have a 'Home Equity' loan?",
+    "sql_command": "SELECT COUNT(t.transaction_id) FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id WHERE a.customer_id IN (SELECT l.customer_id FROM Loans l JOIN LoanTypes lt ON l.loan_type_id = lt.loan_type_id WHERE lt.type = 'Home Equity');",
+    "id": "811ef808-51f9-4824-9d1f-4fcdc824de3f"
+  },
+  {
+    "query": "How many customers have a total outstanding loan balance of more than $500,000?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT customer_id FROM Loans GROUP BY customer_id HAVING SUM(balance) > 500000) AS high_loan_customers;",
+    "id": "c7337c65-af80-43c6-9721-dedf63e17fb4"
+  },
+  {
+    "query": "What is the total number of transactions that occurred on a weekend (Saturday or Sunday)?",
+    "sql_command": "SELECT COUNT(*) FROM Transactions WHERE EXTRACT(ISODOW FROM transaction_date) IN (6, 7);",
+    "id": "6c9e135d-ba83-451b-a726-87537e691277"
+  },
+  {
+    "query": "How many customers are registered with the branch located at '123 Finance St'?",
+    "sql_command": "SELECT COUNT(c.customer_id) FROM Customers c JOIN Branches b ON c.branch_id = b.branch_id WHERE b.branch_address = '123 Finance St';",
+    "id": "6273428e-a53e-4559-8fdd-9af06df6a045"
+  },
+  {
+    "query": "How many loan types have an average interest rate below 3.5%?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT loan_type_id FROM Loans GROUP BY loan_type_id HAVING AVG(interest_rate) < 3.5) as low_rate_types;",
+    "id": "e1b07a8a-44d1-4b5c-9318-dc3f42eac30b"
+  },
+  {
+    "query": "Count the number of customers who have deposits with the bank but have no loans.",
+    "sql_command": "SELECT COUNT(DISTINCT d.customer_id) FROM Deposits d WHERE d.customer_id NOT IN (SELECT DISTINCT customer_id FROM Loans);",
+    "id": "e9fb2ec1-464a-4157-bf76-2a11dbfb38dc"
+  },
+  {
+    "query": "What is the total account balance for customers under the age of 30?",
+    "sql_command": "SELECT SUM(a.account_balance) FROM Accounts a JOIN Customers c ON a.customer_id = c.customer_id WHERE EXTRACT(YEAR FROM AGE(c.date_of_birth)) < 30;",
+    "id": "30efa799-043e-45f0-bf4e-f1fc82996cb7"
+  },
+  {
+    "query": "How many branches have an average customer account balance greater than $25,000?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT c.branch_id FROM Customers c JOIN Accounts a ON c.customer_id = a.customer_id GROUP BY c.branch_id HAVING AVG(a.account_balance) > 25000) as high_balance_branches;",
+    "id": "030f9044-5634-49ff-a190-7d1e8c06796c"
+  },
+  {
+    "query": "Count the number of active (not blocked) cards that expire in or after the year 2030.",
+    "sql_command": "SELECT COUNT(*) FROM Cards WHERE is_blocked = FALSE AND expiration_date >= '2030-01-01';",
+    "id": "35a5b582-51fd-4f6b-98dd-d2387342543a"
+  },
+  {
+    "query": "What is the total transaction amount from accounts that were opened in the last 6 months?",
+    "sql_command": "SELECT SUM(t.transaction_amount) FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id WHERE a.created_at >= CURRENT_DATE - INTERVAL '6 months';",
+    "id": "5574860f-755f-4972-8ec5-7766117815b5"
+  },
+  {
+    "query": "How many customers have a '@yahoo.com' email address?",
+    "sql_command": "SELECT COUNT(*) FROM Customers WHERE email LIKE '%@yahoo.com';",
+    "id": "17ebb2a6-e42c-4008-905d-6df407851c3f"
+  },
+  {
+    "query": "How many customers have a total loan balance that is higher than their combined total balance from accounts and deposits?",
+    "sql_command": "SELECT COUNT(c.customer_id) FROM Customers c WHERE (SELECT COALESCE(SUM(l.balance), 0) FROM Loans l WHERE l.customer_id = c.customer_id) > ((SELECT COALESCE(SUM(a.account_balance), 0) FROM Accounts a WHERE a.customer_id = c.customer_id) + (SELECT COALESCE(SUM(d.balance), 0) FROM Deposits d WHERE d.customer_id = c.customer_id));",
+    "id": "6daba985-2483-43b8-8807-82aae339f9e3"
+  },
+  {
+    "query": "Count customers whose average transaction amount last month exceeded the bank's overall average transaction amount.",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT a.customer_id FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id WHERE t.transaction_date >= date_trunc('month', current_date - interval '1 month') AND t.transaction_date < date_trunc('month', current_date) GROUP BY a.customer_id HAVING AVG(t.transaction_amount) > (SELECT AVG(transaction_amount) FROM Transactions)) AS high_avg_customers;",
+    "id": "b6a83dea-54da-447b-bac8-85225c31111b"
+  },
+  {
+    "query": "How many customers took out their first loan within 60 days of opening their first account?",
+    "sql_command": "SELECT COUNT(DISTINCT l.customer_id) FROM Loans l JOIN (SELECT customer_id, MIN(created_at) as first_account_date FROM Accounts GROUP BY customer_id) AS first_accounts ON l.customer_id = first_accounts.customer_id WHERE l.start_date BETWEEN first_accounts.first_account_date AND first_accounts.first_account_date + INTERVAL '60 days';",
+    "id": "cbc347e3-5c65-4033-9093-f48170d4c224"
+  },
+  {
+    "query": "Count the number of customers who hold active loans from three or more different loan categories.",
+    "sql_command": "SELECT COUNT(customer_id) FROM (SELECT l.customer_id FROM Loans l GROUP BY l.customer_id HAVING COUNT(DISTINCT l.loan_type_id) >= 3) AS multi_loan_type_customers;",
+    "id": "c10ff004-b58f-457f-83da-bb441a702c41"
+  },
+  {
+    "query": "How many customers have made a single transaction that was larger than their current total account balance?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT a.customer_id, SUM(a.account_balance) AS total_balance, MAX(t.transaction_amount) AS max_transaction FROM Accounts a JOIN Transactions t ON a.account_id = t.account_id GROUP BY a.customer_id) AS customer_agg WHERE max_transaction > total_balance;",
+    "id": "bbf57fdc-16c2-45f3-a5e7-427d9ffab96b"
+  },
+  {
+    "query": "How many customers made at least one transaction in every month of the previous calendar year?",
+    "sql_command": "SELECT COUNT(customer_id) FROM (SELECT a.customer_id FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id WHERE EXTRACT(YEAR FROM t.transaction_date) = EXTRACT(YEAR FROM current_date - interval '1 year') GROUP BY a.customer_id HAVING COUNT(DISTINCT date_trunc('month', t.transaction_date)) = 12) AS consistent_customers;",
+    "id": "4aee0d54-1ab8-4f6e-b266-0bedfa8f250a"
+  },
+  {
+    "query": "How many customers are in the top 5% based on their total deposit balance?",
+    "sql_command": "WITH RankedCustomers AS (SELECT customer_id, RANK() OVER (ORDER BY SUM(balance) DESC) as deposit_rank FROM Deposits GROUP BY customer_id) SELECT COUNT(*) FROM RankedCustomers WHERE deposit_rank <= (SELECT COUNT(DISTINCT customer_id) * 0.05 FROM Deposits);",
+    "id": "d8cd03c5-dbc5-4c5d-9df4-ec93503a5638"
+  },
+  {
+    "query": "How many customers have a loan with an interest rate higher than the average deposit interest rate at their branch?",
+    "sql_command": "SELECT COUNT(DISTINCT l.customer_id) FROM Loans l JOIN Customers c ON l.customer_id = c.customer_id WHERE l.interest_rate > (SELECT AVG(d.interest_rate) FROM Deposits d JOIN Customers c2 ON d.customer_id = c2.customer_id WHERE c2.branch_id = c.branch_id);",
+    "id": "3730a8f7-2e9f-4342-bb06-18e6bb45c5cc"
+  },
+  {
+    "query": "Find the number of customers who opened an account, took a loan, and got a card all within the same calendar year.",
+    "sql_command": "SELECT COUNT(c.customer_id) FROM Customers c JOIN (SELECT customer_id, EXTRACT(YEAR FROM MIN(created_at)) AS year FROM Accounts GROUP BY 1) a ON c.customer_id = a.customer_id JOIN (SELECT customer_id, EXTRACT(YEAR FROM MIN(start_date)) AS year FROM Loans GROUP BY 1) l ON c.customer_id = l.customer_id AND a.year = l.year JOIN (SELECT customer_id, EXTRACT(YEAR FROM MIN(created_at)) AS year FROM Cards GROUP BY 1) ca ON c.customer_id = ca.customer_id AND a.year = ca.year;",
+    "id": "9c86b5fa-15df-4599-ae04-51edae950609"
+  },
+  {
+    "query": "Count customers whose transaction count increased by 100% from the month before last to last month.",
+    "sql_command": "WITH MonthlyTransactions AS (SELECT a.customer_id, date_trunc('month', t.transaction_date) as trans_month, COUNT(t.transaction_id) as transaction_count FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id GROUP BY 1, 2), LaggedTransactions AS (SELECT customer_id, trans_month, transaction_count, LAG(transaction_count, 1, 0) OVER (PARTITION BY customer_id ORDER BY trans_month) as prev_month_count FROM MonthlyTransactions) SELECT COUNT(DISTINCT customer_id) FROM LaggedTransactions WHERE trans_month = date_trunc('month', current_date - interval '1 month') AND transaction_count >= 2 * prev_month_count AND prev_month_count > 0;",
+    "id": "61414436-89fd-4334-8b90-fdc9c88313d4"
+  },
+  {
+    "query": "How many customers have a 'Mortgage' where their total account balance is less than a single monthly payment (balance/payment_term)?",
+    "sql_command": "SELECT COUNT(DISTINCT l.customer_id) FROM Loans l JOIN LoanTypes lt ON l.loan_type_id = lt.loan_type_id WHERE lt.type = 'Mortgage' AND l.payment_term > 0 AND (SELECT SUM(a.account_balance) FROM Accounts a WHERE a.customer_id = l.customer_id) < (l.balance / l.payment_term);",
+    "id": "cfed2afc-4fa1-4f59-b097-6e95ba474596"
+  },
+  {
+    "query": "Find the number of customers who have made transactions on more than 5 consecutive days.",
+    "sql_command": "WITH DateSeries AS (SELECT DISTINCT a.customer_id, t.transaction_date, t.transaction_date - (ROW_NUMBER() OVER (PARTITION BY a.customer_id ORDER BY t.transaction_date))::int AS grp FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id) SELECT COUNT(DISTINCT customer_id) FROM (SELECT customer_id, grp, COUNT(*) AS consecutive_days FROM DateSeries GROUP BY customer_id, grp HAVING COUNT(*) > 5) as streaks;",
+    "id": "7f4a4704-b4d5-40fc-92a0-9bac975322cb"
+  },
+  {
+    "query": "How many customers' total deposit term (sum of months) is greater than their total loan payment term (sum of months)?",
+    "sql_command": "SELECT COUNT(c.customer_id) FROM Customers c WHERE (SELECT COALESCE(SUM(d.term), 0) FROM Deposits d WHERE d.customer_id = c.customer_id) > (SELECT COALESCE(SUM(l.payment_term), 0) FROM Loans l WHERE l.customer_id = c.customer_id) AND EXISTS (SELECT 1 FROM Loans WHERE customer_id = c.customer_id);",
+    "id": "e38568f2-4ef2-4c2d-bbff-e48788fb44f6"
+  },
+  {
+    "query": "Count customers whose second loan was of a different type than their first ever loan.",
+    "sql_command": "WITH RankedLoans AS (SELECT customer_id, loan_type_id, ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY start_date) as rn FROM Loans) SELECT COUNT(DISTINCT r1.customer_id) FROM RankedLoans r1 JOIN RankedLoans r2 ON r1.customer_id = r2.customer_id WHERE r1.rn = 1 AND r2.rn = 2 AND r1.loan_type_id <> r2.loan_type_id;",
+    "id": "7a53e634-1ca1-4a0b-ab17-e7f0eca1d0a3"
+  },
+  {
+    "query": "How many customers have a total transaction value that's over 20 times the balance of their oldest account?",
+    "sql_command": "WITH OldestAccount AS (SELECT customer_id, account_balance FROM (SELECT customer_id, account_balance, ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY created_at ASC) as rn FROM Accounts) AS ranked_accounts WHERE rn = 1), TotalTransactions AS (SELECT a.customer_id, SUM(t.transaction_amount) as total_trans FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id GROUP BY a.customer_id) SELECT COUNT(*) FROM OldestAccount oa JOIN TotalTransactions tt ON oa.customer_id = tt.customer_id WHERE tt.total_trans > 20 * oa.account_balance;",
+    "id": "5e50406b-7b38-4586-836a-168a66dd6d18"
+  },
+  {
+    "query": "Count 'dormant whales': customers with over $1M in total balance (accounts+deposits) but no transactions in 6 months.",
+    "sql_command": "SELECT COUNT(c.customer_id) FROM Customers c WHERE ((SELECT COALESCE(SUM(a.account_balance), 0) FROM Accounts a WHERE a.customer_id = c.customer_id) + (SELECT COALESCE(SUM(d.balance), 0) FROM Deposits d WHERE d.customer_id = c.customer_id)) > 1000000 AND c.customer_id NOT IN (SELECT DISTINCT a.customer_id FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id WHERE t.transaction_date >= CURRENT_DATE - INTERVAL '6 months');",
+    "id": "036bbba9-ad32-4dcb-a582-25c7686772f9"
+  },
+  {
+    "query": "How many customers' average deposit term is longer than the average loan term for their entire branch?",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id) FROM Customers c JOIN Branches b ON c.branch_id = b.branch_id WHERE (SELECT AVG(d.term) FROM Deposits d WHERE d.customer_id = c.customer_id) > (SELECT AVG(l.payment_term) FROM Loans l JOIN Customers c2 ON l.customer_id = c2.customer_id WHERE c2.branch_id = b.branch_id);",
+    "id": "6db0f386-a459-4d4f-8849-1dbf99e2c27c"
+  },
+  {
+    "query": "How many customers have only one type of product with the bank (e.g., only accounts, or only loans, but not both)?",
+    "sql_command": "SELECT COUNT(customer_id) FROM (SELECT customer_id, COUNT(DISTINCT product_type) as num_products FROM (SELECT customer_id, 'account' as product_type FROM Accounts UNION ALL SELECT customer_id, 'loan' as product_type FROM Loans UNION ALL SELECT customer_id, 'deposit' as product_type FROM Deposits UNION ALL SELECT customer_id, 'card' as product_type FROM Cards) as all_products GROUP BY customer_id) as product_counts WHERE num_products = 1;",
+    "id": "acfcfafd-cdd8-455f-9a64-0670fb77577e"
+  },
+  {
+    "query": "How many customers have a card balance that is greater than the average account balance of all customers in their branch?",
+    "sql_command": "SELECT COUNT(DISTINCT ca.customer_id) FROM Cards ca JOIN Customers c ON ca.customer_id = c.customer_id WHERE ca.balance > (SELECT AVG(a.account_balance) FROM Accounts a JOIN Customers c2 ON a.customer_id = c2.customer_id WHERE c2.branch_id = c.branch_id);",
+    "id": "1383308a-f033-400b-841d-393e89846f86"
+  },
+  {
+    "query": "Count customers with a trend of at least 4 consecutively increasing transaction amounts.",
+    "sql_command": "WITH TransactionSeries AS (SELECT a.customer_id, t.transaction_amount, LAG(t.transaction_amount, 1, -1) OVER (PARTITION BY a.customer_id ORDER BY t.transaction_date, t.transaction_id) as prev1, LAG(t.transaction_amount, 2, -1) OVER (PARTITION BY a.customer_id ORDER BY t.transaction_date, t.transaction_id) as prev2, LAG(t.transaction_amount, 3, -1) OVER (PARTITION BY a.customer_id ORDER BY t.transaction_date, t.transaction_id) as prev3 FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id) SELECT COUNT(DISTINCT customer_id) FROM TransactionSeries WHERE transaction_amount > prev1 AND prev1 > prev2 AND prev2 > prev3;",
+    "id": "5011a56f-79f9-4808-a372-b23420a8856c"
+  },
+  {
+    "query": "How many customers have a loan that started on the same day of the week they were born?",
+    "sql_command": "SELECT COUNT(DISTINCT l.customer_id) FROM Loans l JOIN Customers c ON l.customer_id = c.customer_id WHERE EXTRACT(ISODOW FROM l.start_date) = EXTRACT(ISODOW FROM c.date_of_birth);",
+    "id": "1c35c086-2ddf-4fa0-8ce6-8588e2f4edb6"
+  },
+  {
+    "query": "Count customers where the time gap between their 2nd and 3rd loan was shorter than between their 1st and 2nd.",
+    "sql_command": "WITH RankedLoans AS (SELECT customer_id, start_date, ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY start_date) as rn FROM Loans), LoanIntervals AS (SELECT customer_id, start_date - LAG(start_date) OVER (PARTITION BY customer_id ORDER BY start_date) as interval_days, rn FROM RankedLoans) SELECT COUNT(DISTINCT li2.customer_id) FROM LoanIntervals li2 JOIN LoanIntervals li3 ON li2.customer_id = li3.customer_id WHERE li2.rn = 2 AND li3.rn = 3 AND li3.interval_days < li2.interval_days;",
+    "id": "669bfce6-330e-479e-b218-33812c7e62e8"
+  },
+  {
+    "query": "How many customers have a greater total balance in 'Savings' deposits than in 'Auto' loans?",
+    "sql_command": "SELECT COUNT(T.customer_id) FROM (SELECT c.customer_id, (SELECT SUM(d.balance) FROM Deposits d JOIN DepositTypes dt ON d.deposit_type_id = dt.deposit_type_id WHERE d.customer_id = c.customer_id AND dt.type = 'Savings') as savings_bal, (SELECT SUM(l.balance) FROM Loans l JOIN LoanTypes lt ON l.loan_type_id = lt.loan_type_id WHERE l.customer_id = c.customer_id AND lt.type = 'Auto Loan') as auto_loan_bal FROM Customers c) AS T WHERE T.savings_bal > T.auto_loan_bal;",
+    "id": "bf166cd2-70df-4640-9498-2b4195c2c95a"
+  },
+  {
+    "query": "Count the number of branches where the total loan balance is more than three times the total deposit balance.",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT b.branch_id FROM Customers c JOIN Branches b ON c.branch_id = b.branch_id GROUP BY b.branch_id HAVING (SELECT COALESCE(SUM(l.balance), 0) FROM Loans l WHERE l.customer_id IN (SELECT customer_id FROM Customers c2 WHERE c2.branch_id = b.branch_id)) > 3 * (SELECT COALESCE(SUM(d.balance), 0) FROM Deposits d WHERE d.customer_id IN (SELECT customer_id FROM Customers c3 WHERE c3.branch_id = b.branch_id))) AS high_loan_branches;",
+    "id": "034a0ece-b298-4dc5-a97a-708decd04dfb"
+  },
+  {
+    "query": "How many customers' most frequent transaction day of the week is Friday?",
+    "sql_command": "WITH TransactionDays AS (SELECT a.customer_id, EXTRACT(ISODOW FROM t.transaction_date) as dow, ROW_NUMBER() OVER (PARTITION BY a.customer_id ORDER BY COUNT(*) DESC) as rn FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id GROUP BY a.customer_id, dow) SELECT COUNT(customer_id) FROM TransactionDays WHERE rn = 1 AND dow = 5;",
+    "id": "d35ae2ee-5887-425a-bf95-e7657865688b"
+  },
+  {
+    "query": "Count customers who have a deposit whose term in months is greater than their age in months when the deposit started.",
+    "sql_command": "SELECT COUNT(DISTINCT d.customer_id) FROM Deposits d JOIN Customers c ON d.customer_id = c.customer_id WHERE d.term > (EXTRACT(YEAR FROM AGE(d.start_date, c.date_of_birth)) * 12 + EXTRACT(MONTH FROM AGE(d.start_date, c.date_of_birth)));",
+    "id": "b5064d57-8979-4226-ac1c-8837af068b9b"
+  },
+  {
+    "query": "How many customers hold every single type of deposit the bank offers?",
+    "sql_command": "SELECT COUNT(customer_id) FROM (SELECT customer_id FROM Deposits GROUP BY customer_id HAVING COUNT(DISTINCT deposit_type_id) = (SELECT COUNT(*) FROM DepositTypes)) as all_deposit_customers;",
+    "id": "1c79da5b-8515-43b2-bc7f-b2e1a83b2fbd"
+  },
+  {
+    "query": "Count customers whose most recent transaction was for a lower amount than their overall average transaction amount.",
+    "sql_command": "WITH CustomerTransactions AS (SELECT a.customer_id, t.transaction_amount, AVG(t.transaction_amount) OVER (PARTITION BY a.customer_id) as avg_trans, ROW_NUMBER() OVER (PARTITION BY a.customer_id ORDER BY t.transaction_date DESC, t.transaction_id DESC) as rn FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id) SELECT COUNT(DISTINCT customer_id) FROM CustomerTransactions WHERE rn = 1 AND transaction_amount < avg_trans;",
+    "id": "0f6f4718-5983-41cb-a3f0-6bf11272fa49"
+  },
+  {
+    "query": "How many unique addresses are shared by two or more customers?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT address FROM Customers WHERE address IS NOT NULL GROUP BY address HAVING COUNT(customer_id) > 1) AS shared_addresses;",
+    "id": "7c820db4-238f-4e9c-9121-eccbfb0a8c25"
+  },
+  {
+    "query": "Count customers who make more transactions on weekends (Sat, Sun) than on weekdays (Mon-Fri).",
+    "sql_command": "SELECT COUNT(customer_id) FROM (SELECT a.customer_id, SUM(CASE WHEN EXTRACT(ISODOW FROM t.transaction_date) IN (6, 7) THEN 1 ELSE 0 END) AS weekend_trans, SUM(CASE WHEN EXTRACT(ISODOW FROM t.transaction_date) IN (1, 2, 3, 4, 5) THEN 1 ELSE 0 END) AS weekday_trans FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id GROUP BY a.customer_id) as trans_counts WHERE weekend_trans > weekday_trans;",
+    "id": "ff9aa417-17aa-491c-9a4a-d1fa361a66e9"
+  },
+  {
+    "query": "How many customers have a card expiring in the same month and year as their oldest loan's end date?",
+    "sql_command": "WITH OldestLoan AS (SELECT customer_id, end_date FROM (SELECT customer_id, end_date, ROW_NUMBER() OVER(PARTITION BY customer_id ORDER BY start_date ASC) as rn FROM Loans) as r WHERE rn = 1) SELECT COUNT(DISTINCT c.customer_id) FROM Cards c JOIN OldestLoan ol ON c.customer_id = ol.customer_id WHERE date_trunc('month', c.expiration_date) = date_trunc('month', ol.end_date);",
+    "id": "81cb353f-1b17-4aad-8390-d3d52884f7de"
+  },
+  {
+    "query": "How many customers have a loan-to-assets ratio (total loans / total accounts+deposits) greater than 0.9?",
+    "sql_command": "SELECT COUNT(c.customer_id) FROM Customers c WHERE (SELECT COALESCE(SUM(l.balance), 0) FROM Loans l WHERE l.customer_id = c.customer_id) / NULLIF((SELECT COALESCE(SUM(a.account_balance), 0) FROM Accounts a WHERE a.customer_id = c.customer_id) + (SELECT COALESCE(SUM(d.balance), 0) FROM Deposits d WHERE d.customer_id = c.customer_id), 0) > 0.9;",
+    "id": "494cc3b6-1068-46d3-99a5-0ee9b34e7b7f"
+  },
+  {
+    "query": "Count customers who have never made a transaction larger than the bank's overall average transaction amount.",
+    "sql_command": "SELECT COUNT(c.customer_id) FROM Customers c WHERE EXISTS (SELECT 1 FROM Accounts WHERE customer_id=c.customer_id) AND c.customer_id NOT IN (SELECT DISTINCT a.customer_id FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id WHERE t.transaction_amount > (SELECT AVG(transaction_amount) FROM Transactions));",
+    "id": "1a31e4b4-1934-4be5-a0b7-5a13b3fc30d7"
+  },
+  {
+    "query": "How many customers have active deposits but all of their checking/savings accounts are overdrawn?",
+    "sql_command": "SELECT COUNT(DISTINCT d.customer_id) FROM Deposits d WHERE d.customer_id IN (SELECT customer_id FROM Accounts GROUP BY customer_id HAVING MAX(account_balance) < 0);",
+    "id": "c2c8cb55-0f92-4528-9f78-1ded6b928f71"
+  },
+  {
+    "query": "How many customers have at least one loan for every account they hold?",
+    "sql_command": "SELECT COUNT(customer_id) FROM (SELECT customer_id, (SELECT COUNT(*) FROM Accounts a WHERE a.customer_id = c.customer_id) as account_count, (SELECT COUNT(*) FROM Loans l WHERE l.customer_id = c.customer_id) as loan_count FROM Customers c) as counts WHERE loan_count > 0 AND loan_count >= account_count;",
+    "id": "e3a403f8-68b7-4e85-9035-b27bb450e876"
+  },
+  {
+    "query": "Count loyal customers: those with the bank over 10 years who have at least 3 product types (account, loan, card, deposit).",
+    "sql_command": "SELECT COUNT(T.customer_id) FROM (SELECT c.customer_id, c.created_at, COUNT(DISTINCT T2.product_type) AS num_products FROM Customers c JOIN (SELECT customer_id, 'account' AS product_type FROM Accounts UNION ALL SELECT customer_id, 'loan' AS product_type FROM Loans UNION ALL SELECT customer_id, 'card' AS product_type FROM Cards UNION ALL SELECT customer_id, 'deposit' AS product_type FROM Deposits) AS T2 ON c.customer_id = T2.customer_id GROUP BY c.customer_id, c.created_at) AS T WHERE T.created_at < CURRENT_DATE - INTERVAL '10 years' AND T.num_products >= 3;",
+    "id": "c7d31fa2-cf8c-451d-a78a-d63d30a690dc"
+  },
+  {
+    "query": "How many customers have a higher total balance in blocked cards than in their active, unblocked cards?",
+    "sql_command": "SELECT COUNT(customer_id) FROM (SELECT customer_id, SUM(CASE WHEN is_blocked = TRUE THEN balance ELSE 0 END) as blocked_balance, SUM(CASE WHEN is_blocked = FALSE THEN balance ELSE 0 END) as active_balance FROM Cards GROUP BY customer_id) as card_balances WHERE blocked_balance > active_balance;",
+    "id": "65213ecf-3c99-4f5f-83b0-8f042fd6f1f1"
+  },
+  {
+    "query": "Count the number of customers whose full name is a substring of another customer's full name.",
+    "sql_command": "SELECT COUNT(DISTINCT c1.customer_id) FROM Customers c1 JOIN Customers c2 ON c1.customer_id != c2.customer_id AND POSITION(c1.customer_name IN c2.customer_name) > 0;",
+    "id": "d333b22b-f74d-4542-96f2-8247fc6fd881"
+  },
+  {
+    "query": "How many customers have a birthday this month and also made more than 10 transactions this month?",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id) FROM Customers c WHERE EXTRACT(MONTH FROM c.date_of_birth) = EXTRACT(MONTH FROM CURRENT_DATE) AND c.customer_id IN (SELECT a.customer_id FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id WHERE t.transaction_date >= date_trunc('month', current_date) GROUP BY a.customer_id HAVING COUNT(t.transaction_id) > 10);",
+    "id": "73e407f0-8f59-4e9d-90e3-523eb1bca70a"
+  },
+  {
+    "query": "How many customers are suspected duplicates, having the same name and date of birth as another customer?",
+    "sql_command": "SELECT SUM(c) FROM (SELECT COUNT(*) AS c FROM Customers GROUP BY customer_name, date_of_birth HAVING COUNT(*) > 1) AS counts;",
+    "id": "c459851b-10f2-449a-865a-067c8e052f44"
+  },
+  {
+    "query": "How many customers more than doubled their total account balance over the last year from net transactions?",
+    "sql_command": "WITH BalanceChange AS (SELECT a.customer_id, SUM(t.transaction_amount) as transaction_change, (SUM(a.account_balance) - SUM(t.transaction_amount)) as start_of_year_balance FROM Accounts a JOIN Transactions t ON a.account_id = a.account_id WHERE t.transaction_date >= CURRENT_DATE - INTERVAL '1 year' GROUP BY a.customer_id) SELECT COUNT(*) FROM BalanceChange WHERE start_of_year_balance > 0 AND (start_of_year_balance + transaction_change) >= (2 * start_of_year_balance);",
+    "id": "7b0593f8-a6ce-4e24-8fe9-bc8991c3942b"
+  },
+  {
+    "query": "How many customers have at least one loan that will end after all of their cards have expired?",
+    "sql_command": "WITH MaxCardExpiry AS (SELECT customer_id, MAX(expiration_date) as max_expiry FROM Cards GROUP BY customer_id) SELECT COUNT(DISTINCT l.customer_id) FROM Loans l JOIN MaxCardExpiry m ON l.customer_id = m.customer_id WHERE l.end_date > m.max_expiry;",
+    "id": "fe0f884f-9d35-4e93-b9aa-220209b0532f"
+  },
+  {
+    "query": "Count customers who made transactions from all of their accounts on the exact same day at least once.",
+    "sql_command": "WITH DailyAccountTransactions AS (SELECT a.customer_id, t.transaction_date, COUNT(DISTINCT a.account_id) AS num_accounts_transacted FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id GROUP BY a.customer_id, t.transaction_date), TotalAccounts AS (SELECT customer_id, COUNT(account_id) AS total_num_accounts FROM Accounts GROUP BY customer_id) SELECT COUNT(DISTINCT d.customer_id) FROM DailyAccountTransactions d JOIN TotalAccounts t ON d.customer_id = t.customer_id WHERE d.num_accounts_transacted = t.total_num_accounts;",
+    "id": "c552df78-871f-4bcb-8857-4d501ed6229b"
+  },
+  {
+    "query": "How many customers have a loan with an interest rate in the top 1% for that specific loan type?",
+    "sql_command": "WITH RankedLoans AS (SELECT loan_id, loan_type_id, customer_id, PERCENT_RANK() OVER (PARTITION BY loan_type_id ORDER BY interest_rate DESC) as rate_rank FROM Loans) SELECT COUNT(DISTINCT customer_id) FROM RankedLoans WHERE rate_rank <= 0.01;",
+    "id": "447ff64b-90ba-4aa1-9a73-c8bc808ae65f"
+  },
+  {
+    "query": "How many branches have their oldest customer as also their wealthiest customer by total account balance?",
+    "sql_command": "WITH BranchStats AS (SELECT c.branch_id, c.customer_id, c.date_of_birth, SUM(a.account_balance) as total_balance, RANK() OVER (PARTITION BY c.branch_id ORDER BY c.date_of_birth ASC) as age_rank, RANK() OVER (PARTITION BY c.branch_id ORDER BY SUM(a.account_balance) DESC) as balance_rank FROM Customers c JOIN Accounts a ON c.customer_id = a.customer_id GROUP BY c.branch_id, c.customer_id, c.date_of_birth) SELECT COUNT(DISTINCT branch_id) FROM BranchStats WHERE age_rank = 1 AND balance_rank = 1;",
+    "id": "5932c9c4-b5c8-4ee2-a902-f63152f22c94"
+  },
+  {
+    "query": "How many customers started a new deposit in the same month and year as their most recent loan began?",
+    "sql_command": "WITH RecentLoan AS (SELECT customer_id, MAX(start_date) as recent_loan_start FROM Loans GROUP BY customer_id) SELECT COUNT(DISTINCT d.customer_id) FROM Deposits d JOIN RecentLoan yl ON d.customer_id = yl.customer_id WHERE date_trunc('month', d.start_date) = date_trunc('month', yl.recent_loan_start);",
+    "id": "b9894da4-5198-4dd2-ad29-3fc3a03830a9"
+  },
+  {
+    "query": "How many customers have an account balance standard deviation that is greater than their average account balance?",
+    "sql_command": "SELECT COUNT(customer_id) FROM (SELECT a.customer_id FROM Accounts a GROUP BY a.customer_id HAVING STDDEV(a.account_balance) > AVG(a.account_balance) AND COUNT(a.account_id) > 1) as volatile_customers;",
+    "id": "c52574d9-0c4d-485a-a643-4335079f9244"
+  },
+  {
+    "query": "Count customers who have taken a new loan before their previous loan's official end date.",
+    "sql_command": "WITH LoanDates AS (SELECT customer_id, start_date, end_date, LAG(end_date, 1) OVER (PARTITION BY customer_id ORDER BY start_date) as prev_end_date FROM Loans) SELECT COUNT(DISTINCT customer_id) FROM LoanDates WHERE prev_end_date IS NOT NULL AND start_date < prev_end_date;",
+    "id": "f47ff2ae-462c-432b-ae76-c8e73699f3aa"
+  },
+  {
+    "query": "How many customers maintained a total monthly transaction amount of at least $500 for every month of the past year?",
+    "sql_command": "WITH MonthlySums AS (SELECT a.customer_id, date_trunc('month', t.transaction_date) as trans_month, SUM(t.transaction_amount) as monthly_total FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id WHERE t.transaction_date >= date_trunc('month', current_date - interval '12 months') GROUP BY 1, 2) SELECT COUNT(customer_id) FROM (SELECT customer_id FROM MonthlySums GROUP BY customer_id HAVING MIN(monthly_total) >= 500 AND COUNT(trans_month) = 12) as consistent_spenders;",
+    "id": "c10b890d-4347-4b18-b823-327fa6590a4c"
+  },
+  {
+    "query": "How many branches have at least one customer who holds every single type of loan product?",
+    "sql_command": "WITH CustomerLoanTypes AS (SELECT c.branch_id, l.customer_id, COUNT(DISTINCT l.loan_type_id) AS num_types FROM Loans l JOIN Customers c ON l.customer_id = c.customer_id GROUP BY c.branch_id, l.customer_id) SELECT COUNT(DISTINCT branch_id) FROM CustomerLoanTypes WHERE num_types = (SELECT COUNT(*) FROM LoanTypes);",
+    "id": "39ca1753-1026-4117-9ea4-b16155f76f50"
+  },
+  {
+    "query": "Count the number of customers with deposits and cards.",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id) FROM Customers c JOIN Deposits d ON c.customer_id = d.customer_identifier JOIN Cards ca ON c.customer_id = ca.customer_id;",
+    "id": "16aaeb0c-a427-4c21-98bf-9f591c9bd865"
+  },
+  {
+    "query": "Count the number of transactions per deposit type with ID 127.",
+    "sql_command": "SELECT COUNT(*) FROM Transactions t JOIN Deposits d ON t.account_id = d.deposit_id WHERE d.deposit_type_id = 127;",
+    "id": "cede2e0a-0a75-4ef9-bab7-e23b7b69e71c"
+  },
+  {
+    "query": "Count the number of loans per loan type with ID 127.",
+    "sql_command": "SELECT COUNT(*) FROM Loans WHERE loan_type_id = 127;",
+    "id": "d4f7e70a-afb2-4fd8-a5b4-95cfa7a95783"
+  },
+  {
+    "query": "Count the number of deposits per deposit type with ID 127.",
+    "sql_command": "SELECT COUNT(*) FROM Deposits WHERE deposit_type_id = 127;",
+    "id": "8eafad22-127b-4cb6-8545-5871ff5edc99"
+  },
+  {
+    "query": "Count the number of accounts with more than 2000 in transactions.",
+    "sql_command": "SELECT COUNT(DISTINCT account_id) FROM Transactions GROUP BY account_id HAVING SUM(transaction_amount) > 2000;",
+    "id": "9747aee2-3cef-4877-9ccb-3a67ac1bef1a"
+  },
+  {
+    "query": "Count the number of customers with accounts and loans.",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id) FROM Customers c JOIN Accounts a ON c.customer_id = a.customer_id JOIN Loans l ON c.customer_id = l.customer_id;",
+    "id": "1e799dcf-4b0f-4a4b-9b36-d697dd4c039b"
+  },
+  {
+    "query": "Count the number of transactions with amount above 100 in the last 3 months.",
+    "sql_command": "SELECT COUNT(*) FROM Transactions WHERE transaction_amount > 100 AND transaction_date >= CURRENT_DATE - INTERVAL '3 months';",
+    "id": "73207eee-5371-4929-b5d7-3a0c897138de"
+  },
+  {
+    "query": "Count the number of transactions per account with ID 128.",
+    "sql_command": "SELECT COUNT(*) FROM Transactions WHERE account_id = 128;",
+    "id": "aac8812d-f565-4db8-877b-5ff3f4959eba"
+  },
+  {
+    "query": "Count the number of deposits per customer with ID 128.",
+    "sql_command": "SELECT COUNT(*) FROM Deposits WHERE customer_identifier = 128;",
+    "id": "e25910c1-8ae1-4ece-8219-bf1325cec35d"
+  },
+  {
+    "query": "Count the number of loans per customer with ID 128.",
+    "sql_command": "SELECT COUNT(*) FROM Loans WHERE customer_id = 128;",
+    "id": "8889cefa-df9b-4adf-b425-94cda451cc77"
+  },
+  {
+    "query": "Count the number of cards per customer with ID 128.",
+    "sql_command": "SELECT COUNT(*) FROM Cards WHERE customer_id = 128;",
+    "id": "327be4b5-c2ef-47df-8d53-d1672df5268d"
+  },
+  {
+    "query": "Count the number of accounts per branch with ID 128.",
+    "sql_command": "SELECT COUNT(*) FROM Accounts WHERE customer_id IN (SELECT customer_id FROM Customers WHERE branch_id = 128);",
+    "id": "e486bcf0-50c8-4592-adc5-6eb85ab51b86"
+  },
+  {
+    "query": "Count the number of transactions with amount greater than average per branch.",
+    "sql_command": "SELECT COUNT(*) FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id JOIN Customers c ON a.customer_id = c.customer_id WHERE t.transaction_amount > (SELECT AVG(transaction_amount) FROM Transactions t2 JOIN Accounts a2 ON t2.account_id = a2.account_id JOIN Customers c2 ON a2.customer_id = c2.customer_id WHERE c2.branch_id = c.branch_id) AND c.branch_id = 128;",
+    "id": "2f8cc0c1-f901-4192-bc54-a5fc932b91d6"
+  },
+  {
+    "query": "Count the number of deposits with balance above average per customer type.",
+    "sql_command": "SELECT COUNT(*) FROM Deposits d WHERE d.balance > (SELECT AVG(balance) FROM Deposits d2 WHERE d2.customer_identifier IN (SELECT customer_id FROM Customers WHERE customer_name LIKE 'C%')) AND d.customer_identifier IN (SELECT customer_id FROM Customers WHERE customer_name LIKE 'C%');",
+    "id": "dcd75f18-28ba-4ae3-9f9e-6e70eaa2d39f"
+  },
+  {
+    "query": "Count the number of loans with balance above average per loan type.",
+    "sql_command": "SELECT COUNT(*) FROM Loans l WHERE l.balance > (SELECT AVG(balance) FROM Loans l2 WHERE l2.loan_type_id = l.loan_type_id) AND l.loan_type_id = 128;",
+    "id": "2146dc2d-36cc-4604-96b7-3dcb8cf87dbe"
+  },
+  {
+    "query": "Count the number of customers with more than three accounts.",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT customer_id FROM Accounts GROUP BY customer_id HAVING COUNT(*) > 3) AS t;",
+    "id": "fce39ee9-f16f-4760-ab30-d772a29f9c64"
+  },
+  {
+    "query": "Count the number of customers with more than three deposits.",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT customer_identifier FROM Deposits GROUP BY customer_identifier HAVING COUNT(*) > 3) AS t;",
+    "id": "c7823fc3-24c3-42c7-b0c7-03ca2c0b6efd"
+  },
+  {
+    "query": "Count the number of customers with more than three loans.",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT customer_id FROM Loans GROUP BY customer_id HAVING COUNT(*) > 3) AS t;",
+    "id": "a33a034e-6895-4c5b-b3e3-ebbd45ac3e78"
+  },
+  {
+    "query": "Count the number of customers with more than three cards.",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT customer_id FROM Cards GROUP BY customer_id HAVING COUNT(*) > 3) AS t;",
+    "id": "fdf89cb4-55a1-4c5f-bfae-0455816f09ca"
+  },
+  {
+    "query": "Count the number of transactions in the last 90 days per account.",
+    "sql_command": "SELECT COUNT(*) FROM Transactions WHERE account_id = 128 AND transaction_date >= CURRENT_DATE - INTERVAL '90 days';",
+    "id": "d2d53fb7-6a1d-4e98-8755-df52673d4902"
+  },
+  {
+    "query": "Count the number of deposits with term greater than 24 months.",
+    "sql_command": "SELECT COUNT(*) FROM Deposits WHERE term > 24;",
+    "id": "56042188-d4db-4b99-a64d-dd688c43da35"
+  },
+  {
+    "query": "Count the number of loans with interest rate above 7%.",
+    "sql_command": "SELECT COUNT(*) FROM Loans WHERE interest_rate > 7;",
+    "id": "c889b26f-9320-478f-a320-c936cc74d358"
+  },
+  {
+    "query": "Count the number of accounts with balance above 10000 per branch.",
+    "sql_command": "SELECT COUNT(*) FROM Accounts WHERE account_balance > 10000 AND customer_id IN (SELECT customer_id FROM Customers WHERE branch_id = 128);",
+    "id": "559a4681-4b45-4d12-9bed-5bbdec8f06b5"
+  },
+  {
+    "query": "Count the number of transactions with amount between 1000 and 5000.",
+    "sql_command": "SELECT COUNT(*) FROM Transactions WHERE transaction_amount BETWEEN 1000 AND 5000;",
+    "id": "6445a657-3e5d-4364-a8fc-1b4e65935909"
+  },
+  {
+    "query": "Count the number of deposits with start date after 2022.",
+    "sql_command": "SELECT COUNT(*) FROM Deposits WHERE start_date > '2022-12-31';",
+    "id": "5e1de881-b56e-4ead-9612-255be7327001"
+  },
+  {
+    "query": "Count the number of loans with end date before 2024.",
+    "sql_command": "SELECT COUNT(*) FROM Loans WHERE end_date < '2024-01-01';",
+    "id": "9679c5cb-baee-40d6-bdc4-05f8a90ae238"
+  },
+  {
+    "query": "Count the number of customers with accounts created in 2022.",
+    "sql_command": "SELECT COUNT(DISTINCT customer_id) FROM Accounts WHERE created_at LIKE '2022%';",
+    "id": "d8ec6476-d0ad-488a-83b2-175c0f294a7e"
+  },
+  {
+    "query": "Count the number of transactions per customer with ID 128.",
+    "sql_command": "SELECT COUNT(*) FROM Transactions WHERE account_id IN (SELECT account_id FROM Accounts WHERE customer_id = 128);",
+    "id": "0f381964-f9f6-4f3a-a214-d798353599cc"
+  },
+  {
+    "query": "Count the number of deposits per branch with ID 128.",
+    "sql_command": "SELECT COUNT(*) FROM Deposits WHERE customer_identifier IN (SELECT customer_id FROM Customers WHERE branch_id = 128);",
+    "id": "4fad9880-426f-42af-a18d-4104d555f163"
+  },
+  {
+    "query": "Count the number of loans per branch with ID 128.",
+    "sql_command": "SELECT COUNT(*) FROM Loans WHERE customer_id IN (SELECT customer_id FROM Customers WHERE branch_id = 128);",
+    "id": "3cbd5f3d-c603-4b13-be4c-7f40ac1e5a2b"
+  },
+  {
+    "query": "Count the number of cards per branch with ID 128.",
+    "sql_command": "SELECT COUNT(*) FROM Cards WHERE customer_id IN (SELECT customer_id FROM Customers WHERE branch_id = 128);",
+    "id": "d5fb14e0-3dc7-4cdc-b3de-5de47211ff31"
+  },
+  {
+    "query": "Count the number of transactions with amount greater than 2000 per customer.",
+    "sql_command": "SELECT COUNT(*) FROM Transactions WHERE account_id IN (SELECT account_id FROM Accounts WHERE customer_id = 128) AND transaction_amount > 2000;",
+    "id": "5f03c0b3-b4b1-4e10-b8d1-70ec4b895faf"
+  },
+  {
+    "query": "Count the number of deposits with balance below 2000 per customer.",
+    "sql_command": "SELECT COUNT(*) FROM Deposits WHERE customer_identifier = 128 AND balance < 2000;",
+    "id": "965d6e31-257c-4689-b537-cd48be6d3974"
+  },
+  {
+    "query": "Count the number of loans with balance below 2000 per customer.",
+    "sql_command": "SELECT COUNT(*) FROM Loans WHERE customer_id = 128 AND balance < 2000;",
+    "id": "05bc8955-e926-4d4c-b4e5-8936f31854b7"
+  },
+  {
+    "query": "Count the number of cards expiring before 2024 per customer.",
+    "sql_command": "SELECT COUNT(*) FROM Cards WHERE customer_id = 128 AND expiration_date < '2024-01-01';",
+    "id": "0d1172a4-f608-4b6f-8a70-3a997d76a921"
+  },
+  {
+    "query": "Count the number of customers with transactions in 2023.",
+    "sql_command": "SELECT COUNT(DISTINCT customer_id) FROM Accounts WHERE account_id IN (SELECT account_id FROM Transactions WHERE transaction_date LIKE '2023%');",
+    "id": "5097e9cb-72b5-40e4-84f4-48b4854f690f"
+  },
+  {
+    "query": "Count the number of deposits with term between 12 and 24 months.",
+    "sql_command": "SELECT COUNT(*) FROM Deposits WHERE term BETWEEN 12 AND 24;",
+    "id": "97ee289d-5d07-4b41-bdb3-07afdf4fcde6"
+  },
+  {
+    "query": "Count the number of loans with payment term between 24 and 36 months.",
+    "sql_command": "SELECT COUNT(*) FROM Loans WHERE payment_term BETWEEN 24 AND 36;",
+    "id": "cd2c8d94-0c83-43fe-8035-041ace667c8a"
+  },
+  {
+    "query": "Count the number of transactions updated in the last 60 days.",
+    "sql_command": "SELECT COUNT(*) FROM Transactions WHERE updated_at >= CURRENT_DATE - INTERVAL '60 days';",
+    "id": "481d3899-ce17-43bc-ba20-066805ddbb6b"
+  },
+  {
+    "query": "Count the number of customers with more than 2000 in deposits.",
+    "sql_command": "SELECT COUNT(DISTINCT customer_identifier) FROM Deposits WHERE balance > 2000;",
+    "id": "5419c31d-8c4e-4ed3-a3de-5fbaad539f72"
+  },
+  {
+    "query": "Count the number of accounts with transactions in the last 60 days.",
+    "sql_command": "SELECT COUNT(DISTINCT account_id) FROM Transactions WHERE transaction_date >= CURRENT_DATE - INTERVAL '60 days';",
+    "id": "6d5e7717-25d3-48f5-b215-9cba1d367c2c"
+  },
+  {
+    "query": "Count the number of deposits with end date in the next 3 months.",
+    "sql_command": "SELECT COUNT(*) FROM Deposits WHERE end_date <= CURRENT_DATE + INTERVAL '3 months';",
+    "id": "ba0aaf8e-83ce-4444-815a-41942c07850d"
+  },
+  {
+    "query": "Count the number of loans with interest rate between 2% and 4%.",
+    "sql_command": "SELECT COUNT(*) FROM Loans WHERE interest_rate BETWEEN 2 AND 4;",
+    "id": "d3503c49-5688-4a80-aba7-8f4bbc522239"
+  },
+  {
+    "query": "Count the number of transactions per deposit type with ID 128.",
+    "sql_command": "SELECT COUNT(*) FROM Transactions t JOIN Deposits d ON t.account_id = d.deposit_id WHERE d.deposit_type_id = 128;",
+    "id": "90be39ac-978e-4cda-a4e1-49b8da1d1395"
+  },
+  {
+    "query": "Count the number of loans per loan type with ID 128.",
+    "sql_command": "SELECT COUNT(*) FROM Loans WHERE loan_type_id = 128;",
+    "id": "aa087527-35a8-4c5c-a3e4-55afdc83eaa6"
+  },
+  {
+    "query": "Count the number of deposits per deposit type with ID 128.",
+    "sql_command": "SELECT COUNT(*) FROM Deposits WHERE deposit_type_id = 128;",
+    "id": "f1c7d99d-e4dd-40dd-9fdc-54ad19d414a1"
+  },
+  {
+    "query": "Count the total number of unique customers with active loans and deposits.",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id) FROM Customers c JOIN Loans l ON c.customer_id = l.customer_id JOIN Deposits d ON c.customer_id = d.customer_identifier WHERE l.balance > 0 AND d.balance > 0;",
+    "id": "63b316ce-4651-4ca6-8ff8-58cae6f340f2"
+  },
+  {
+    "query": "Count the number of transactions per customer with total amount over 5000.",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT account_id FROM Transactions GROUP BY account_id HAVING SUM(transaction_amount) > 5000) t JOIN Accounts a ON t.account_id = a.account_id WHERE a.customer_id = 123;",
+    "id": "dc124068-9e6b-40f7-830b-6dfb242ea76d"
+  },
+  {
+    "query": "Count the number of customers with average deposit balance above 2000.",
+    "sql_command": "SELECT COUNT(DISTINCT customer_identifier) FROM Deposits GROUP BY customer_identifier HAVING AVG(balance) > 2000;",
+    "id": "2a740e1c-3c13-4dce-93cc-9783597ce819"
+  },
+  {
+    "query": "Count the number of accounts with total transactions exceeding 10000.",
+    "sql_command": "SELECT COUNT(DISTINCT account_id) FROM Transactions GROUP BY account_id HAVING SUM(transaction_amount) > 10000;",
+    "id": "20b1f5d2-35f1-4416-b190-8ed1574c86e2"
+  },
+  {
+    "query": "Count the number of customers with loans expiring in 2025.",
+    "sql_command": "SELECT COUNT(DISTINCT customer_id) FROM Loans WHERE end_date LIKE '2025%';",
+    "id": "b5f01b98-0d6a-4dd9-bc22-d5fd98dddefb"
+  },
+  {
+    "query": "Count the number of deposits with term longer than average per branch.",
+    "sql_command": "SELECT COUNT(*) FROM Deposits d JOIN Customers c ON d.customer_identifier = c.customer_id WHERE d.term > (SELECT AVG(term) FROM Deposits WHERE customer_identifier IN (SELECT customer_id FROM Customers WHERE branch_id = c.branch_id)) AND d.term IS NOT NULL;",
+    "id": "1a24e92b-ef70-4183-8616-761d26e2839d"
+  },
+  {
+    "query": "Count the number of transactions per account with average amount above 500.",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT account_id FROM Transactions GROUP BY account_id HAVING AVG(transaction_amount) > 500) t WHERE t.account_id = 123;",
+    "id": "849ef141-be0d-4b6e-a614-d26e4996f97d"
+  },
+  {
+    "query": "Count the number of customers with total loan balance above 15000.",
+    "sql_command": "SELECT COUNT(DISTINCT customer_id) FROM Loans GROUP BY customer_id HAVING SUM(balance) > 15000;",
+    "id": "89efa934-a011-4bb1-bc99-e5f702837f4b"
+  },
+  {
+    "query": "Count the number of accounts with more transactions than the branch average.",
+    "sql_command": "SELECT COUNT(DISTINCT a.account_id) FROM Accounts a JOIN Customers c ON a.customer_id = c.customer_id JOIN (SELECT branch_id, AVG(transaction_count) as avg_trans FROM (SELECT c.branch_id, a.account_id, COUNT(t.transaction_id) as transaction_count FROM Accounts a JOIN Customers c ON a.customer_id = c.customer_id LEFT JOIN Transactions t ON a.account_id = t.account_id GROUP BY c.branch_id, a.account_id) t GROUP BY branch_id) b ON c.branch_id = b.branch_id JOIN Transactions t ON a.account_id = t.account_id GROUP BY a.account_id, b.avg_trans HAVING COUNT(t.transaction_id) > b.avg_trans;",
+    "id": "fcd5e8f9-ada0-4507-b4b7-530d9ed0f3d1"
+  },
+  {
+    "query": "Count the number of customers with deposits and no loans.",
+    "sql_command": "SELECT COUNT(DISTINCT d.customer_identifier) FROM Deposits d WHERE NOT EXISTS (SELECT 1 FROM Loans l WHERE l.customer_id = d.customer_identifier);",
+    "id": "f7ee3adb-3da8-483b-9d0b-481f50b88070"
+  },
+  {
+    "query": "Count the number of loans with interest rate above branch average.",
+    "sql_command": "SELECT COUNT(*) FROM Loans l JOIN Customers c ON l.customer_id = c.customer_id WHERE l.interest_rate > (SELECT AVG(interest_rate) FROM Loans l2 JOIN Customers c2 ON l2.customer_id = c2.customer_id WHERE c2.branch_id = c.branch_id);",
+    "id": "d592d366-39ff-471e-b120-22b3e3cb7f69"
+  },
+  {
+    "query": "Count the number of transactions per customer with maximum amount over 2000.",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT account_id FROM Transactions GROUP BY account_id HAVING MAX(transaction_amount) > 2000) t JOIN Accounts a ON t.account_id = a.account_id WHERE a.customer_id = 123;",
+    "id": "2026243a-5cb3-4cf1-8ea3-2a76fae56272"
+  },
+  {
+    "query": "Count the number of customers with average loan term above 18 months.",
+    "sql_command": "SELECT COUNT(DISTINCT customer_id) FROM Loans GROUP BY customer_id HAVING AVG(payment_term) > 18;",
+    "id": "b63933ad-dc6d-4913-95ae-e93a84d8df53"
+  },
+  {
+    "query": "Count the number of accounts with total deposits exceeding loans.",
+    "sql_command": "SELECT COUNT(DISTINCT a.account_id) FROM Accounts a JOIN Deposits d ON a.customer_id = d.customer_identifier LEFT JOIN Loans l ON a.customer_id = l.customer_id GROUP BY a.account_id HAVING COALESCE(SUM(l.balance), 0) < SUM(d.balance);",
+    "id": "cd450325-b937-4487-abad-389d4a49ad18"
+  },
+  {
+    "query": "Count the number of customers with transactions in all branches.",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id) FROM Customers c WHERE NOT EXISTS (SELECT b.branch_id FROM Branches b WHERE NOT EXISTS (SELECT 1 FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id JOIN Customers c2 ON a.customer_id = c2.customer_id WHERE c2.customer_id = c.customer_id AND c2.branch_id = b.branch_id));",
+    "id": "14c0ea0a-8855-43e0-a928-981704cab879"
+  },
+  {
+    "query": "Count the number of deposits with balance above 1000 per loan type.",
+    "sql_command": "SELECT COUNT(*) FROM Deposits d JOIN Loans l ON d.customer_identifier = l.customer_id WHERE d.balance > 1000 AND l.loan_type_id = 123;",
+    "id": "ecbfaba7-046a-4120-a466-7479ad9ad063"
+  },
+  {
+    "query": "Count the number of transactions per customer with total amount below 1000.",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT account_id FROM Transactions GROUP BY account_id HAVING SUM(transaction_amount) < 1000) t JOIN Accounts a ON t.account_id = a.account_id WHERE a.customer_id = 123;",
+    "id": "e0e62258-51fc-4564-8d73-3f595f42eef1"
+  },
+  {
+    "query": "Count the number of customers with loans and cards expiring before 2026.",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id) FROM Customers c JOIN Loans l ON c.customer_id = l.customer_id JOIN Cards ca ON c.customer_id = ca.customer_id WHERE l.end_date < '2026-01-01' AND ca.expiration_date < '2026-01-01';",
+    "id": "5ad7e735-c3ec-41ee-ad8e-223a61fe7f4a"
+  },
+  {
+    "query": "Count the number of accounts with average transaction amount above 200.",
+    "sql_command": "SELECT COUNT(DISTINCT account_id) FROM Transactions GROUP BY account_id HAVING AVG(transaction_amount) > 200;",
+    "id": "c1db13ed-2745-4c18-9719-e15b1f6f41e4"
+  },
+  {
+    "query": "Count the number of customers with deposits ending in 2025 and loans starting in 2025.",
+    "sql_command": "SELECT COUNT(DISTINCT d.customer_identifier) FROM Deposits d JOIN Loans l ON d.customer_identifier = l.customer_id WHERE d.end_date LIKE '2025%' AND l.start_date LIKE '2025%';",
+    "id": "c8a06a30-2ee8-49b3-8896-bbfa2e4122da"
+  },
+  {
+    "query": "Count the number of transactions per account with standard deviation above 500.",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT account_id, STDDEV(transaction_amount) as std_dev FROM Transactions GROUP BY account_id HAVING std_dev > 500) t WHERE t.account_id = 123;",
+    "id": "a218fc1d-b651-4ce2-b383-68246bcbabcf"
+  },
+  {
+    "query": "Count the number of customers with total balance across all accounts above 10000.",
+    "sql_command": "SELECT COUNT(DISTINCT customer_id) FROM Accounts GROUP BY customer_id HAVING SUM(account_balance) > 10000;",
+    "id": "07efca92-932b-4757-adf4-ba8b0ff60c11"
+  },
+  {
+    "query": "Count the number of deposits per customer with average term above 12 months.",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT customer_identifier FROM Deposits GROUP BY customer_identifier HAVING AVG(term) > 12) d WHERE d.customer_identifier = 123;",
+    "id": "d2f043c8-7d3a-4bc7-9200-7a3587abd1da"
+  },
+  {
+    "query": "Count the number of loans per customer with average interest rate above 4%.",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT customer_id FROM Loans GROUP BY customer_id HAVING AVG(interest_rate) > 4) l WHERE l.customer_id = 123;",
+    "id": "a65ccdac-bc46-402b-bf1f-2d8a8c1743a3"
+  },
+  {
+    "query": "Count the number of accounts with more deposits than loans per customer.",
+    "sql_command": "SELECT COUNT(DISTINCT a.account_id) FROM Accounts a JOIN (SELECT customer_identifier, COUNT(*) as dep_count FROM Deposits GROUP BY customer_identifier) d ON a.customer_id = d.customer_identifier LEFT JOIN (SELECT customer_id, COUNT(*) as loan_count FROM Loans GROUP BY customer_id) l ON a.customer_id = l.customer_id WHERE COALESCE(l.loan_count, 0) < d.dep_count;",
+    "id": "f7d85cef-77dd-4ad4-8bcd-b5fbc907644b"
+  },
+  {
+    "query": "Count the number of customers with transactions in the last year per branch.",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id) FROM Customers c JOIN Accounts a ON c.customer_id = a.customer_id JOIN Transactions t ON a.account_id = t.account_id WHERE t.transaction_date >= CURRENT_DATE - INTERVAL '1 year' AND c.branch_id = 123;",
+    "id": "71cdb1fe-8f34-44fe-b983-74df00f1069a"
+  },
+  {
+    "query": "Count the number of deposits with balance above average per customer.",
+    "sql_command": "SELECT COUNT(*) FROM Deposits d WHERE d.balance > (SELECT AVG(balance) FROM Deposits d2 WHERE d2.customer_identifier = d.customer_identifier);",
+    "id": "d8cc651d-20c2-41c2-b7bd-cdab1f878d10"
+  },
+  {
+    "query": "Count the number of loans with payment term above average per loan type.",
+    "sql_command": "SELECT COUNT(*) FROM Loans l WHERE l.payment_term > (SELECT AVG(payment_term) FROM Loans l2 WHERE l2.loan_type_id = l.loan_type_id);",
+    "id": "231837d2-0b48-4fe0-9040-16e63b8cfea0"
+  },
+  {
+    "query": "Count the number of customers with total transaction amount above 5000 per branch.",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id) FROM Customers c JOIN Accounts a ON c.customer_id = a.customer_id JOIN Transactions t ON a.account_id = t.account_id WHERE c.branch_id = 123 GROUP BY c.customer_id HAVING SUM(t.transaction_amount) > 5000;",
+    "id": "284ea351-054c-4dee-81f8-24e47d247b46"
+  },
+  {
+    "query": "Count the number of accounts with no transactions in the last 90 days.",
+    "sql_command": "SELECT COUNT(*) FROM Accounts a WHERE NOT EXISTS (SELECT 1 FROM Transactions t WHERE t.account_id = a.account_id AND t.transaction_date >= CURRENT_DATE - INTERVAL '90 days');",
+    "id": "342928fe-cd42-4824-b8f3-a7c8cff3d971"
+  },
+  {
+    "query": "How many customers have more than 2 accounts?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT customer_id FROM Accounts GROUP BY customer_id HAVING COUNT(account_id) > 2) sub;",
+    "id": "e4b92796-ae4c-483b-b472-4f0584e5aad3"
+  },
+  {
+    "query": "How many customers have more than 1 loan?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT customer_id FROM Loans GROUP BY customer_id HAVING COUNT(loan_id) > 1) sub;",
+    "id": "09239628-8021-46a1-9b88-84a51cf50b0c"
+  },
+  {
+    "query": "How many customers have more than 1 deposit?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT customer_id FROM Deposits GROUP BY customer_id HAVING COUNT(deposit_id) > 1) sub;",
+    "id": "d15e7376-6fd4-4109-9a01-b45e85f26375"
+  },
+  {
+    "query": "How many customers have more than 3 cards?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT customer_id FROM Cards GROUP BY customer_id HAVING COUNT(card_id) > 3) sub;",
+    "id": "8b270f67-1b9a-48bf-8969-eefdb25bf75c"
+  },
+  {
+    "query": "How many customers have both loans and cards?",
+    "sql_command": "SELECT COUNT(DISTINCT customer_id) FROM Loans WHERE customer_id IN (SELECT customer_id FROM Cards);",
+    "id": "36d91656-b59f-47b6-8585-f47aecca592d"
+  },
+  {
+    "query": "How many customers have both deposits and cards?",
+    "sql_command": "SELECT COUNT(DISTINCT customer_id) FROM Deposits WHERE customer_id IN (SELECT customer_id FROM Cards);",
+    "id": "97333359-a9ba-4452-b0d1-6ab05c8566c3"
+  },
+  {
+    "query": "How many customers have both loans and accounts?",
+    "sql_command": "SELECT COUNT(DISTINCT customer_id) FROM Loans WHERE customer_id IN (SELECT customer_id FROM Accounts);",
+    "id": "5e5b2051-2e54-4175-bc74-43ca448686c2"
+  },
+  {
+    "query": "How many customers have both deposits and accounts?",
+    "sql_command": "SELECT COUNT(DISTINCT customer_id) FROM Deposits WHERE customer_id IN (SELECT customer_id FROM Accounts);",
+    "id": "005fdc8d-1efe-49a8-bc37-ddf4a293093c"
+  },
+  {
+    "query": "How many customers have at least one blocked card and at least one active loan?",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id) FROM Customers c WHERE c.customer_id IN (SELECT customer_id FROM Cards WHERE is_blocked = TRUE) AND c.customer_id IN (SELECT customer_id FROM Loans WHERE end_date >= CURRENT_DATE);",
+    "id": "61768143-6755-4ac5-a861-e6abec29c88f"
+  },
+  {
+    "query": "What is the number of customers who made more than 5 transactions in the last month?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT a.customer_id FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id WHERE t.transaction_date >= (CURRENT_DATE - INTERVAL '1 month') GROUP BY a.customer_id HAVING COUNT(t.transaction_id) > 5) sub;",
+    "id": "1dc48130-aab7-42dd-8358-297eb18eec4d"
+  },
+  {
+    "query": "How many accounts have balances above the average account balance?",
+    "sql_command": "SELECT COUNT(*) FROM Accounts WHERE account_balance > (SELECT AVG(account_balance) FROM Accounts);",
+    "id": "520c629c-801e-4230-bbc1-115149d4a275"
+  },
+  {
+    "query": "How many loans have balances above the average loan balance?",
+    "sql_command": "SELECT COUNT(*) FROM Loans WHERE balance > (SELECT AVG(balance) FROM Loans);",
+    "id": "e9558e21-6cfb-4c10-b83d-72b665167108"
+  },
+  {
+    "query": "How many deposits have balances above the average deposit balance?",
+    "sql_command": "SELECT COUNT(*) FROM Deposits WHERE balance > (SELECT AVG(balance) FROM Deposits);",
+    "id": "4b7273d3-1a2e-4d32-80f3-04fe140c2545"
+  },
+  {
+    "query": "How many cards have balances above the average card balance?",
+    "sql_command": "SELECT COUNT(*) FROM Cards WHERE balance > (SELECT AVG(balance) FROM Cards);",
+    "id": "7f5ec88a-2c3d-47a6-be5e-d8d5968b528a"
+  },
+  {
+    "query": "What is the number of customers who have both expired loans and expired deposits?",
+    "sql_command": "SELECT COUNT(DISTINCT customer_id) FROM Loans WHERE end_date < CURRENT_DATE AND customer_id IN (SELECT customer_id FROM Deposits WHERE end_date < CURRENT_DATE);",
+    "id": "3e2368d1-47d1-4c90-a021-8dd6db5233c2"
+  },
+  {
+    "query": "How many customers have only deposits but no loans?",
+    "sql_command": "SELECT COUNT(*) FROM Customers c WHERE EXISTS (SELECT 1 FROM Deposits d WHERE d.customer_id = c.customer_id) AND NOT EXISTS (SELECT 1 FROM Loans l WHERE l.customer_id = c.customer_id);",
+    "id": "dbdf4a18-8fcd-4463-a94d-27dfb670579a"
+  },
+  {
+    "query": "How many customers have only loans but no deposits?",
+    "sql_command": "SELECT COUNT(*) FROM Customers c WHERE EXISTS (SELECT 1 FROM Loans l WHERE l.customer_id = c.customer_id) AND NOT EXISTS (SELECT 1 FROM Deposits d WHERE d.customer_id = c.customer_id);",
+    "id": "67f526cf-5f1b-4721-99b8-213d7fc9a489"
+  },
+  {
+    "query": "How many customers have both deposits and loans but no cards?",
+    "sql_command": "SELECT COUNT(*) FROM Customers c WHERE EXISTS (SELECT 1 FROM Deposits d WHERE d.customer_id = c.customer_id) AND EXISTS (SELECT 1 FROM Loans l WHERE l.customer_id = c.customer_id) AND NOT EXISTS (SELECT 1 FROM Cards ca WHERE ca.customer_id = c.customer_id);",
+    "id": "49d48ff3-bf22-4af8-90ae-df7dc7b6dfe4"
+  },
+  {
+    "query": "How many customers have deposits, loans, and cards all together?",
+    "sql_command": "SELECT COUNT(*) FROM Customers c WHERE EXISTS (SELECT 1 FROM Deposits d WHERE d.customer_id = c.customer_id) AND EXISTS (SELECT 1 FROM Loans l WHERE l.customer_id = c.customer_id) AND EXISTS (SELECT 1 FROM Cards ca WHERE ca.customer_id = c.customer_id);",
+    "id": "74e328a6-f3a2-425a-9695-8884826b2a9d"
+  },
+  {
+    "query": "How many branches have more than 20 customers?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT branch_id FROM Customers GROUP BY branch_id HAVING COUNT(customer_id) > 20) sub;",
+    "id": "2be515f2-4952-4bd0-8dd7-33e5369be8fc"
+  },
+  {
+    "query": "How many branches have total loan balances above 1 million?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT c.branch_id, SUM(l.balance) AS total_balance FROM Loans l JOIN Customers c ON l.customer_id = c.customer_id GROUP BY c.branch_id HAVING SUM(l.balance) > 1000000) sub;",
+    "id": "cc93e4d3-c7d0-4e26-ae36-0c42fd677594"
+  },
+  {
+    "query": "How many branches have average account balances above 50,000?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT c.branch_id, AVG(a.account_balance) AS avg_balance FROM Accounts a JOIN Customers c ON a.customer_id = c.customer_id GROUP BY c.branch_id HAVING AVG(a.account_balance) > 50000) sub;",
+    "id": "7ebb2332-6c00-49e4-8c5c-8f62cb454fce"
+  },
+  {
+    "query": "How many customers made at least one transaction greater than 10,000?",
+    "sql_command": "SELECT COUNT(DISTINCT a.customer_id) FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id WHERE t.transaction_amount > 10000;",
+    "id": "803b8f10-59d6-442c-8e18-22ec952802b7"
+  },
+  {
+    "query": "How many accounts belong to customers who have blocked cards?",
+    "sql_command": "SELECT COUNT(*) FROM Accounts a WHERE a.customer_id IN (SELECT customer_id FROM Cards WHERE is_blocked = TRUE);",
+    "id": "4fe27df6-1189-467a-afff-58819e107d52"
+  },
+  {
+    "query": "How many accounts belong to customers who have unblocked cards?",
+    "sql_command": "SELECT COUNT(*) FROM Accounts a WHERE a.customer_id IN (SELECT customer_id FROM Cards WHERE is_blocked = FALSE);",
+    "id": "aa7c57cb-2b59-4ce1-9d78-696e9a3e3798"
+  },
+  {
+    "query": "How many customers have loans with interest rates above the average loan interest rate?",
+    "sql_command": "SELECT COUNT(DISTINCT customer_id) FROM Loans WHERE interest_rate > (SELECT AVG(interest_rate) FROM Loans);",
+    "id": "7784a09d-281d-47bb-b5ac-ef30976a779e"
+  },
+  {
+    "query": "How many customers have deposits with interest rates above the average deposit interest rate?",
+    "sql_command": "SELECT COUNT(DISTINCT customer_id) FROM Deposits WHERE interest_rate > (SELECT AVG(interest_rate) FROM Deposits);",
+    "id": "5ce236d3-92fd-4060-a856-f5cfef318bf1"
+  },
+  {
+    "query": "How many customers have both accounts and transactions exceeding the average transaction amount?",
+    "sql_command": "SELECT COUNT(DISTINCT a.customer_id) FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id WHERE t.transaction_amount > (SELECT AVG(transaction_amount) FROM Transactions);",
+    "id": "e28b8c37-85be-4b7c-b924-74c92a31b6f6"
+  },
+  {
+    "query": "How many customers have more than 2 different types of financial products (accounts, loans, deposits, cards)?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT c.customer_id, (CASE WHEN EXISTS (SELECT 1 FROM Accounts a WHERE a.customer_id = c.customer_id) THEN 1 ELSE 0 END + CASE WHEN EXISTS (SELECT 1 FROM Loans l WHERE l.customer_id = c.customer_id) THEN 1 ELSE 0 END + CASE WHEN EXISTS (SELECT 1 FROM Deposits d WHERE d.customer_id = c.customer_id) THEN 1 ELSE 0 END + CASE WHEN EXISTS (SELECT 1 FROM Cards ca WHERE ca.customer_id = c.customer_id) THEN 1 ELSE 0 END) AS product_count FROM Customers c) sub WHERE product_count > 2;",
+    "id": "71d39d89-e11e-46be-8af7-144ccfc30c8f"
+  },
+  {
+    "query": "How many customers hold both loans of more than 50,000 and deposits of more than 50,000?",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id) FROM Customers c JOIN Loans l ON c.customer_id = l.customer_id JOIN Deposits d ON c.customer_id = d.customer_id WHERE l.balance > 50000 AND d.balance > 50000;",
+    "id": "7eebeb7c-163f-4d4f-8802-d4ea38df4281"
+  },
+  {
+    "query": "How many branches have customers with blocked cards?",
+    "sql_command": "SELECT COUNT(DISTINCT branch_id) FROM Customers WHERE customer_id IN (SELECT customer_id FROM Cards WHERE is_blocked = TRUE);",
+    "id": "b258bf24-5229-4a1b-ad86-f16ba1a83814"
+  },
+  {
+    "query": "How many transactions occurred in branches where the average account balance is above 100,000?",
+    "sql_command": "SELECT COUNT(*) FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id JOIN Customers c ON a.customer_id = c.customer_id WHERE c.branch_id IN (SELECT c2.branch_id FROM Accounts a2 JOIN Customers c2 ON a2.customer_id = c2.customer_id GROUP BY c2.branch_id HAVING AVG(a2.account_balance) > 100000);",
+    "id": "3cc1ce2e-2f9b-4ec4-ae2e-a1f387bf33d1"
+  },
+  {
+    "query": "How many customers took loans with interest rates higher than their deposit interest rates?",
+    "sql_command": "SELECT COUNT(DISTINCT l.customer_id) FROM Loans l JOIN Deposits d ON l.customer_id = d.customer_id WHERE l.interest_rate > d.interest_rate;",
+    "id": "60355c3e-316a-434e-92c3-97e76a4f2d86"
+  },
+  {
+    "query": "How many customers have expired deposits but active loans?",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id) FROM Customers c JOIN Deposits d ON c.customer_id = d.customer_id JOIN Loans l ON c.customer_id = l.customer_id WHERE d.end_date < CURRENT_DATE AND l.end_date >= CURRENT_DATE;",
+    "id": "efb8c729-ced2-4d59-96ff-20e7e881cecb"
+  },
+  {
+    "query": "How many customers have expired loans but active deposits?",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id) FROM Customers c JOIN Deposits d ON c.customer_id = d.customer_id JOIN Loans l ON c.customer_id = l.customer_id WHERE l.end_date < CURRENT_DATE AND d.end_date >= CURRENT_DATE;",
+    "id": "99b8054f-6ed6-43c5-9785-fdb7ca20c4c0"
+  },
+  {
+    "query": "How many accounts belong to customers who made transactions last year?",
+    "sql_command": "SELECT COUNT(*) FROM Accounts a WHERE a.customer_id IN (SELECT a2.customer_id FROM Transactions t2 JOIN Accounts a2 ON t2.account_id = a2.account_id WHERE EXTRACT(YEAR FROM t2.transaction_date) = EXTRACT(YEAR FROM CURRENT_DATE) - 1);",
+    "id": "a3ef7f7d-fb69-4196-a345-c4e5a9d7ce2b"
+  },
+  {
+    "query": "How many customers made no transactions in the last 6 months?",
+    "sql_command": "SELECT COUNT(*) FROM Customers c WHERE NOT EXISTS (SELECT 1 FROM Accounts a JOIN Transactions t ON a.account_id = t.account_id WHERE a.customer_id = c.customer_id AND t.transaction_date >= (CURRENT_DATE - INTERVAL '6 months'));",
+    "id": "39192efa-ddc0-43a9-9885-7dffa8ef7580"
+  },
+  {
+    "query": "How many customers have both blocked and unblocked cards?",
+    "sql_command": "SELECT COUNT(DISTINCT customer_id) FROM Cards WHERE customer_id IN (SELECT customer_id FROM Cards WHERE is_blocked = TRUE) AND customer_id IN (SELECT customer_id FROM Cards WHERE is_blocked = FALSE);",
+    "id": "875894fd-32a1-4e0e-aeec-221efce23c2d"
+  },
+  {
+    "query": "How many loans belong to customers who also made at least 10 transactions?",
+    "sql_command": "SELECT COUNT(*) FROM Loans l WHERE l.customer_id IN (SELECT a.customer_id FROM Accounts a JOIN Transactions t ON a.account_id = t.account_id GROUP BY a.customer_id HAVING COUNT(t.transaction_id) >= 10);",
+    "id": "7fa8188e-d50c-4696-a730-f4105a12b144"
+  },
+  {
+    "query": "How many deposits belong to customers who also made at least 10 transactions?",
+    "sql_command": "SELECT COUNT(*) FROM Deposits d WHERE d.customer_id IN (SELECT a.customer_id FROM Accounts a JOIN Transactions t ON a.account_id = t.account_id GROUP BY a.customer_id HAVING COUNT(t.transaction_id) >= 10);",
+    "id": "ec8e0e4e-3f5a-42f6-b4a5-b985d1910379"
+  }
+]

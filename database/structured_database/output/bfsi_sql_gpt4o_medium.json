@@ -1,0 +1,2530 @@
+[
+  {
+    "sql_command": "SELECT COUNT(t.id) AS total_transactions FROM transactions t JOIN accounts a ON t.acc_id = a.id WHERE a.cus_id IN (SELECT d.cus_id FROM deposits d INTERSECT SELECT l.cus_id FROM loans l)",
+    "sql_time_llm_gen": 15.243779167001776,
+    "sql_answer": "[(421,)]",
+    "sql_time_exec": 0.003394125000340864,
+    "id": "fce482ee-fe65-452e-89e0-dbcbd6a2d19d",
+    "query": "What is the total number of transactions for customers with both loans and deposits?"
+  },
+  {
+    "sql_command": "SELECT COUNT(t.id) AS blocked_card_transactions_count\nFROM transactions t\nJOIN accounts a ON t.acc_id = a.id\nJOIN cards c ON a.cus_id = c.cus_id\nWHERE c.is_blocked = TRUE;",
+    "sql_time_llm_gen": 8.959404749999521,
+    "sql_answer": "[(353,)]",
+    "sql_time_exec": 0.0030457500033662654,
+    "id": "194ab387-9924-40b4-9b75-8777d4c0c5eb",
+    "query": "How many transactions were made by customers with blocked cards?"
+  },
+  {
+    "sql_command": "SELECT SUM(t.tran_amt) AS total_transaction_amount \nFROM transactions t\nJOIN cards c ON t.acc_id = c.id\nWHERE c.is_blocked = FALSE;",
+    "sql_time_llm_gen": 6.593772332998924,
+    "sql_answer": "[(Decimal('92449.51'),)]",
+    "sql_time_exec": 0.0025965830063796602,
+    "id": "2cfe29f5-b2b8-4ec1-ab32-378c38c60d42",
+    "query": "What is the total transaction amount for customers with unblocked cards?"
+  },
+  {
+    "sql_command": "SELECT COUNT(t.id) FROM transactions t INNER JOIN accounts a ON t.acc_id = a.id INNER JOIN customers c ON a.cus_id = c.id INNER JOIN deposits d ON c.id = d.cus_id;",
+    "sql_time_llm_gen": 7.420675749999646,
+    "sql_answer": "[(944,)]",
+    "sql_time_exec": 0.003148207993945107,
+    "id": "b6b9b542-c212-420c-b02b-02e8784705cf",
+    "query": "How many transactions were made in accounts belonging to customers with deposits?"
+  },
+  {
+    "sql_command": "SELECT COUNT(t.id) FROM transactions t JOIN accounts a ON t.acc_id = a.id JOIN loans l ON a.cus_id = l.cus_id;",
+    "sql_time_llm_gen": 5.844108334000339,
+    "sql_answer": "[(1006,)]",
+    "sql_time_exec": 0.0029469579967553727,
+    "id": "1bca3131-971f-42e5-b787-f587b8b39d89",
+    "query": "How many transactions were made in accounts belonging to customers with loans?"
+  },
+  {
+    "sql_command": "SELECT SUM(a.acc_bal) as total_balance\nFROM accounts a\nJOIN transactions t ON a.id = t.acc_id\nWHERE DATE_PART('year', t.tran_dt) = DATE_PART('year', CURRENT_DATE);",
+    "sql_time_llm_gen": 7.574429083993891,
+    "sql_answer": "[(Decimal('6532119.06'),)]",
+    "sql_time_exec": 0.004138291995332111,
+    "id": "ae89c1ae-8334-40d8-8354-1077a95abe8a",
+    "query": "What is the total account balance of customers who made transactions this year?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT c.id) AS customer_count\nFROM customers c\nJOIN loans l ON c.id = l.cus_id\nJOIN accounts a ON c.id = a.cus_id\nJOIN transactions t ON a.id = t.acc_id;",
+    "sql_time_llm_gen": 7.673340957997425,
+    "sql_answer": "[(100,)]",
+    "sql_time_exec": 0.004298957996070385,
+    "id": "a75faa1f-0611-42fa-afd8-d017bfd88763",
+    "query": "How many customers have both transactions and loans?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT d.cus_id) AS customer_count \nFROM deposits d \nJOIN customers c ON d.cus_id = c.id \nJOIN accounts a ON c.id = a.cus_id \nJOIN transactions t ON a.id = t.acc_id;",
+    "sql_time_llm_gen": 7.55473433300358,
+    "sql_answer": "[(98,)]",
+    "sql_time_exec": 0.0022188750008353963,
+    "id": "69ca5ce2-b4b3-416b-850f-ceaae5a83828",
+    "query": "How many customers have both transactions and deposits?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT c.id) AS customer_count\nFROM customers c\nJOIN cards ON c.id = cards.cus_id\nJOIN accounts a ON c.id = a.cus_id\nJOIN transactions t ON a.id = t.acc_id;",
+    "sql_time_llm_gen": 6.7996344580024015,
+    "sql_answer": "[(85,)]",
+    "sql_time_exec": 0.003602083001169376,
+    "id": "d90c6b9f-4806-4547-b3e9-9f70bb3abc92",
+    "query": "How many customers have both transactions and cards?"
+  },
+  {
+    "sql_command": "SELECT COUNT(cards.id) AS total_blocked_cards\nFROM cards\nJOIN customers ON cards.cus_id = customers.id\nJOIN branches ON customers.brc = branches.id\nWHERE cards.is_blocked = TRUE;",
+    "sql_time_llm_gen": 9.087659125005302,
+    "sql_answer": "[(72,)]",
+    "sql_time_exec": 0.0028958330003661104,
+    "id": "31c44d7f-bff7-44e2-95df-07f8ee686c99",
+    "query": "What is the total number of blocked cards linked to branches?"
+  },
+  {
+    "sql_command": "SELECT COUNT(cards.id) AS total_unblocked_cards\nFROM cards\nJOIN customers ON cards.cus_id = customers.id\nJOIN branches ON customers.brc = branches.id\nWHERE cards.is_blocked = FALSE;",
+    "sql_time_llm_gen": 7.573915957997087,
+    "sql_answer": "[(78,)]",
+    "sql_time_exec": 0.0025997080010711215,
+    "id": "3817a63b-c7ed-4018-be99-abf1b99c7010",
+    "query": "What is the total number of unblocked cards linked to branches?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) AS total_accounts FROM accounts",
+    "sql_time_llm_gen": 4.013770749996183,
+    "sql_answer": "[(300,)]",
+    "sql_time_exec": 0.002103209000779316,
+    "id": "2a97ffb6-d83f-4846-aa32-ec8e04650a2d",
+    "query": "How many accounts are registered in the bank?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE ln_en_dt IS NULL OR ln_en_dt > CURRENT_DATE;",
+    "sql_time_llm_gen": 7.634934624999005,
+    "sql_answer": "[(188,)]",
+    "sql_time_exec": 0.0020764579967362806,
+    "id": "6b5b474b-dfb6-4906-b6c3-79755c67fc3e",
+    "query": "How many loans are active in the bank?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) AS total_deposits FROM deposits;",
+    "sql_time_llm_gen": 4.010295790998498,
+    "sql_answer": "[(200,)]",
+    "sql_time_exec": 0.0017855829937616363,
+    "id": "4edd026e-cb19-4c1d-acb2-c265f4d934b4",
+    "query": "How many deposits exist in the bank?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) AS total_transactions FROM transactions;",
+    "sql_time_llm_gen": 4.303247374999046,
+    "sql_answer": "[(1000,)]",
+    "sql_time_exec": 0.0018887909973273054,
+    "id": "6fefdeaa-e337-43a4-8613-dd94713d7e8a",
+    "query": "How many transactions have been recorded?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM branches;",
+    "sql_time_llm_gen": 3.6797903330007102,
+    "sql_answer": "[(4,)]",
+    "sql_time_exec": 0.001595041001564823,
+    "id": "6bb590a5-bc9d-4547-a66b-5cf382cc7b9a",
+    "query": "How many branches does the bank have?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM customers WHERE cus_dob > '1990-12-31'",
+    "sql_time_llm_gen": 4.443008791997272,
+    "sql_answer": "[(69,)]",
+    "sql_time_exec": 0.002020375002757646,
+    "id": "401e9655-8a95-482e-86e5-eef9f190c0c1",
+    "query": "How many customers were born after 1990?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM customers WHERE cus_dob < '1980-01-01'",
+    "sql_time_llm_gen": 7.082282833995123,
+    "sql_answer": "[(92,)]",
+    "sql_time_exec": 0.00207395799952792,
+    "id": "17dbb20b-0fd4-4ab2-93e3-13cb02ce6bae",
+    "query": "How many customers were born before 1980?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits d\nJOIN deposit_types dt ON d.de_type_id = dt.id\nWHERE dt.de_type = 'Savings Account';",
+    "sql_time_llm_gen": 5.493367582996143,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.002189334001741372,
+    "id": "1ff0ffeb-02bb-4fd3-a4fa-07bfaafadcb0",
+    "query": "How many accounts are savings accounts?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits d JOIN deposit_types dt ON d.de_type_id = dt.id WHERE dt.de_type = 'Checking Account';",
+    "sql_time_llm_gen": 8.02973420899798,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0015167919991654344,
+    "id": "b3e5e088-db02-46ad-a8fa-c909538f69d0",
+    "query": "How many accounts are checking accounts?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE bal < -10000;",
+    "sql_time_llm_gen": 3.6945424169971375,
+    "sql_answer": "[(161,)]",
+    "sql_time_exec": 0.002169665996916592,
+    "id": "6ea8e91c-eb1c-4225-8100-3dbe02f7264a",
+    "query": "How many loans are for more than 10000?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE bal < 5000;",
+    "sql_time_llm_gen": 3.135619750006299,
+    "sql_answer": "[(13,)]",
+    "sql_time_exec": 0.0008018750013434328,
+    "id": "495cf582-0425-4d88-a251-efcbd83a3f7e",
+    "query": "How many deposits are less than 5000?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE tran_amt > 1000;",
+    "sql_time_llm_gen": 5.403514208002889,
+    "sql_answer": "[(430,)]",
+    "sql_time_exec": 0.0018703749956330284,
+    "id": "19a0f958-f1ec-44fc-81c2-2a87de9d70ff",
+    "query": "How many transactions are above 1000?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM branches WHERE brc_address LIKE '%New York%'",
+    "sql_time_llm_gen": 3.717790791997686,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.002016416001424659,
+    "id": "cbadd048-8f9c-46ef-abc5-a17c3add32fb",
+    "query": "How many branches are located in New York?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM customers WHERE cus_email IS NOT NULL;",
+    "sql_time_llm_gen": 5.67968487500184,
+    "sql_answer": "[(200,)]",
+    "sql_time_exec": 0.0012084160043741576,
+    "id": "ddbbcc6f-def9-498a-8245-43fce5f50397",
+    "query": "How many customers have an email registered?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM customers WHERE cus_phone IS NOT NULL;",
+    "sql_time_llm_gen": 5.712547500006622,
+    "sql_answer": "[(200,)]",
+    "sql_time_exec": 0.0018899170026998036,
+    "id": "000df651-c2b8-4040-bd22-164af22507a2",
+    "query": "How many customers have a phone number registered?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM customers WHERE EXTRACT(YEAR FROM created_at) > 2020;",
+    "sql_time_llm_gen": 3.7687162079964764,
+    "sql_answer": "[(200,)]",
+    "sql_time_exec": 0.0020081249967915937,
+    "id": "562ab14e-a7e7-4b6e-ab7d-185cfa5a25aa",
+    "query": "How many employees were hired after 2020?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) AS employee_count FROM customers WHERE created_at < '2010-01-01';",
+    "sql_time_llm_gen": 6.822224624993396,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0018861670032492839,
+    "id": "cff0209b-b579-451f-a6a7-c37809a097c9",
+    "query": "How many employees were hired before 2010?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM accounts WHERE acc_bal > 5000;",
+    "sql_time_llm_gen": 5.423214875001577,
+    "sql_answer": "[(266,)]",
+    "sql_time_exec": 0.0028400419978424907,
+    "id": "3b744903-5665-4852-9bea-76b31bb1ab42",
+    "query": "How many accounts have a balance greater than 5000?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE bal = 0",
+    "sql_time_llm_gen": 3.4762877500033937,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0019147909988532774,
+    "id": "6e21d16a-0b3b-4a79-9684-c21f41e9c34c",
+    "query": "How many loans have a balance equal to 0?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE bal > 20000;",
+    "sql_time_llm_gen": 3.6318778749991907,
+    "sql_answer": "[(130,)]",
+    "sql_time_exec": 0.000921208004001528,
+    "id": "ac29ea9b-2461-4b00-8db2-3f67d4c33a9d",
+    "query": "How many deposits have a balance greater than 20000?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM customers WHERE cus_addr LIKE '%CA%';",
+    "sql_time_llm_gen": 5.988785667002958,
+    "sql_answer": "[(4,)]",
+    "sql_time_exec": 0.001542124999104999,
+    "id": "a3bd1e26-fe2c-46a0-968f-846e640b20eb",
+    "query": "How many customers live in California?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM customers WHERE cus_addr LIKE '%TX%' OR cus_addr LIKE '%Texas%'",
+    "sql_time_llm_gen": 6.055894666998938,
+    "sql_answer": "[(3,)]",
+    "sql_time_exec": 0.0026335000002291054,
+    "id": "82b55269-af5c-4673-8093-103e2b498ba7",
+    "query": "How many customers live in Texas?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE EXTRACT(YEAR FROM tran_dt) = 2024;",
+    "sql_time_llm_gen": 5.599723416999041,
+    "sql_answer": "[(222,)]",
+    "sql_time_exec": 0.0027843749994644895,
+    "id": "5f3d2c68-65d8-4eff-8c28-2b6c5e7ea836",
+    "query": "How many transactions happened in 2024?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE tran_dt >= '2023-01-01' AND tran_dt < '2024-01-01';",
+    "sql_time_llm_gen": 5.9008012500053155,
+    "sql_answer": "[(195,)]",
+    "sql_time_exec": 0.002294417005032301,
+    "id": "14193a03-583d-4938-8305-c3ad23c45692",
+    "query": "How many transactions happened in 2023?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM accounts WHERE created_at < '2015-01-01'",
+    "sql_time_llm_gen": 5.811339499996393,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0012922909954795614,
+    "id": "124f09f7-7c8f-4cac-9793-27eed2d9b570",
+    "query": "How many accounts were opened before 2015?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM accounts WHERE created_at > '2020-12-31';",
+    "sql_time_llm_gen": 5.977941332996124,
+    "sql_answer": "[(300,)]",
+    "sql_time_exec": 0.002452207998430822,
+    "id": "e799ddb7-0860-4504-89b3-3094399d8b6d",
+    "query": "How many accounts were opened after 2020?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE EXTRACT(YEAR FROM ln_st_dt) = 2022;",
+    "sql_time_llm_gen": 6.0262747079978,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0009498750005150214,
+    "id": "64602413-ea9d-4e89-ae8f-7afc2ecca882",
+    "query": "How many loans were approved in 2022?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE EXTRACT(YEAR FROM de_st_dt) = 2021;",
+    "sql_time_llm_gen": 6.644666582993523,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0011743340000975877,
+    "id": "5686d22c-2f33-43c9-b8cd-c716889a450f",
+    "query": "How many deposits were made in 2021?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM customers WHERE cus_name LIKE 'S%';",
+    "sql_time_llm_gen": 5.225547417001508,
+    "sql_answer": "[(12,)]",
+    "sql_time_exec": 0.0019501250062603503,
+    "id": "0b8554d3-5947-4f65-a07a-ec808ec794e6",
+    "query": "How many customers have last names starting with 'S'?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM customers WHERE cus_name LIKE 'A%';",
+    "sql_time_llm_gen": 3.738134084000194,
+    "sql_answer": "[(22,)]",
+    "sql_time_exec": 0.001505667001765687,
+    "id": "c686d5bb-ba3c-41ef-85eb-1f5e51f5a867",
+    "query": "How many customers have first names starting with 'A'?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM branches WHERE brc_address LIKE '%Los Angeles%';",
+    "sql_time_llm_gen": 5.730698207997193,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0016677090025041252,
+    "id": "6288c0b8-b7c2-41bc-8f1e-e7d3e2f15551",
+    "query": "How many branches are in Los Angeles?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM customers WHERE cus_addr LIKE '90%';",
+    "sql_time_llm_gen": 6.555985916995269,
+    "sql_answer": "[(2,)]",
+    "sql_time_exec": 0.002272459001687821,
+    "id": "1c09856d-78b9-4132-805c-54e3c8385859",
+    "query": "How many customers have zip codes starting with '90'?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE ln_en_dt < CURRENT_DATE;",
+    "sql_time_llm_gen": 5.4082406670058845,
+    "sql_answer": "[(12,)]",
+    "sql_time_exec": 0.0019232080012443475,
+    "id": "77e32818-27e8-4e09-9807-d490562236f0",
+    "query": "How many loans are overdue?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE ln_en_dt IS NOT NULL;",
+    "sql_time_llm_gen": 6.361644666001666,
+    "sql_answer": "[(200,)]",
+    "sql_time_exec": 0.0017302499982179143,
+    "id": "bfcde7bd-89fd-417d-9722-5c6c80c2a504",
+    "query": "How many loans are closed?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE de_en_dt IS NULL OR de_en_dt > CURRENT_DATE;",
+    "sql_time_llm_gen": 3.525366124995344,
+    "sql_answer": "[(200,)]",
+    "sql_time_exec": 0.0022241670012590475,
+    "id": "ff725398-4746-4584-8b0b-1dffcdc509e5",
+    "query": "How many deposits are currently active?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE de_en_dt IS NOT NULL;",
+    "sql_time_llm_gen": 4.4528702499956125,
+    "sql_answer": "[(200,)]",
+    "sql_time_exec": 0.001006584003334865,
+    "id": "eb005205-b812-4060-852b-b166dd14b3d0",
+    "query": "How many deposits are closed?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM customers WHERE EXTRACT(YEAR FROM created_at) = 2022;",
+    "sql_time_llm_gen": 6.266461458995764,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0020291250039008446,
+    "id": "8d3723e0-1ea9-4e62-8a81-e72a5de463a4",
+    "query": "How many customers registered in 2022?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM customers WHERE EXTRACT(YEAR FROM created_at) = 2023;",
+    "sql_time_llm_gen": 5.905842874999507,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.001916791996336542,
+    "id": "e36c318b-eb31-4b46-aefa-7131f466bfee",
+    "query": "How many customers registered in 2023?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM customers WHERE AGE(cus_dob) < INTERVAL '18 years';",
+    "sql_time_llm_gen": 7.9584896250016754,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.001672833001066465,
+    "id": "98d12476-12a9-462c-92f4-3bd7b19d8999",
+    "query": "How many customers are under 18 years old?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) \nFROM transactions \nWHERE acc_id IN (\n    SELECT DISTINCT accounts.id \n    FROM accounts \n    WHERE cus_id IN (SELECT DISTINCT loans.cus_id FROM loans)\n);",
+    "sql_time_llm_gen": 10.028710917002172,
+    "sql_answer": "[(639,)]",
+    "sql_time_exec": 0.004755082998599391,
+    "id": "39bc230e-b369-4c10-b4b6-c62372c90fb4",
+    "query": "How many transactions were made by customers who have a loan?"
+  },
+  {
+    "sql_command": "SELECT SUM(acc.acc_bal) as total_balance FROM accounts acc JOIN deposits dep ON acc.cus_id = dep.cus_id;",
+    "sql_time_llm_gen": 6.147792374998971,
+    "sql_answer": "[(Decimal('13475209.41'),)]",
+    "sql_time_exec": 0.0019168750004610047,
+    "id": "88662d44-c546-45a5-80b0-f0e77b7353e3",
+    "query": "What is the total balance of accounts belonging to customers who also have a deposit?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT c.id) AS num_customers_with_both_loan_and_deposit\nFROM customers c\nJOIN deposits d ON c.id = d.cus_id\nJOIN loans l ON c.id = l.cus_id;",
+    "sql_time_llm_gen": 6.456589250003162,
+    "sql_answer": "[(90,)]",
+    "sql_time_exec": 0.002721208998991642,
+    "id": "8d1abaa2-05ad-4447-bd2f-c790a06594e5",
+    "query": "What is the number of customers who have both a loan and a deposit?"
+  },
+  {
+    "sql_command": "SELECT SUM(loans.bal) AS total_loan_balance FROM loans WHERE loans.cus_id IN (SELECT DISTINCT cards.cus_id FROM cards);",
+    "sql_time_llm_gen": 6.916649749997305,
+    "sql_answer": "[(Decimal('-2940245.81'),)]",
+    "sql_time_exec": 0.0021617909951601177,
+    "id": "2e98c429-2190-4db3-b9ca-1f4d76b29582",
+    "query": "What is the total loan balance for customers who own at least one card?"
+  },
+  {
+    "sql_command": "SELECT SUM(d.bal) AS total_deposit_balance \nFROM deposits d\nWHERE d.cus_id IN (\n    SELECT DISTINCT c.id \n    FROM customers c\n    JOIN accounts a ON c.id = a.cus_id\n    JOIN transactions t ON a.id = t.acc_id\n);",
+    "sql_time_llm_gen": 7.876344542004517,
+    "sql_answer": "[(Decimal('3892335.90'),)]",
+    "sql_time_exec": 0.0034403329991619103,
+    "id": "2369786d-5a94-49e8-bb18-9514a5675195",
+    "query": "What is the total deposit balance for customers who made at least one transaction?"
+  },
+  {
+    "sql_command": "SELECT COUNT(t.id) AS transaction_count\nFROM transactions t\nJOIN accounts a ON t.acc_id = a.id\nJOIN customers c ON a.cus_id = c.id\nWHERE c.brc = 1;",
+    "sql_time_llm_gen": 9.190731833004975,
+    "sql_answer": "[(280,)]",
+    "sql_time_exec": 0.002583417001005728,
+    "id": "2fe7d701-e6af-4a7c-93ac-27aaa02bb4ac",
+    "query": "How many transactions were made by customers who belong to branch 1?"
+  },
+  {
+    "sql_command": "SELECT b.brc, COUNT(a.id) as total_accounts\nFROM branches b\nJOIN customers c ON b.id = c.brc\nJOIN accounts a ON c.id = a.cus_id\nGROUP BY b.brc\nORDER BY total_accounts DESC;",
+    "sql_time_llm_gen": 8.797969209001167,
+    "sql_answer": "[('Harris Ltd', 87), ('Anthony, Rogers and Fields', 84), ('Gallagher-Mullen', 81), ('Allison Group', 48)]",
+    "sql_time_exec": 0.0029219159987405874,
+    "id": "22e3e715-f2bd-470b-9cd8-6a9d637dff1c",
+    "query": "What is the total number of accounts for customers who belong to each branch?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM accounts GROUP BY cus_id HAVING COUNT(acc_num) > 1;",
+    "sql_time_llm_gen": 6.3347265839984175,
+    "sql_answer": "[(1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,)]",
+    "sql_time_exec": 0.0031717499950900674,
+    "id": "0d8200ef-2a7c-4333-b07c-d097a03dbccd",
+    "query": "What is the number of customers with more than one account?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM (SELECT cus_id FROM loans GROUP BY cus_id HAVING COUNT(id) > 1) AS multiple_loans_customers;",
+    "sql_time_llm_gen": 6.2906715420031105,
+    "sql_answer": "[(50,)]",
+    "sql_time_exec": 0.0021698749987990595,
+    "id": "69963176-0f9f-43dd-b3b4-c736f4f95aec",
+    "query": "What is the number of customers with more than one loan?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) AS number_of_customers\nFROM deposits\nGROUP BY cus_id\nHAVING COUNT(id) > 1;",
+    "sql_time_llm_gen": 4.902171290996193,
+    "sql_answer": "[(1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,)]",
+    "sql_time_exec": 0.002643875006469898,
+    "id": "6d2f762c-ea2e-4d91-926a-66aa606301c6",
+    "query": "What is the number of customers with more than one deposit?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT c.id) AS num_customers\nFROM customers c\nJOIN accounts a ON c.id = a.cus_id\nJOIN transactions t ON a.id = t.acc_id\nGROUP BY c.id\nHAVING COUNT(t.id) > 10;",
+    "sql_time_llm_gen": 7.469557958000223,
+    "sql_answer": "[(1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,)]",
+    "sql_time_exec": 0.003000584001711104,
+    "id": "795a7f09-567e-4bf9-be1f-055ede9b4d2e",
+    "query": "What is the number of customers who made more than 10 transactions?"
+  },
+  {
+    "sql_command": "SELECT AVG(loans.bal) AS avg_loan_balance\nFROM loans\nJOIN deposits ON loans.cus_id = deposits.cus_id;",
+    "sql_time_llm_gen": 8.19622425000125,
+    "sql_answer": "[(Decimal('-26845.495339366516'),)]",
+    "sql_time_exec": 0.0022224999993341044,
+    "id": "bf3c3f7c-f327-4afd-b8a4-40992c8a463a",
+    "query": "What is the average loan balance for customers with deposits?"
+  },
+  {
+    "sql_command": "SELECT AVG(deposits.bal) AS average_deposit_balance\nFROM deposits\nJOIN loans ON deposits.cus_id = loans.cus_id;",
+    "sql_time_llm_gen": 6.310497791993839,
+    "sql_answer": "[(Decimal('25815.508687782805'),)]",
+    "sql_time_exec": 0.0017744580036378466,
+    "id": "7b93faa4-874a-4b62-9121-b1b4bdf0258d",
+    "query": "What is the average deposit balance for customers with loans?"
+  },
+  {
+    "sql_command": "SELECT COUNT(t.id) AS total_transactions\nFROM transactions t\nJOIN accounts a ON t.acc_id = a.id\nJOIN customers c ON a.cus_id = c.id\nWHERE c.id IN (SELECT cus_id FROM cards);",
+    "sql_time_llm_gen": 6.717806667002151,
+    "sql_answer": "[(552,)]",
+    "sql_time_exec": 0.004750415995658841,
+    "id": "84a35c4b-4e48-455e-bfa9-63a7adcb72ad",
+    "query": "What is the total number of transactions for customers who have cards?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) \nFROM transactions \nJOIN accounts ON transactions.acc_id = accounts.id \nWHERE accounts.acc_bal > 5000;",
+    "sql_time_llm_gen": 6.3239650830000755,
+    "sql_answer": "[(875,)]",
+    "sql_time_exec": 0.002810332996887155,
+    "id": "c8be4fda-00f9-416e-a32e-67099e483504",
+    "query": "How many transactions were made in accounts with balance greater than 5000?"
+  },
+  {
+    "sql_command": "SELECT SUM(deposits.bal) AS total_balance FROM deposits JOIN customers ON deposits.cus_id = customers.id WHERE customers.brc = 2;",
+    "sql_time_llm_gen": 6.6533995420031715,
+    "sql_answer": "[(Decimal('1463967.16'),)]",
+    "sql_time_exec": 0.0024604170030215755,
+    "id": "c898f30a-df1d-4e60-88d5-178d25b108f2",
+    "query": "What is the total balance of deposits for customers from branch 2?"
+  },
+  {
+    "sql_command": "SELECT SUM(bal) AS total_loan_balance FROM loans l JOIN customers c ON l.cus_id = c.id WHERE c.brc = 3;",
+    "sql_time_llm_gen": 6.574271833000239,
+    "sql_answer": "[(Decimal('-1035517.47'),)]",
+    "sql_time_exec": 0.0021960829981253482,
+    "id": "0ab0e25e-ca01-448d-9bd2-c1c3bed912ea",
+    "query": "What is the total loan balance for customers from branch 3?"
+  },
+  {
+    "sql_command": "SELECT COUNT(cards.id) AS blocked_card_count\nFROM cards\nJOIN customers ON cards.cus_id = customers.id\nJOIN loans ON customers.id = loans.cus_id\nWHERE cards.is_blocked = true;",
+    "sql_time_llm_gen": 8.610133750000386,
+    "sql_answer": "[(67,)]",
+    "sql_time_exec": 0.00229725000099279,
+    "id": "c13beed0-77b7-4d2f-bc2a-d7888c46bfbb",
+    "query": "What is the number of blocked cards belonging to customers with loans?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) AS expired_card_count\nFROM cards c\nJOIN customers cu ON c.cus_id = cu.id\nJOIN deposits d ON cu.id = d.cus_id\nWHERE c.card_exp_date < CURRENT_DATE;",
+    "sql_time_llm_gen": 6.223293082999589,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0030656250019092113,
+    "id": "b93fef84-dd8b-46fe-b9a2-46e053d19ecc",
+    "query": "What is the number of expired cards belonging to customers with deposits?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT accounts.id) AS num_accounts_before_2020 FROM accounts JOIN loans ON accounts.cus_id = loans.cus_id WHERE accounts.created_at < '2020-01-01';",
+    "sql_time_llm_gen": 7.175564499993925,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.001908584003103897,
+    "id": "95fe1253-0f9e-467a-8fc5-1c78f69c97ec",
+    "query": "What is the number of accounts created before 2020 for customers with loans?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits \nWHERE cus_id IN (SELECT cus_id FROM cards) \nAND EXTRACT(YEAR FROM de_st_dt) > 2021;",
+    "sql_time_llm_gen": 7.459464082996419,
+    "sql_answer": "[(103,)]",
+    "sql_time_exec": 0.0012555830035125837,
+    "id": "ac2526be-0cc2-422b-9a13-37c18dfd11dc",
+    "query": "What is the number of deposits created after 2021 for customers with cards?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE cus_id IN (SELECT DISTINCT cus_id FROM transactions JOIN accounts ON transactions.acc_id = accounts.id JOIN customers ON accounts.cus_id = customers.id) AND ln_st_dt >= CURRENT_DATE - INTERVAL '1 year';",
+    "sql_time_llm_gen": 6.389043208997464,
+    "sql_answer": "[(73,)]",
+    "sql_time_exec": 0.0032811249984661117,
+    "id": "0202fbae-c86f-4911-8559-0f3f43f8295c",
+    "query": "What is the number of loans created in the last year for customers with transactions?"
+  },
+  {
+    "sql_command": "SELECT SUM(t.tran_amt) AS total_transaction_amount FROM transactions t JOIN accounts a ON t.acc_id = a.id JOIN deposits d ON a.cus_id = d.cus_id;",
+    "sql_time_llm_gen": 6.826810709004349,
+    "sql_answer": "[(Decimal('269906.81'),)]",
+    "sql_time_exec": 0.0029155000011087395,
+    "id": "6c3eb79d-405c-4ff0-9caf-9a0fff7b3698",
+    "query": "What is the total transaction amount of customers with deposits?"
+  },
+  {
+    "sql_command": "SELECT SUM(t.tran_amt) AS total_transaction_amount FROM transactions t JOIN accounts a ON t.acc_id = a.id JOIN customers c ON a.cus_id = c.id JOIN loans l ON c.id = l.cus_id;",
+    "sql_time_llm_gen": 6.076352666997991,
+    "sql_answer": "[(Decimal('181314.81'),)]",
+    "sql_time_exec": 0.0032197079999605194,
+    "id": "38563b5a-dcb3-4bff-afda-e70bbdddb7ba",
+    "query": "What is the total transaction amount of customers with loans?"
+  },
+  {
+    "sql_command": "SELECT AVG(account_count) AS avg_accounts_per_customer FROM (SELECT cus_id, COUNT(*) AS account_count FROM accounts GROUP BY cus_id) AS account_counts;",
+    "sql_time_llm_gen": 6.880249041001662,
+    "sql_answer": "[(Decimal('1.9480519480519481'),)]",
+    "sql_time_exec": 0.002243750001071021,
+    "id": "d5c598f1-1e90-4727-b25d-ef5693dcbb9a",
+    "query": "What is the average number of accounts per customer?"
+  },
+  {
+    "sql_command": "SELECT AVG(loan_count) AS average_loans_per_customer\nFROM (\n    SELECT cus_id, COUNT(*) AS loan_count\n    FROM loans\n    GROUP BY cus_id\n) AS loans_per_customer;",
+    "sql_time_llm_gen": 3.7482542500001728,
+    "sql_answer": "[(Decimal('1.5873015873015873'),)]",
+    "sql_time_exec": 0.028891083995404188,
+    "id": "aadc1ee0-a0cf-4ebb-a65b-c82181614846",
+    "query": "What is the average number of loans per customer?"
+  },
+  {
+    "sql_command": "SELECT AVG(deposit_count) as average_deposits_per_customer\nFROM (SELECT cus_id, COUNT(*) as deposit_count FROM deposits GROUP BY cus_id) as deposits_per_customer;",
+    "sql_time_llm_gen": 6.541169916999934,
+    "sql_answer": "[(Decimal('1.5267175572519084'),)]",
+    "sql_time_exec": 0.005127582997374702,
+    "id": "69215e01-3997-48a2-b277-4a13142201f2",
+    "query": "What is the average number of deposits per customer?"
+  },
+  {
+    "sql_command": "SELECT SUM(accounts.acc_bal) AS total_balance FROM accounts WHERE accounts.cus_id IN (SELECT cus_id FROM cards GROUP BY cus_id HAVING COUNT(*) > 1);",
+    "sql_time_llm_gen": 9.646066708002763,
+    "sql_answer": "[(Decimal('2184695.64'),)]",
+    "sql_time_exec": 0.0017975829978240654,
+    "id": "7b1a902b-bbb4-454f-9ade-476bb3adb45b",
+    "query": "What is the total balance of accounts for customers who have more than one card?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) AS num_customers_with_blocked_and_expired_cards FROM cards WHERE is_blocked = TRUE AND card_exp_date < CURRENT_DATE;",
+    "sql_time_llm_gen": 6.131097417004639,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0023199580027721822,
+    "id": "7dd1ed3b-8d6f-4b95-8013-ee3e4156f697",
+    "query": "What is the number of customers with both blocked and expired cards?"
+  },
+  {
+    "sql_command": "SELECT SUM(d.bal) as total_deposit_balance FROM deposits d INNER JOIN accounts a ON d.cus_id = a.cus_id WHERE a.id IN (SELECT acc_id FROM transactions GROUP BY acc_id HAVING COUNT(*) > 5);",
+    "sql_time_llm_gen": 6.965987916999438,
+    "sql_answer": "[(Decimal('927238.66'),)]",
+    "sql_time_exec": 0.0029578339963336475,
+    "id": "7689f548-86bc-498e-8b9b-3ca1926eea8d",
+    "query": "What is the total deposit balance for customers who also made more than 5 transactions?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE interest > 10.0 AND cus_id IN (SELECT DISTINCT cus_id FROM deposits);",
+    "sql_time_llm_gen": 6.951656458004436,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0013234170037321746,
+    "id": "8f76d541-7671-4349-9968-4540b1e43815",
+    "query": "What is the number of loans with interest rate greater than 10% for customers with deposits?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits d WHERE d.interest < 5 AND d.cus_id IN (SELECT l.cus_id FROM loans l)",
+    "sql_time_llm_gen": 6.327384832999087,
+    "sql_answer": "[(56,)]",
+    "sql_time_exec": 0.0015059579964145087,
+    "id": "fc60cf4c-0c70-4900-8638-c14b45544353",
+    "query": "What is the number of deposits with interest rate less than 5% for customers with loans?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT accounts.cus_id) AS num_customers_with_accounts_and_cards\nFROM accounts\nJOIN cards ON accounts.cus_id = cards.cus_id;",
+    "sql_time_llm_gen": 7.3104507500029285,
+    "sql_answer": "[(85,)]",
+    "sql_time_exec": 0.002553209000325296,
+    "id": "a7b34aaa-e2c2-42f5-8ecf-01be4b572ef4",
+    "query": "What is the number of customers who own both accounts and cards?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT c.id) AS num_customers\nFROM customers c\nJOIN accounts a ON c.id = a.cus_id\nJOIN cards cr ON c.id = cr.cus_id\nJOIN loans l ON c.id = l.cus_id;",
+    "sql_time_llm_gen": 6.243570750004437,
+    "sql_answer": "[(58,)]",
+    "sql_time_exec": 0.003174582998326514,
+    "id": "c99fa623-0879-465b-8442-9f17139da836",
+    "query": "What is the number of customers who own accounts, cards, and loans?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT c.id) AS num_customers_with_all_products\nFROM customers c\nJOIN accounts a ON c.id = a.cus_id\nJOIN cards cr ON c.id = cr.cus_id\nJOIN deposits d ON c.id = d.cus_id;",
+    "sql_time_llm_gen": 6.028513083001599,
+    "sql_answer": "[(53,)]",
+    "sql_time_exec": 0.003205792003427632,
+    "id": "33df0e4b-9e43-4d26-862f-17b68bd25de4",
+    "query": "What is the number of customers who own accounts, cards, and deposits?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT c.id) AS customer_count\nFROM customers c\nJOIN loans l ON c.id = l.cus_id\nJOIN deposits d ON c.id = d.cus_id\nJOIN cards ca ON c.id = ca.cus_id;",
+    "sql_time_llm_gen": 8.346951583996997,
+    "sql_answer": "[(49,)]",
+    "sql_time_exec": 0.003914499997335952,
+    "id": "d5f86434-cdb7-41de-ae48-27532336809d",
+    "query": "What is the number of customers who own loans, deposits, and cards?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT c.id) as customer_count FROM customers c JOIN accounts a ON c.id = a.cus_id JOIN loans l ON c.id = l.cus_id JOIN deposits d ON c.id = d.cus_id;",
+    "sql_time_llm_gen": 7.1188152079994325,
+    "sql_answer": "[(70,)]",
+    "sql_time_exec": 0.0032858750055311248,
+    "id": "e89e4efd-bde4-4911-853f-af68e997e844",
+    "query": "What is the number of customers who own accounts, loans, and deposits?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM customers AS c\nJOIN accounts AS a ON c.id = a.cus_id\nJOIN loans AS l ON c.id = l.cus_id\nJOIN deposits AS d ON c.id = d.cus_id\nJOIN cards AS ca ON c.id = ca.cus_id;",
+    "sql_time_llm_gen": 9.311784624995198,
+    "sql_answer": "[(218,)]",
+    "sql_time_exec": 0.00515741699928185,
+    "id": "a8bfe012-a1a3-42f3-a6da-5975cd024446",
+    "query": "What is the number of customers who have all four: accounts, loans, deposits, and cards?"
+  },
+  {
+    "sql_command": "SELECT SUM(t.tran_amt) AS total_transaction_amount\nFROM customers c\nJOIN accounts a ON c.id = a.cus_id\nJOIN (\n  SELECT cus_id\n  FROM accounts\n  GROUP BY cus_id\n  HAVING COUNT(DISTINCT acc_num) > 1\n) multiple_accounts ON c.id = multiple_accounts.cus_id\nJOIN transactions t ON a.id = t.acc_id;",
+    "sql_time_llm_gen": 7.676262291999592,
+    "sql_answer": "[(Decimal('134637.64'),)]",
+    "sql_time_exec": 0.004513791995123029,
+    "id": "3c216bac-c74e-44eb-8338-7934a4f7e250",
+    "query": "What is the total transaction amount for customers who own more than one account?"
+  },
+  {
+    "sql_command": "SELECT COUNT(accounts.id) AS account_count\nFROM accounts\nJOIN cards ON accounts.cus_id = cards.cus_id\nWHERE cards.is_blocked = TRUE;",
+    "sql_time_llm_gen": 7.395102584006963,
+    "sql_answer": "[(106,)]",
+    "sql_time_exec": 0.0022504579974338412,
+    "id": "14438d86-31d6-4d85-aff5-8aa5a76a6fe8",
+    "query": "What is the number of accounts belonging to customers with blocked cards?"
+  },
+  {
+    "sql_command": "SELECT SUM(loans.bal) as total_loan_balance \nFROM loans \nJOIN cards ON loans.cus_id = cards.cus_id \nWHERE cards.card_exp_date < CURRENT_DATE;",
+    "sql_time_llm_gen": 7.0122194579962525,
+    "sql_answer": "[(None,)]",
+    "sql_time_exec": 0.0027052919976995327,
+    "id": "772e7071-322b-4c97-893c-5e6297df8962",
+    "query": "What is the total loan balance for customers with expired cards?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT d.id) as total_deposits \nFROM customers c\nJOIN loans l ON c.id = l.cus_id\nJOIN deposits d ON c.id = d.cus_id\nGROUP BY c.id\nHAVING COUNT(DISTINCT l.id) > 1;",
+    "sql_time_llm_gen": 7.087500792003993,
+    "sql_answer": "[(3,), (1,), (1,), (1,), (1,), (4,), (2,), (1,), (1,), (2,), (2,), (1,), (3,), (5,), (2,), (1,), (2,), (1,), (1,), (1,), (1,), (2,), (1,), (1,), (2,), (1,), (1,), (1,), (1,), (1,), (1,), (2,), (2,), (1,)]",
+    "sql_time_exec": 0.0039747909977450036,
+    "id": "0801b241-943d-41bb-8f27-ba10e9324a4f",
+    "query": "What is the total number of deposits for customers with more than one loan?"
+  },
+  {
+    "sql_command": "SELECT SUM(accounts.acc_bal) AS total_balance\nFROM accounts\nJOIN deposits ON accounts.cus_id = deposits.cus_id\nWHERE deposits.interest > 7;",
+    "sql_time_llm_gen": 6.462009542003216,
+    "sql_answer": "[(Decimal('2868918.12'),)]",
+    "sql_time_exec": 0.002492708998033777,
+    "id": "e671e07f-04ee-42c5-8ee1-d895cd25cdb2",
+    "query": "What is the total balance of accounts for customers who also own deposits with interest rate greater than 7%?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT accounts.cus_id) AS customer_count\nFROM accounts\nJOIN loans ON accounts.cus_id = loans.cus_id\nWHERE accounts.acc_bal > 10000;",
+    "sql_time_llm_gen": 6.936441917001503,
+    "sql_answer": "[(92,)]",
+    "sql_time_exec": 0.002582792003522627,
+    "id": "ccf3c47e-cfd7-42e4-b9f1-fbe724f09787",
+    "query": "What is the number of customers who own both a loan and an account with balance greater than 10000?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus.id) AS num_customers\nFROM customers cus\nJOIN deposits dep ON cus.id = dep.cus_id\nJOIN transactions trans ON dep.cus_id = trans.acc_id\nWHERE dep.bal > 5000 AND trans.tran_amt > 5000;",
+    "sql_time_llm_gen": 8.692528624997067,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0028650840031332336,
+    "id": "e3181009-89fd-4dad-94b1-e1e5744a179d",
+    "query": "What is the number of customers with deposits and transactions larger than 5000?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT c.id) as customer_count\nFROM customers c\nJOIN accounts a ON c.id = a.cus_id\nJOIN loans l ON c.id = l.cus_id\nJOIN deposits d ON c.id = d.cus_id\nWHERE c.brc = 4;",
+    "sql_time_llm_gen": 9.435920542004169,
+    "sql_answer": "[(15,)]",
+    "sql_time_exec": 0.003423832997214049,
+    "id": "b69d29f2-2260-4b58-b82b-3da041aee57c",
+    "query": "What is the number of customers from branch 4 with accounts, loans, and deposits?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT c.id) AS customer_count\nFROM customers c\nJOIN accounts a ON c.id = a.cus_id\nJOIN transactions t ON a.id = t.acc_id\nWHERE c.brc = 5;",
+    "sql_time_llm_gen": 8.29037170799711,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.002749583996774163,
+    "id": "f0e62f3a-5686-4b5c-a69e-58d715979b25",
+    "query": "What is the number of customers from branch 5 with at least one transaction?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) AS unique_customers_with_accounts FROM accounts;",
+    "sql_time_llm_gen": 3.865720333000354,
+    "sql_answer": "[(154,)]",
+    "sql_time_exec": 0.002070916998491157,
+    "id": "2b40d32e-6dce-475c-8b87-38713f01a145",
+    "query": "Count the total number of unique customers with accounts."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) AS unique_customer_count FROM deposits;",
+    "sql_time_llm_gen": 3.771383874998719,
+    "sql_answer": "[(131,)]",
+    "sql_time_exec": 0.0020899590017506853,
+    "id": "8d2de494-2b7d-43b8-8d20-ace38b34bda4",
+    "query": "Count the total number of unique customers with deposits."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) AS unique_customer_count FROM loans;",
+    "sql_time_llm_gen": 5.389628500000981,
+    "sql_answer": "[(126,)]",
+    "sql_time_exec": 0.002141334000043571,
+    "id": "bfcabe8e-009e-4870-a6dd-3c1ce5207f86",
+    "query": "Count the total number of unique customers with loans."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) AS unique_customers_with_cards FROM cards;",
+    "sql_time_llm_gen": 6.689362999997684,
+    "sql_answer": "[(106,)]",
+    "sql_time_exec": 0.0020412500016391277,
+    "id": "3278c2e1-07b5-415a-990d-436029dc7cb6",
+    "query": "Count the total number of unique customers with cards."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE acc_id = 123;",
+    "sql_time_llm_gen": 5.574124708000454,
+    "sql_answer": "[(3,)]",
+    "sql_time_exec": 0.002065208005660679,
+    "id": "48a51163-5cfe-4f2b-b589-34fabbc64099",
+    "query": "Count the number of transactions per account with ID 123."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE cus_id = 123;",
+    "sql_time_llm_gen": 3.9815644999980577,
+    "sql_answer": "[(1,)]",
+    "sql_time_exec": 0.001897417001600843,
+    "id": "dd162f6d-d5d6-484a-9553-1b91a24f1921",
+    "query": "Count the number of deposits per customer with ID 123."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE cus_id = 123;",
+    "sql_time_llm_gen": 6.447805125004379,
+    "sql_answer": "[(1,)]",
+    "sql_time_exec": 0.0020274580019759014,
+    "id": "bb3ec5db-486c-4713-bc4a-20c62a268b96",
+    "query": "Count the number of loans per customer with ID 123."
+  },
+  {
+    "sql_command": "SELECT COUNT(id) FROM cards WHERE cus_id = 123;",
+    "sql_time_llm_gen": 7.367334916998516,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.001879124996776227,
+    "id": "7721f40c-a492-4e57-a114-ecf1b5330c28",
+    "query": "Count the number of cards per customer with ID 123."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE tran_amt > (SELECT AVG(tran_amt) FROM transactions);",
+    "sql_time_llm_gen": 5.648643041000469,
+    "sql_answer": "[(513,)]",
+    "sql_time_exec": 0.0027897079999092966,
+    "id": "daaa5dfd-da53-4e66-b015-418ddd85bf14",
+    "query": "Count the number of transactions with amount greater than average transaction amount."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE bal > (SELECT AVG(bal) FROM deposits);",
+    "sql_time_llm_gen": 5.297451250000449,
+    "sql_answer": "[(108,)]",
+    "sql_time_exec": 0.002490792001481168,
+    "id": "ca8af448-cc2a-4fc0-b4f3-2776fe461ea5",
+    "query": "Count the number of deposits with balance above average deposit balance."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE bal < (SELECT AVG(bal) FROM loans);",
+    "sql_time_llm_gen": 3.944620334004867,
+    "sql_answer": "[(102,)]",
+    "sql_time_exec": 0.0011448340010247193,
+    "id": "ce497c31-9dfb-4090-912d-65bc62b8cff1",
+    "query": "Count the number of loans with balance above average loan balance."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM accounts GROUP BY cus_id HAVING COUNT(acc_num) > 1;",
+    "sql_time_llm_gen": 6.331562792001932,
+    "sql_answer": "[(1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,)]",
+    "sql_time_exec": 0.003072125000471715,
+    "id": "56116f96-5da4-45dd-804f-338064aa79b8",
+    "query": "Count the number of customers with more than one account."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM deposits GROUP BY cus_id HAVING COUNT(id) > 1;",
+    "sql_time_llm_gen": 6.410921957998653,
+    "sql_answer": "[(1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,)]",
+    "sql_time_exec": 0.002324290995602496,
+    "id": "1a6a7049-f7df-4458-a6ab-2a7c4258ea5c",
+    "query": "Count the number of customers with more than one deposit."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM loans GROUP BY cus_id HAVING COUNT(id) > 1;",
+    "sql_time_llm_gen": 5.71557537499757,
+    "sql_answer": "[(1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,)]",
+    "sql_time_exec": 0.0010774580005090684,
+    "id": "e6e1cb1a-f03e-4739-a687-e42e066ba6ed",
+    "query": "Count the number of customers with more than one loan."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) AS num_customers_with_multiple_cards \nFROM cards \nGROUP BY cus_id \nHAVING COUNT(cc_num) > 1;",
+    "sql_time_llm_gen": 4.109109459001047,
+    "sql_answer": "[(1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,)]",
+    "sql_time_exec": 0.0026527090012677945,
+    "id": "7a1d1060-f4da-4c75-802f-0dd76438586b",
+    "query": "Count the number of customers with more than one card."
+  },
+  {
+    "sql_command": "SELECT acc_id, COUNT(*) as transaction_count \nFROM transactions \nWHERE tran_dt >= (CURRENT_DATE - INTERVAL '1 month') \nGROUP BY acc_id \nLIMIT 5;",
+    "sql_time_llm_gen": 7.277442625003459,
+    "sql_answer": "[(221, 1), (286, 1), (236, 1), (22, 1), (32, 1)]",
+    "sql_time_exec": 0.0019468749960651621,
+    "id": "9fe541e7-7cb7-482f-8bc0-37d31a325eca",
+    "query": "Count the number of transactions in the last month per account."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) \nFROM deposits \nWHERE \n  (CASE \n    WHEN right(lower(tem), 1) = 'y' THEN CAST(left(tem, length(tem) - 1) AS INTEGER) * 12\n    WHEN right(lower(tem), 1) = 'm' THEN CAST(left(tem, length(tem) - 1) AS INTEGER)\n    ELSE 0\n  END) \n  > \n  (\n    SELECT AVG(\n      CASE \n        WHEN right(lower(tem), 1) = 'y' THEN CAST(left(tem, length(tem) - 1) AS INTEGER) * 12\n        WHEN right(lower(tem), 1) = 'm' THEN CAST(left(tem, length(tem) - 1) AS INTEGER)\n        ELSE 0\n      END\n    )\n    FROM deposits\n  );",
+    "sql_time_llm_gen": 9.0003839159981,
+    "sql_answer": "[(83,)]",
+    "sql_time_exec": 0.002674834002391435,
+    "id": "3641d0ee-ef4c-415c-87d4-6b4af3f685c6",
+    "query": "Count the number of deposits with term greater than average term."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE interest > (SELECT AVG(interest) FROM loans);",
+    "sql_time_llm_gen": 5.325028749997728,
+    "sql_answer": "[(101,)]",
+    "sql_time_exec": 0.002197124995291233,
+    "id": "16cebeee-c436-4c78-80a0-0f118c068ace",
+    "query": "Count the number of loans with interest rate above average interest rate."
+  },
+  {
+    "sql_command": "SELECT branches.brc, COUNT(accounts.id) AS account_count\nFROM accounts\nJOIN customers ON accounts.cus_id = customers.id\nJOIN branches ON customers.brc = branches.id\nWHERE accounts.acc_bal > 1000\nGROUP BY branches.brc\nLIMIT 5;",
+    "sql_time_llm_gen": 7.679103832997498,
+    "sql_answer": "[('Gallagher-Mullen', 73), ('Anthony, Rogers and Fields', 73), ('Allison Group', 45), ('Harris Ltd', 82)]",
+    "sql_time_exec": 0.0033559169969521463,
+    "id": "06ce7455-1c9b-4eb6-8348-c1442400c489",
+    "query": "Count the number of accounts with balance above 1000 per branch."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE tran_amt BETWEEN 100 AND 1000;",
+    "sql_time_llm_gen": 7.055914791999385,
+    "sql_answer": "[(90,)]",
+    "sql_time_exec": 0.0019328329944983125,
+    "id": "6c46986c-bdaf-4c57-a5af-6e847a69cba9",
+    "query": "Count the number of transactions with amount between 100 and 1000."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE de_st_dt > '2024-12-31'",
+    "sql_time_llm_gen": 5.341839959000936,
+    "sql_answer": "[(149,)]",
+    "sql_time_exec": 0.001981875000637956,
+    "id": "66a0bb2e-9556-4e6f-a9b8-5b41879bc5bd",
+    "query": "Count the number of deposits with start date after 2024."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE ln_en_dt < '2026-01-01';",
+    "sql_time_llm_gen": 3.775524625001708,
+    "sql_answer": "[(16,)]",
+    "sql_time_exec": 0.0020827920016017742,
+    "id": "09df6960-12c9-475e-81ac-cdc55155d253",
+    "query": "Count the number of loans with end date before 2026."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM customers WHERE EXTRACT(YEAR FROM created_at) = 2025;",
+    "sql_time_llm_gen": 4.295372207998298,
+    "sql_answer": "[(200,)]",
+    "sql_time_exec": 0.002175082998292055,
+    "id": "bf74b338-9677-4f69-bf06-97f8f4be9a56",
+    "query": "Count the number of customers with accounts created in 2025."
+  },
+  {
+    "sql_command": "SELECT COUNT(t.id) AS transaction_count\nFROM transactions t\nJOIN accounts a ON t.acc_id = a.id\nWHERE a.cus_id = 123;",
+    "sql_time_llm_gen": 5.130501749998075,
+    "sql_answer": "[(3,)]",
+    "sql_time_exec": 0.002448459003062453,
+    "id": "40855017-7cc2-45c3-b4ec-542df8b83b2f",
+    "query": "Count the number of transactions per customer with ID 123."
+  },
+  {
+    "sql_command": "SELECT COUNT(d.id) as deposits_count FROM deposits d JOIN transactions t ON d.cus_id = t.acc_id JOIN accounts a ON t.acc_id = a.id JOIN branches b ON a.id = b.id WHERE b.id = 123;",
+    "sql_time_llm_gen": 17.74259841699677,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0027905840033781715,
+    "id": "48973c19-4250-4326-b797-6eeffdb54829",
+    "query": "Count the number of deposits per branch with ID 123."
+  },
+  {
+    "sql_command": "SELECT b.id AS branch_id, COUNT(l.id) AS number_of_loans\nFROM loans l\nJOIN customers c ON l.cus_id = c.id\nJOIN branches b ON c.brc = b.id\nWHERE b.id = 123\nGROUP BY b.id;",
+    "sql_time_llm_gen": 16.436126708998927,
+    "sql_answer": "",
+    "sql_time_exec": 0.0011289999965811148,
+    "id": "d55b8503-1e4c-4c6a-9484-94c61b4ffa84",
+    "query": "Count the number of loans per branch with ID 123."
+  },
+  {
+    "sql_command": "SELECT COUNT(cards.id) AS card_count, branches.id AS branch_id\nFROM cards\nJOIN customers ON cards.cus_id = customers.id\nJOIN branches ON customers.brc = branches.id\nWHERE branches.id = 123\nGROUP BY branches.id\nLIMIT 5;",
+    "sql_time_llm_gen": 5.293282792001264,
+    "sql_answer": "",
+    "sql_time_exec": 0.0017830840006354265,
+    "id": "50a5d376-475d-4f0a-89c0-a463248eaa92",
+    "query": "Count the number of cards per branch with ID 123."
+  },
+  {
+    "sql_command": "SELECT customers.id AS customer_id, COUNT(transactions.id) AS transaction_count\nFROM transactions\nJOIN accounts ON transactions.acc_id = accounts.id\nJOIN customers ON accounts.cus_id = customers.id\nWHERE transactions.tran_amt > 500\nGROUP BY customers.id\nLIMIT 5;",
+    "sql_time_llm_gen": 10.186371458003123,
+    "sql_answer": "[(116, 4), (87, 2), (71, 2), (51, 1), (80, 1)]",
+    "sql_time_exec": 0.003154707999783568,
+    "id": "4691b5fb-8ccf-43fc-9f37-e56f57cfcc9d",
+    "query": "Count the number of transactions with amount greater than 500 per customer."
+  },
+  {
+    "sql_command": "SELECT cus_id, COUNT(*) AS deposit_count \nFROM deposits \nWHERE bal < 1000 \nGROUP BY cus_id \nLIMIT 5;",
+    "sql_time_llm_gen": 7.250086125000962,
+    "sql_answer": "[(42, 1), (64, 1), (157, 1)]",
+    "sql_time_exec": 0.002323291999346111,
+    "id": "3454a178-9530-46ee-8699-9d2ea68fdc65",
+    "query": "Count the number of deposits with balance below 1000 per customer."
+  },
+  {
+    "sql_command": "SELECT cus_id, COUNT(*) AS num_loans_below_5000 \nFROM loans \nWHERE bal < 5000 \nGROUP BY cus_id \nLIMIT 5;",
+    "sql_time_llm_gen": 7.627210083002865,
+    "sql_answer": "[(184, 1), (116, 1), (71, 2), (68, 1), (51, 2)]",
+    "sql_time_exec": 0.0036821250032517128,
+    "id": "2d26552d-bf19-4af9-b21f-61ffe337b87f",
+    "query": "Count the number of loans with balance below 5000 per customer."
+  },
+  {
+    "sql_command": "SELECT cus_id, COUNT(*) AS card_count \nFROM cards \nWHERE card_exp_date < '2025-01-01' \nGROUP BY cus_id \nLIMIT 5;",
+    "sql_time_llm_gen": 5.474439290999726,
+    "sql_answer": "",
+    "sql_time_exec": 0.00206416699802503,
+    "id": "b5be4e38-6bf1-47cc-afe3-771105e6ac38",
+    "query": "Count the number of cards expiring before 2025 per customer."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT customers.id) \nFROM customers\nJOIN accounts ON customers.id = accounts.cus_id \nJOIN transactions ON accounts.id = transactions.acc_id \nWHERE EXTRACT(YEAR FROM transactions.tran_dt) = 2025;",
+    "sql_time_llm_gen": 8.21679583399964,
+    "sql_answer": "[(81,)]",
+    "sql_time_exec": 0.003130582997982856,
+    "id": "f314770a-394f-43c8-b6ac-7188d8e13f5d",
+    "query": "Count the number of customers with transactions in 2025."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE tem LIKE '6M' OR tem LIKE '7M' OR tem LIKE '8M' OR tem LIKE '9M' OR tem LIKE '10M' OR tem LIKE '11M' OR tem LIKE '12M'",
+    "sql_time_llm_gen": 4.269346207998751,
+    "sql_answer": "[(115,)]",
+    "sql_time_exec": 0.002124584003468044,
+    "id": "5c284af0-53aa-47f0-8f78-af9c35bb5176",
+    "query": "Count the number of deposits with term between 6 and 12 months."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE pmt_term BETWEEN '12M' AND '24M';",
+    "sql_time_llm_gen": 6.403604999999516,
+    "sql_answer": "[(80,)]",
+    "sql_time_exec": 0.002207833997090347,
+    "id": "57f680ed-cfb5-41f7-a84c-c74dffbddbb4",
+    "query": "Count the number of loans with payment term between 12 and 24 months."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE updated_at >= NOW() - INTERVAL '7 days';",
+    "sql_time_llm_gen": 5.567083709000144,
+    "sql_answer": "[(1000,)]",
+    "sql_time_exec": 0.0021365830034483224,
+    "id": "6b24e36c-62aa-4f6d-92e3-427b1e9b0a3e",
+    "query": "Count the number of transactions updated in the last week."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) AS number_of_customers FROM deposits WHERE bal > 5000;",
+    "sql_time_llm_gen": 6.518436625003233,
+    "sql_answer": "[(126,)]",
+    "sql_time_exec": 0.0021019170017098077,
+    "id": "0f8ba048-d553-4846-af42-05c6690e1a3a",
+    "query": "Count the number of customers with more than 5000 in deposits."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT acc_id) FROM transactions WHERE tran_dt >= NOW() - INTERVAL '30 days';",
+    "sql_time_llm_gen": 6.284420250005496,
+    "sql_answer": "[(14,)]",
+    "sql_time_exec": 0.002136875002179295,
+    "id": "e2935e55-c2de-43e0-b674-67aed61367ec",
+    "query": "Count the number of accounts with transactions in the last 30 days."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE de_en_dt > CURRENT_DATE AND de_en_dt <= CURRENT_DATE + INTERVAL '6 months'",
+    "sql_time_llm_gen": 5.93138441699557,
+    "sql_answer": "[(10,)]",
+    "sql_time_exec": 0.0015352089976659045,
+    "id": "fb352274-16c4-4814-a746-9fa2d4ff5775",
+    "query": "Count the number of deposits with end date in the next 6 months."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE interest BETWEEN 0.03 AND 0.05;",
+    "sql_time_llm_gen": 3.5198618749927846,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0021360000027925707,
+    "id": "aa0af11d-a8df-42e6-a565-2a7178a1d274",
+    "query": "Count the number of loans with interest rate between 3% and 5%."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) AS customer_count FROM accounts WHERE cus_id IN (SELECT cus_id FROM cards);",
+    "sql_time_llm_gen": 5.872269040999527,
+    "sql_answer": "[(85,)]",
+    "sql_time_exec": 0.002420374999928754,
+    "id": "c0a4f1ff-957a-41f4-87d6-71b3e4de8c26",
+    "query": "Count the number of customers with cards and accounts."
+  },
+  {
+    "sql_command": "SELECT loan_types.ln_type, COUNT(loans.id) AS loan_count \nFROM loans\nJOIN loan_types ON loans.ln_type_id = loan_types.id\nWHERE loans.ln_type_id = 123\nGROUP BY loan_types.ln_type;",
+    "sql_time_llm_gen": 5.944583791999321,
+    "sql_answer": "",
+    "sql_time_exec": 0.0015263329987647012,
+    "id": "1ec8395b-ae87-4362-b0f5-ec5f3e3e78cc",
+    "query": "Count the number of loans per loan type with ID 123."
+  },
+  {
+    "sql_command": "SELECT dt.de_type, COUNT(d.id) AS deposit_count \nFROM deposits d \nJOIN deposit_types dt ON d.de_type_id = dt.id \nWHERE d.de_type_id = 123 \nGROUP BY dt.de_type \nLIMIT 5;",
+    "sql_time_llm_gen": 7.898702459002379,
+    "sql_answer": "",
+    "sql_time_exec": 0.0023522499977843836,
+    "id": "a120b283-9143-4c31-bd3b-73daf485cad4",
+    "query": "Count the number of deposits per deposit type with ID 123."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT acc_id) FROM transactions WHERE tran_amt > 1000;",
+    "sql_time_llm_gen": 5.968629292001424,
+    "sql_answer": "[(225,)]",
+    "sql_time_exec": 0.0017392499939887784,
+    "id": "9855fd0e-a005-48cd-9f32-91a564d59db2",
+    "query": "Count the number of accounts with more than 1000 in transactions."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) AS num_customers_with_deposits FROM deposits",
+    "sql_time_llm_gen": 9.521213375002844,
+    "sql_answer": "[(131,)]",
+    "sql_time_exec": 0.0020329580001998693,
+    "id": "5ae9bdb8-7f4f-406c-be59-fd39d530f5a6",
+    "query": "Count the number of customers with loans and deposits."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE tran_amt > 1000 AND tran_dt >= CURRENT_DATE - INTERVAL '1 year'",
+    "sql_time_llm_gen": 6.653682374999335,
+    "sql_answer": "[(80,)]",
+    "sql_time_exec": 0.0027885419985977933,
+    "id": "a790b945-07fb-4975-91ab-38fd88f72bf4",
+    "query": "Count the number of transactions with amount above 1000 in the last year."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE acc_id = 124;",
+    "sql_time_llm_gen": 6.641033250001783,
+    "sql_answer": "[(2,)]",
+    "sql_time_exec": 0.0020080829999642447,
+    "id": "d073693a-e684-424e-8914-a331dc8eb056",
+    "query": "Count the number of transactions per account with ID 124."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) AS deposit_count FROM deposits WHERE cus_id = 124;",
+    "sql_time_llm_gen": 6.4649548749948735,
+    "sql_answer": "[(2,)]",
+    "sql_time_exec": 0.0020364590018289164,
+    "id": "80c4e4b7-402d-41e4-9d39-a967e81949e4",
+    "query": "Count the number of deposits per customer with ID 124."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE cus_id = 124;",
+    "sql_time_llm_gen": 5.826042624998081,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.000799624998762738,
+    "id": "b1b552ba-ff51-4e46-8d50-95d7223df9b0",
+    "query": "Count the number of loans per customer with ID 124."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM cards WHERE cus_id = 124;",
+    "sql_time_llm_gen": 5.543854625000677,
+    "sql_answer": "[(2,)]",
+    "sql_time_exec": 0.002841166999132838,
+    "id": "ad83765b-f45d-4423-b4b0-302e8243f996",
+    "query": "Count the number of cards per customer with ID 124."
+  },
+  {
+    "sql_command": "SELECT COUNT(a.id) AS account_count FROM accounts a JOIN branches b ON a.id = b.id WHERE b.id = 124;",
+    "sql_time_llm_gen": 5.962862958003825,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.002521250004065223,
+    "id": "0c7e590c-2344-4c62-9c4e-0eb5b54260b5",
+    "query": "Count the number of accounts per branch with ID 124."
+  },
+  {
+    "sql_command": "SELECT COUNT(t.id) AS transactions_above_average\nFROM transactions t\nJOIN accounts a ON t.acc_id = a.id\nWHERE t.tran_amt > (\n    SELECT AVG(t2.tran_amt) \n    FROM transactions t2 \n    WHERE t2.acc_id = t.acc_id\n)\nGROUP BY a.cus_id\nLIMIT 5;",
+    "sql_time_llm_gen": 11.982361583002785,
+    "sql_answer": "[(3,), (1,), (7,), (6,), (5,)]",
+    "sql_time_exec": 0.07735174999834271,
+    "id": "f2820c92-8919-4d21-bc60-0d99a17db7bb",
+    "query": "Count the number of transactions with amount greater than average per customer."
+  },
+  {
+    "sql_command": "WITH average_balances AS (\n    SELECT brc, AVG(deposits.bal) AS avg_balance\n    FROM deposits\n    JOIN customers ON deposits.cus_id = customers.id\n    GROUP BY brc\n)\n\nSELECT customers.brc, COUNT(*) AS deposit_count\nFROM deposits\nJOIN customers ON deposits.cus_id = customers.id\nJOIN average_balances ON customers.brc = average_balances.brc\nWHERE deposits.bal > average_balances.avg_balance\nGROUP BY customers.brc\nORDER BY deposit_count DESC\nLIMIT 5;",
+    "sql_time_llm_gen": 20.585077499999898,
+    "sql_answer": "[(2, 31), (3, 26), (4, 26), (1, 25)]",
+    "sql_time_exec": 0.003073041996685788,
+    "id": "b3451ab8-8563-4f7f-a4db-d22aba88b354",
+    "query": "Count the number of deposits with balance above average per branch."
+  },
+  {
+    "sql_command": "SELECT cus_id, COUNT(*) AS num_loans_above_average\nFROM loans\nWHERE bal < (SELECT AVG(bal) FROM loans)\nGROUP BY cus_id\nLIMIT 5;",
+    "sql_time_llm_gen": 8.057935541000916,
+    "sql_answer": "[(184, 1), (71, 1), (4, 1), (68, 1), (51, 1)]",
+    "sql_time_exec": 0.0031416249985340983,
+    "id": "b20bef69-3338-42e8-9ff7-dceddcaf1560",
+    "query": "Count the number of loans with balance above average per customer."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) AS customer_count FROM accounts GROUP BY cus_id HAVING COUNT(id) > 2;",
+    "sql_time_llm_gen": 10.507869790999393,
+    "sql_answer": "[(1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,)]",
+    "sql_time_exec": 0.0026407499972265214,
+    "id": "e54ba45f-0f3e-41a6-a374-80f4b3a73d9e",
+    "query": "Count the number of customers with more than two accounts."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) AS customer_count\nFROM deposits\nWHERE cus_id IN (SELECT cus_id FROM deposits GROUP BY cus_id HAVING COUNT(id) > 2);",
+    "sql_time_llm_gen": 10.122315540997079,
+    "sql_answer": "[(11,)]",
+    "sql_time_exec": 0.0021996249997755513,
+    "id": "d0c1812e-0e1d-468d-a440-fd8ee631047a",
+    "query": "Count the number of customers with more than two deposits."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM loans GROUP BY cus_id HAVING COUNT(id) > 2;",
+    "sql_time_llm_gen": 6.506385291002516,
+    "sql_answer": "[(1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,)]",
+    "sql_time_exec": 0.0019077500037383288,
+    "id": "92e8e6f6-70bc-4eec-aa84-249408b47e1a",
+    "query": "Count the number of customers with more than two loans."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM cards GROUP BY cus_id HAVING COUNT(id) > 2;",
+    "sql_time_llm_gen": 6.141073874998256,
+    "sql_answer": "[(1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,)]",
+    "sql_time_exec": 0.0018859580013668165,
+    "id": "6a573ed1-c8ea-491e-a35f-b9e2fad97468",
+    "query": "Count the number of customers with more than two cards."
+  },
+  {
+    "sql_command": "SELECT acc_id, COUNT(*) as transaction_count \nFROM transactions \nWHERE tran_dt >= NOW() - INTERVAL '60 days'\nGROUP BY acc_id\nLIMIT 5;",
+    "sql_time_llm_gen": 6.55736262499704,
+    "sql_answer": "[(206, 1), (119, 1), (46, 1), (286, 1), (153, 1)]",
+    "sql_time_exec": 0.002318250000826083,
+    "id": "2ca2eb44-e185-4f36-8641-368b04d7f7c7",
+    "query": "Count the number of transactions in the last 60 days per account."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE CAST(LEFT(tem, LENGTH(tem)-1) AS INT) > 12 AND RIGHT(tem, 1) = 'M'",
+    "sql_time_llm_gen": 4.163795708998805,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.004369292000774294,
+    "id": "d2e35a2b-ba5d-441f-b89a-84e1f18f4712",
+    "query": "Count the number of deposits with term greater than 12 months."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE interest > 6.0;",
+    "sql_time_llm_gen": 5.3939661660042475,
+    "sql_answer": "[(89,)]",
+    "sql_time_exec": 0.0013873749994672835,
+    "id": "3db77a14-8b08-4c04-8671-6fe28944816e",
+    "query": "Count the number of loans with interest rate above 6%."
+  },
+  {
+    "sql_command": "SELECT branches.brc, COUNT(accounts.id) AS account_count\nFROM accounts\nJOIN customers ON accounts.cus_id = customers.id\nJOIN branches ON customers.brc = branches.id\nWHERE accounts.acc_bal > 5000\nGROUP BY branches.brc\nORDER BY account_count DESC\nLIMIT 5;",
+    "sql_time_llm_gen": 9.679496500000823,
+    "sql_answer": "[('Harris Ltd', 80), ('Gallagher-Mullen', 73), ('Anthony, Rogers and Fields', 72), ('Allison Group', 41)]",
+    "sql_time_exec": 0.004184165998594835,
+    "id": "acaec589-7f13-4069-9e6b-61a5e561010e",
+    "query": "Count the number of accounts with balance above 5000 per branch."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE tran_amt BETWEEN 50 AND 200;",
+    "sql_time_llm_gen": 6.464095374998578,
+    "sql_answer": "[(13,)]",
+    "sql_time_exec": 0.001817500000470318,
+    "id": "84d8abcf-a19a-4d8d-aecf-4e5f2a07a64e",
+    "query": "Count the number of transactions with amount between 50 and 200."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE de_st_dt > '2023-12-31';",
+    "sql_time_llm_gen": 5.737203374999808,
+    "sql_answer": "[(200,)]",
+    "sql_time_exec": 0.0009400419949088246,
+    "id": "aaac5341-0d12-409d-bd3a-f08f2263722b",
+    "query": "Count the number of deposits with start date after 2023."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE ln_en_dt < '2025-01-01';",
+    "sql_time_llm_gen": 6.183735874998092,
+    "sql_answer": "[(5,)]",
+    "sql_time_exec": 0.0013787499992758967,
+    "id": "6d957359-d155-4e21-9a79-2f2a7bce8610",
+    "query": "Count the number of loans with end date before 2025."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM customers WHERE EXTRACT(YEAR FROM created_at) = 2023;",
+    "sql_time_llm_gen": 5.673844083001313,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0015154170032474212,
+    "id": "2fea290e-fd49-4720-8b78-56926c0c4513",
+    "query": "Count the number of customers with accounts created in 2023."
+  },
+  {
+    "sql_command": "SELECT COUNT(t.id) AS transaction_count FROM transactions t JOIN accounts a ON t.acc_id = a.id WHERE a.cus_id = 124;",
+    "sql_time_llm_gen": 7.489782625001681,
+    "sql_answer": "[(6,)]",
+    "sql_time_exec": 0.0014337920001707971,
+    "id": "bb8c32d6-5bb0-4371-8cc0-39257b2f97e4",
+    "query": "Count the number of transactions per customer with ID 124."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) AS deposit_count FROM deposits WHERE de_type_id = 124;",
+    "sql_time_llm_gen": 6.1269080830024905,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.002078582998365164,
+    "id": "d81b5dd1-ad5d-4998-9d83-5580243c6fc2",
+    "query": "Count the number of deposits per branch with ID 124."
+  },
+  {
+    "sql_command": "SELECT b.id AS branch_id, COUNT(l.id) AS loan_count \nFROM branches b\nJOIN customers c ON c.brc = b.id\nJOIN loans l ON l.cus_id = c.id\nWHERE b.id = 124 \nGROUP BY b.id;",
+    "sql_time_llm_gen": 13.51186495800357,
+    "sql_answer": "",
+    "sql_time_exec": 0.0024170420001610182,
+    "id": "3b18bfe3-2dcf-412b-b244-598826c08662",
+    "query": "Count the number of loans per branch with ID 124."
+  },
+  {
+    "sql_command": "SELECT COUNT(cards.id) AS card_count FROM cards JOIN customers ON cards.cus_id = customers.id WHERE customers.brc = 124;",
+    "sql_time_llm_gen": 6.653213833000336,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.002303791006852407,
+    "id": "dc6c976b-5035-4aee-9c56-88e3879a7e6d",
+    "query": "Count the number of cards per branch with ID 124."
+  },
+  {
+    "sql_command": "SELECT c.cus_name, COUNT(t.id) as transaction_count\nFROM transactions t\nJOIN accounts a ON t.acc_id = a.id\nJOIN customers c ON a.cus_id = c.id\nWHERE t.tran_amt > 1000\nGROUP BY c.id, c.cus_name\nLIMIT 5;",
+    "sql_time_llm_gen": 8.367439207999269,
+    "sql_answer": "[('Andrew Johnson', 4), ('Elizabeth Fisher', 2), ('Andrew Clay', 7), ('Traci Jones', 4), ('Hayley Vasquez', 5)]",
+    "sql_time_exec": 0.0028616249983315356,
+    "id": "bdb48d0d-6128-4899-854e-bc8778d7e217",
+    "query": "Count the number of transactions with amount greater than 1000 per customer."
+  },
+  {
+    "sql_command": "SELECT cus_id, COUNT(*) as deposit_count \nFROM deposits\nWHERE bal < 500\nGROUP BY cus_id\nLIMIT 5;",
+    "sql_time_llm_gen": 6.980473750001693,
+    "sql_answer": "[(42, 1), (64, 1)]",
+    "sql_time_exec": 0.0014460420061368495,
+    "id": "2d52cfa2-c858-4c00-bdf9-ad390b3f5496",
+    "query": "Count the number of deposits with balance below 500 per customer."
+  },
+  {
+    "sql_command": "SELECT cus_id, COUNT(*) as loan_count FROM loans WHERE bal < -1000 GROUP BY cus_id LIMIT 5;",
+    "sql_time_llm_gen": 6.745455249998486,
+    "sql_answer": "[(184, 1), (116, 1), (71, 2), (68, 1), (51, 2)]",
+    "sql_time_exec": 0.001286541999434121,
+    "id": "5f43319c-3b0d-4559-8614-609ec5ee8218",
+    "query": "Count the number of loans with balance below 1000 per customer."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT c.id) AS customer_count_2024\nFROM customers c\nJOIN accounts a ON c.id = a.cus_id\nJOIN transactions t ON a.id = t.acc_id\nWHERE EXTRACT(YEAR FROM t.tran_dt) = 2024;",
+    "sql_time_llm_gen": 5.160704834001081,
+    "sql_answer": "[(104,)]",
+    "sql_time_exec": 0.004815375003090594,
+    "id": "e0a766e7-b3cb-497b-8044-5382d1b77aa8",
+    "query": "Count the number of customers with transactions in 2024."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE tem IN ('3M', '4M', '5M', '6M')",
+    "sql_time_llm_gen": 5.805914667005709,
+    "sql_answer": "[(73,)]",
+    "sql_time_exec": 0.001833624999562744,
+    "id": "9c38a41c-00a3-4130-832e-1d39060b53cb",
+    "query": "Count the number of deposits with term between 3 and 6 months."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE pmt_term BETWEEN '6M' AND '12M';",
+    "sql_time_llm_gen": 4.756338957995467,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0015243329980876297,
+    "id": "7a1f9124-84ec-459c-ad27-5ed927989f0b",
+    "query": "Count the number of loans with payment term between 6 and 12 months."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) AS transaction_count FROM transactions WHERE updated_at >= NOW() - INTERVAL '30 days';",
+    "sql_time_llm_gen": 3.78343654100172,
+    "sql_answer": "[(1000,)]",
+    "sql_time_exec": 0.0026004590035881847,
+    "id": "079dc091-64bb-4f63-af36-daf7446e656b",
+    "query": "Count the number of transactions updated in the last 30 days."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM deposits WHERE bal > 1000;",
+    "sql_time_llm_gen": 7.696532624999236,
+    "sql_answer": "[(131,)]",
+    "sql_time_exec": 0.002075666001474019,
+    "id": "8187fe43-2a96-41bb-bc28-8b4183e0d8ba",
+    "query": "Count the number of customers with more than 1000 in deposits."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT acc_id) FROM transactions WHERE tran_dt >= NOW() - INTERVAL '15 days';",
+    "sql_time_llm_gen": 5.8730119169995305,
+    "sql_answer": "[(9,)]",
+    "sql_time_exec": 0.0024829579997458495,
+    "id": "3ab3eaf6-072c-4eb1-9cd9-1ec34aa834ef",
+    "query": "Count the number of accounts with transactions in the last 15 days."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE de_en_dt IS NOT NULL AND de_en_dt <= CURRENT_DATE + INTERVAL '12 months';",
+    "sql_time_llm_gen": 6.192546875005064,
+    "sql_answer": "[(21,)]",
+    "sql_time_exec": 0.0026084159981110133,
+    "id": "3d973dc8-ece4-4a08-834b-e087f0e99656",
+    "query": "Count the number of deposits with end date in the next 12 months."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE interest BETWEEN 4.0000 AND 6.0000;",
+    "sql_time_llm_gen": 6.481135834001179,
+    "sql_answer": "[(33,)]",
+    "sql_time_exec": 0.0018986669965670444,
+    "id": "4a6220b3-7807-475d-86b0-dcc7d4587d64",
+    "query": "Count the number of loans with interest rate between 4% and 6%."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT c.id) AS num_customers_with_cards_and_loans\nFROM customers c\nJOIN cards ca ON c.id = ca.cus_id\nJOIN loans l ON c.id = l.cus_id;",
+    "sql_time_llm_gen": 6.745190583002113,
+    "sql_answer": "[(70,)]",
+    "sql_time_exec": 0.002851124998414889,
+    "id": "aab74d05-9269-414e-b4fc-d6b58cea4ef8",
+    "query": "Count the number of customers with cards and loans."
+  },
+  {
+    "sql_command": "SELECT dt.de_type, COUNT(t.id) as transaction_count\nFROM transactions t\nJOIN deposits d ON t.acc_id = d.id\nJOIN deposit_types dt ON d.de_type_id = dt.id\nWHERE d.de_type_id = 124\nGROUP BY dt.de_type\nLIMIT 5;",
+    "sql_time_llm_gen": 7.431802167004207,
+    "sql_answer": "",
+    "sql_time_exec": 0.002636708006320987,
+    "id": "773480c4-2d77-428b-bf59-14ff1548509f",
+    "query": "Count the number of transactions per deposit type with ID 124."
+  },
+  {
+    "sql_command": "SELECT loan_types.ln_type, COUNT(loans.id) AS loan_count \nFROM loans\nJOIN loan_types ON loans.ln_type_id = loan_types.id\nWHERE loan_types.id = 124\nGROUP BY loan_types.ln_type;",
+    "sql_time_llm_gen": 10.302049083002203,
+    "sql_answer": "",
+    "sql_time_exec": 0.0013544579996960238,
+    "id": "b8bf7e3b-5e22-4b80-9336-fc5f086471fb",
+    "query": "Count the number of loans per loan type with ID 124."
+  },
+  {
+    "sql_command": "SELECT dt.de_type, COUNT(d.id) AS deposit_count \nFROM deposits d\nJOIN deposit_types dt ON d.de_type_id = dt.id\nWHERE d.de_type_id = 124\nGROUP BY dt.de_type\nLIMIT 5;",
+    "sql_time_llm_gen": 6.96636587499961,
+    "sql_answer": "",
+    "sql_time_exec": 0.0021424160004244186,
+    "id": "6c696819-5f91-417c-b701-c46c75f7d2f0",
+    "query": "Count the number of deposits per deposit type with ID 124."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT acc_id) AS account_count FROM transactions WHERE tran_amt > 500;",
+    "sql_time_llm_gen": 5.490289916997426,
+    "sql_answer": "[(238,)]",
+    "sql_time_exec": 0.0023473330002161674,
+    "id": "263514db-7635-445e-a747-0ed35803f94b",
+    "query": "Count the number of accounts with more than 500 in transactions."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT a.cus_id) AS customer_count\nFROM accounts a\nJOIN loans l ON a.cus_id = l.cus_id;",
+    "sql_time_llm_gen": 6.8909641249993,
+    "sql_answer": "[(101,)]",
+    "sql_time_exec": 0.0025907079980242997,
+    "id": "5f63a262-c056-492e-84e8-b18f349d3ba7",
+    "query": "Count the number of customers with loans and accounts."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE tran_amt > 500 AND tran_dt >= NOW() - INTERVAL '6 months';",
+    "sql_time_llm_gen": 5.58494312500261,
+    "sql_answer": "[(37,)]",
+    "sql_time_exec": 0.0021600830004899763,
+    "id": "308d4450-b988-49ae-80e4-eb86d21fad8f",
+    "query": "Count the number of transactions with amount above 500 in the last 6 months."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cust.id) AS unique_customer_count\nFROM transactions tran\nJOIN accounts acc ON tran.acc_id = acc.id\nJOIN customers cust ON acc.cus_id = cust.id\nWHERE tran.tran_dt >= NOW() - INTERVAL '1 year';",
+    "sql_time_llm_gen": 8.372952666999481,
+    "sql_answer": "[(100,)]",
+    "sql_time_exec": 0.0018229999986942858,
+    "id": "4d9be2a7-ae1a-4835-a4d2-9a2c3c5b0644",
+    "query": "Count the number of unique customers with transactions in the last year."
+  },
+  {
+    "sql_command": "SELECT cus_id, COUNT(*) AS number_of_deposits \nFROM deposits \nWHERE bal > 2000 \nGROUP BY cus_id LIMIT 5;",
+    "sql_time_llm_gen": 6.106901874998584,
+    "sql_answer": "[(116, 1), (184, 2), (71, 2), (68, 2), (51, 2)]",
+    "sql_time_exec": 0.002208874997450039,
+    "id": "4612adbe-b00d-4ab9-a4ec-5a052def93d0",
+    "query": "Count the number of deposits with balance above 2000 per customer."
+  },
+  {
+    "sql_command": "SELECT c.id AS customer_id, c.cus_name AS customer_name, COUNT(l.id) AS loan_count \nFROM customers c\nJOIN loans l ON c.id = l.cus_id\nWHERE l.interest < 4.0\nGROUP BY c.id, c.cus_name\nLIMIT 5;",
+    "sql_time_llm_gen": 7.5328105419976055,
+    "sql_answer": "[(3, 'Anthony Cox', 1), (10, 'Sara Jackson', 1), (13, 'Michael Oconnor', 1), (15, 'Cynthia Gardner', 1), (16, 'Jennifer Bryan', 1)]",
+    "sql_time_exec": 0.0027870410049217753,
+    "id": "d71f4275-93c8-48bf-9532-fc1cabb04bcf",
+    "query": "Count the number of loans with interest rate below 4% per customer."
+  },
+  {
+    "sql_command": "SELECT cus_id, COUNT(*) as num_of_cards_expiring \nFROM cards \nWHERE EXTRACT(YEAR FROM card_exp_date) = 2027 \nGROUP BY cus_id \nLIMIT 5;",
+    "sql_time_llm_gen": 6.350137792003807,
+    "sql_answer": "[(24, 1), (25, 1), (26, 1), (31, 1), (33, 1)]",
+    "sql_time_exec": 0.0009912499954225495,
+    "id": "1d770d0d-9ecd-4bac-88a8-b16da9ea6303",
+    "query": "Count the number of cards expiring in 2027 per customer."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM deposits WHERE EXTRACT(YEAR FROM de_st_dt) = 2024;",
+    "sql_time_llm_gen": 5.73521383300249,
+    "sql_answer": "[(45,)]",
+    "sql_time_exec": 0.0010254999942844734,
+    "id": "81f803f9-1aa7-424b-a6a6-19dfe68e6c2b",
+    "query": "Count the number of customers with deposits starting in 2024."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE acc_id = 125;",
+    "sql_time_llm_gen": 6.590720542000781,
+    "sql_answer": "[(1,)]",
+    "sql_time_exec": 0.0009290840025641955,
+    "id": "57ee602e-6f01-4ba3-883b-b0bae1b3864e",
+    "query": "Count the number of transactions per account with ID 125."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE cus_id = 125;",
+    "sql_time_llm_gen": 4.323187082998629,
+    "sql_answer": "[(2,)]",
+    "sql_time_exec": 0.0010024579969467595,
+    "id": "49f3a00b-ca66-49c8-a494-d798edad13d4",
+    "query": "Count the number of deposits per customer with ID 125."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE cus_id = 125;",
+    "sql_time_llm_gen": 6.228787792002549,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0023501669929828495,
+    "id": "38663cca-623a-499b-acb6-199ff789e641",
+    "query": "Count the number of loans per customer with ID 125."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM cards WHERE cus_id = 125;",
+    "sql_time_llm_gen": 3.6787422920024255,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0019964160019299015,
+    "id": "df1532e0-7c1c-4973-91e5-aaa2e5e97fb6",
+    "query": "Count the number of cards per customer with ID 125."
+  },
+  {
+    "sql_command": "SELECT b.id, COUNT(a.id) AS account_count \nFROM branches b \nJOIN customers c ON b.id = c.brc \nJOIN accounts a ON c.id = a.cus_id \nWHERE b.id = 125 \nGROUP BY b.id;",
+    "sql_time_llm_gen": 7.980751458002487,
+    "sql_answer": "",
+    "sql_time_exec": 0.002089290996082127,
+    "id": "2dd695da-e084-4f42-ad92-fc62ac79f5d2",
+    "query": "Count the number of accounts per branch with ID 125."
+  },
+  {
+    "sql_command": "SELECT COUNT(t.id) AS transaction_count, c.brc \nFROM transactions t\nJOIN accounts a ON t.acc_id = a.id\nJOIN customers c ON a.cus_id = c.id\nWHERE t.tran_amt > (\n    SELECT AVG(t2.tran_amt)\n    FROM transactions t2\n    JOIN accounts a2 ON t2.acc_id = a2.id\n    JOIN customers c2 ON a2.cus_id = c2.id\n    WHERE c2.brc = c.brc\n)\nGROUP BY c.brc\nLIMIT 5;",
+    "sql_time_llm_gen": 11.9795553330041,
+    "sql_answer": "[(136, 1), (96, 3), (138, 2), (137, 4)]",
+    "sql_time_exec": 0.1395265829996788,
+    "id": "838aaa91-720b-47d6-8f2e-c98080051903",
+    "query": "Count the number of transactions with amount greater than average per branch."
+  },
+  {
+    "sql_command": "SELECT de_type_id, COUNT(*) AS num_deposits_above_avg\nFROM deposits\nWHERE bal > (SELECT AVG(bal) FROM deposits)\nGROUP BY de_type_id\nLIMIT 5;",
+    "sql_time_llm_gen": 8.537990583005012,
+    "sql_answer": "[(8, 11), (7, 11), (10, 9), (9, 9), (1, 10)]",
+    "sql_time_exec": 0.0015730830054963008,
+    "id": "fc2c3540-142b-49ac-990a-313b1697098b",
+    "query": "Count the number of deposits with balance above average per customer type."
+  },
+  {
+    "sql_command": "SELECT lt.ln_type, COUNT(l.id) AS num_loans_above_avg\nFROM loans l\nJOIN loan_types lt ON l.ln_type_id = lt.id\nGROUP BY lt.id, lt.ln_type\nHAVING AVG(l.bal) < (SELECT AVG(l2.bal) FROM loans l2 WHERE l2.ln_type_id = lt.id)\nLIMIT 5;",
+    "sql_time_llm_gen": 8.931014500005404,
+    "sql_answer": "",
+    "sql_time_exec": 0.00338483299856307,
+    "id": "7968421f-ec88-4ae0-be83-98afc42a78fd",
+    "query": "Count the number of loans with balance above average per loan type."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) AS customer_count\nFROM accounts\nGROUP BY cus_id\nHAVING COUNT(acc_num) > 3;",
+    "sql_time_llm_gen": 5.527469042004668,
+    "sql_answer": "[(1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,), (1,)]",
+    "sql_time_exec": 0.001636458000575658,
+    "id": "6d674149-fec4-46c5-bece-eab41c369687",
+    "query": "Count the number of customers with more than three accounts."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) AS customer_count FROM deposits GROUP BY cus_id HAVING COUNT(id) > 3;",
+    "sql_time_llm_gen": 7.169280292000622,
+    "sql_answer": "[(1,), (1,), (1,), (1,), (1,)]",
+    "sql_time_exec": 0.0023739169992040843,
+    "id": "779e911c-e521-42c1-81ee-39b9036ebd4b",
+    "query": "Count the number of customers with more than three deposits."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM (SELECT cus_id FROM loans GROUP BY cus_id HAVING COUNT(*) > 3) AS subquery;",
+    "sql_time_llm_gen": 5.727852333999181,
+    "sql_answer": "[(4,)]",
+    "sql_time_exec": 0.0012602909991983324,
+    "id": "34c1f631-9c26-4333-93c8-9c72fc5d5c50",
+    "query": "Count the number of customers with more than three loans."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM cards GROUP BY cus_id HAVING COUNT(id) > 3;",
+    "sql_time_llm_gen": 7.38873945800151,
+    "sql_answer": "[(1,), (1,), (1,)]",
+    "sql_time_exec": 0.002157959002943244,
+    "id": "87a2ae0b-bf23-4ae4-839c-538b734110b4",
+    "query": "Count the number of customers with more than three cards."
+  },
+  {
+    "sql_command": "SELECT acc_id, COUNT(*) AS transaction_count \nFROM transactions \nWHERE tran_dt >= NOW() - INTERVAL '90 days' \nGROUP BY acc_id \nORDER BY transaction_count DESC \nLIMIT 5;",
+    "sql_time_llm_gen": 7.5209585830016294,
+    "sql_answer": "[(22, 3), (119, 1), (46, 1), (286, 1), (206, 1)]",
+    "sql_time_exec": 0.002513667001039721,
+    "id": "71875c1c-dbbc-4978-ad7f-19321818a616",
+    "query": "Count the number of transactions in the last 90 days per account."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE CAST(SUBSTRING(tem FROM '\\d+') AS INTEGER) > 24;",
+    "sql_time_llm_gen": 6.080762291996507,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.002017874998273328,
+    "id": "7ddec252-44be-4907-b2ef-947a23c761a1",
+    "query": "Count the number of deposits with term greater than 24 months."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE interest > 7;",
+    "sql_time_llm_gen": 5.525487708000583,
+    "sql_answer": "[(69,)]",
+    "sql_time_exec": 0.0017266249997192062,
+    "id": "95bc5180-01e1-4d25-bd01-08cee0951a41",
+    "query": "Count the number of loans with interest rate above 7%."
+  },
+  {
+    "sql_command": "SELECT branches.brc, COUNT(accounts.id) AS num_high_balance_accounts\nFROM accounts\nJOIN customers ON accounts.cus_id = customers.id\nJOIN branches ON customers.brc = branches.id\nWHERE accounts.acc_bal > 10000\nGROUP BY branches.id\nLIMIT 5;",
+    "sql_time_llm_gen": 9.155872750001436,
+    "sql_answer": "[('Allison Group', 39), ('Harris Ltd', 77), ('Gallagher-Mullen', 70), ('Anthony, Rogers and Fields', 69)]",
+    "sql_time_exec": 0.001654082996537909,
+    "id": "7cf508f0-4ddf-4290-b869-cbd17162a00d",
+    "query": "Count the number of accounts with balance above 10000 per branch."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE tran_amt BETWEEN 1000 AND 5000;",
+    "sql_time_llm_gen": 6.238039250005386,
+    "sql_answer": "[(430,)]",
+    "sql_time_exec": 0.00122779199591605,
+    "id": "332256fb-3cd3-48a8-b86f-85f0a266ce52",
+    "query": "Count the number of transactions with amount between 1000 and 5000."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE de_st_dt > '2022-01-01';",
+    "sql_time_llm_gen": 4.11940487499669,
+    "sql_answer": "[(200,)]",
+    "sql_time_exec": 0.002048333997663576,
+    "id": "2f771eb5-f90b-4a18-aabd-72376f474617",
+    "query": "Count the number of deposits with start date after 2022."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE ln_en_dt < '2024-01-01';",
+    "sql_time_llm_gen": 5.516844959005539,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.012558125003124587,
+    "id": "9f763b93-7af8-4659-ba7c-0b588ed69ec8",
+    "query": "Count the number of loans with end date before 2024."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM customers WHERE EXTRACT(YEAR FROM created_at) = 2022;",
+    "sql_time_llm_gen": 7.984122875001049,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.002044250002654735,
+    "id": "40a70a8c-7853-4a27-894c-bb8f7913ee5a",
+    "query": "Count the number of customers with accounts created in 2022."
+  },
+  {
+    "sql_command": "SELECT COUNT(t.id) as transaction_count\nFROM transactions t\nJOIN accounts a ON t.acc_id = a.id\nWHERE a.cus_id = 125;",
+    "sql_time_llm_gen": 7.1000227499971515,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0016324580064974725,
+    "id": "2d9bb845-d84f-4bc1-a547-611c4bc8bc45",
+    "query": "Count the number of transactions per customer with ID 125."
+  },
+  {
+    "sql_command": "SELECT COUNT(d.id) AS deposit_count\nFROM deposits d\nJOIN customers c ON d.cus_id = c.id\nWHERE c.brc = 125;",
+    "sql_time_llm_gen": 9.321157124999445,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0023530000034952536,
+    "id": "d00a671c-5a60-4a4f-b1c3-bcf440d75417",
+    "query": "Count the number of deposits per branch with ID 125."
+  },
+  {
+    "sql_command": "SELECT b.id AS branch_id, COUNT(c.id) AS card_count\nFROM branches b\nJOIN customers cu ON b.id = cu.brc\nJOIN cards c ON cu.id = c.cus_id\nWHERE b.id = 125\nGROUP BY b.id;",
+    "sql_time_llm_gen": 8.608275334001519,
+    "sql_answer": "",
+    "sql_time_exec": 0.00234341699979268,
+    "id": "cf45e51c-1995-4f27-82d2-fe35d655e115",
+    "query": "Count the number of cards per branch with ID 125."
+  },
+  {
+    "sql_command": "SELECT c.cus_name, COUNT(t.id) AS transaction_count\nFROM transactions t\nJOIN accounts a ON t.acc_id = a.id\nJOIN customers c ON a.cus_id = c.id\nWHERE t.tran_amt > 2000\nGROUP BY c.cus_name\nORDER BY transaction_count DESC\nLIMIT 5;",
+    "sql_time_llm_gen": 8.794703042003675,
+    "sql_answer": "[('Daniel Johnson', 11), ('Mckenzie Price', 8), ('John Watson', 8), ('Luke Hansen', 7), ('Deborah Hamilton', 7)]",
+    "sql_time_exec": 0.06386258299608016,
+    "id": "3c0b207d-0e68-417c-8fd3-88d0c929ae8f",
+    "query": "Count the number of transactions with amount greater than 2000 per customer."
+  },
+  {
+    "sql_command": "SELECT c.cus_name, COUNT(d.id) AS deposit_count \nFROM customers c \nJOIN deposits d ON c.id = d.cus_id \nWHERE d.bal < 2000 \nGROUP BY c.cus_name \nORDER BY deposit_count DESC \nLIMIT 5;",
+    "sql_time_llm_gen": 8.19776804200228,
+    "sql_answer": "[('Emily Greene', 1), ('Lisa Hurley', 1), ('Mark Hawkins', 1), ('Nicholas Hayes', 1)]",
+    "sql_time_exec": 0.0015482500020880252,
+    "id": "1b5f0ff5-5960-413a-8541-1bb24241287b",
+    "query": "Count the number of deposits with balance below 2000 per customer."
+  },
+  {
+    "sql_command": "SELECT cus_id, COUNT(*) AS loan_count FROM loans WHERE bal > -2000 GROUP BY cus_id LIMIT 5;",
+    "sql_time_llm_gen": 7.816166042000987,
+    "sql_answer": "[(140, 1), (121, 1), (43, 1), (137, 1), (108, 1)]",
+    "sql_time_exec": 0.0022380420050467364,
+    "id": "062b291a-3666-45bd-9ab4-523cdede0498",
+    "query": "Count the number of loans with balance below 2000 per customer."
+  },
+  {
+    "sql_command": "SELECT cus_id, COUNT(*) AS num_expiring_cards FROM cards WHERE card_exp_date < '2024-01-01' GROUP BY cus_id ORDER BY num_expiring_cards DESC LIMIT 5;",
+    "sql_time_llm_gen": 7.699661165999714,
+    "sql_answer": "",
+    "sql_time_exec": 0.00217733300087275,
+    "id": "b55b444f-e906-49f7-a170-87c986fc0b01",
+    "query": "Count the number of cards expiring before 2024 per customer."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT c.id) AS customer_count FROM customers c JOIN accounts a ON c.id = a.cus_id JOIN transactions t ON a.id = t.acc_id WHERE EXTRACT(YEAR FROM t.tran_dt) = 2023;",
+    "sql_time_llm_gen": 7.811029875003442,
+    "sql_answer": "[(107,)]",
+    "sql_time_exec": 0.0020225420012138784,
+    "id": "de19eafe-0c17-4842-9ca5-898352f05b64",
+    "query": "Count the number of customers with transactions in 2023."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE tem >= '12M' AND tem <= '24M';",
+    "sql_time_llm_gen": 3.7461279170020134,
+    "sql_answer": "[(83,)]",
+    "sql_time_exec": 0.002155207999749109,
+    "id": "20593f96-dc74-4286-bbc8-1cdaeab20b78",
+    "query": "Count the number of deposits with term between 12 and 24 months."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE CAST(REPLACE(pmt_term, 'M', '') AS INTEGER) BETWEEN 24 AND 36;",
+    "sql_time_llm_gen": 14.332207708001079,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.002074791002087295,
+    "id": "ae1c7e62-a969-437c-a911-2c903f720f7a",
+    "query": "Count the number of loans with payment term between 24 and 36 months."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE updated_at >= NOW() - INTERVAL '60 days'",
+    "sql_time_llm_gen": 6.138906500003941,
+    "sql_answer": "[(1000,)]",
+    "sql_time_exec": 0.001970083001651801,
+    "id": "f6454690-37af-4813-b676-05f860d0b002",
+    "query": "Count the number of transactions updated in the last 60 days."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM deposits WHERE bal > 2000;",
+    "sql_time_llm_gen": 6.566775250001228,
+    "sql_answer": "[(131,)]",
+    "sql_time_exec": 0.0020935829961672425,
+    "id": "28b1f2d5-7078-4fa3-aae5-69be9d11cca0",
+    "query": "Count the number of customers with more than 2000 in deposits."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT acc_id) FROM transactions WHERE tran_dt >= NOW() - INTERVAL '60 days';",
+    "sql_time_llm_gen": 5.657541167005547,
+    "sql_answer": "[(29,)]",
+    "sql_time_exec": 0.0014950000040698797,
+    "id": "abc73626-bcae-4903-8597-13b2f916e755",
+    "query": "Count the number of accounts with transactions in the last 60 days."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE de_en_dt >= CURRENT_DATE AND de_en_dt < CURRENT_DATE + INTERVAL '3 months';",
+    "sql_time_llm_gen": 5.990655124995101,
+    "sql_answer": "[(4,)]",
+    "sql_time_exec": 0.0026497079961700365,
+    "id": "88014337-d659-4499-8b20-c873e8631437",
+    "query": "Count the number of deposits with end date in the next 3 months."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE interest BETWEEN 0.02 AND 0.04;",
+    "sql_time_llm_gen": 5.535943582995969,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0019520420028129593,
+    "id": "9c3e89fc-9e5a-42ab-9381-90106df09ef0",
+    "query": "Count the number of loans with interest rate between 2% and 4%."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT customers.id) AS customer_count\nFROM customers\nJOIN deposits ON customers.id = deposits.cus_id\nJOIN cards ON customers.id = cards.cus_id;",
+    "sql_time_llm_gen": 6.269994624999526,
+    "sql_answer": "[(66,)]",
+    "sql_time_exec": 0.002492583000275772,
+    "id": "2e8b5028-e3a8-4ac5-a003-3bcfe4d313a5",
+    "query": "Count the number of customers with deposits and cards."
+  },
+  {
+    "sql_command": "SELECT dt.de_type, COUNT(t.id) as transaction_count\nFROM transactions t\nJOIN deposits d ON t.acc_id = d.id\nJOIN deposit_types dt ON d.de_type_id = dt.id\nWHERE d.id = 125\nGROUP BY dt.de_type;",
+    "sql_time_llm_gen": 7.277787500002887,
+    "sql_answer": "[('Business Loan', 1)]",
+    "sql_time_exec": 0.002394584000285249,
+    "id": "4628a25d-9673-4cff-9abb-ae301df5e45d",
+    "query": "Count the number of transactions per deposit type with ID 125."
+  },
+  {
+    "sql_command": "SELECT COUNT(l.id) AS loan_count, lt.ln_type FROM loans l JOIN loan_types lt ON l.ln_type_id = lt.id WHERE l.ln_type_id = 125 GROUP BY lt.ln_type;",
+    "sql_time_llm_gen": 8.58476741600316,
+    "sql_answer": "",
+    "sql_time_exec": 0.002091875001497101,
+    "id": "a1bed20f-f97f-434b-a6b0-2a522dbb262b",
+    "query": "Count the number of loans per loan type with ID 125."
+  },
+  {
+    "sql_command": "SELECT dt.de_type, COUNT(d.id) as deposit_count \nFROM deposits d\nJOIN deposit_types dt ON d.de_type_id = dt.id\nWHERE d.de_type_id = 125\nGROUP BY dt.de_type\nLIMIT 5;",
+    "sql_time_llm_gen": 7.167546584001684,
+    "sql_answer": "",
+    "sql_time_exec": 0.002289167001435999,
+    "id": "6eb98794-b84a-42ac-bb12-c2e973bf365f",
+    "query": "Count the number of deposits per deposit type with ID 125."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT acc_id) FROM transactions WHERE tran_amt > 2000;",
+    "sql_time_llm_gen": 5.712842167005874,
+    "sql_answer": "[(198,)]",
+    "sql_time_exec": 0.002322250002180226,
+    "id": "53adfe1a-b673-4858-a58f-5652a0496c5c",
+    "query": "Count the number of accounts with more than 2000 in transactions."
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT c.id) AS customer_count FROM customers c JOIN accounts a ON c.id = a.cus_id JOIN loans l ON c.id = l.cus_id;",
+    "sql_time_llm_gen": 6.123423332996026,
+    "sql_answer": "[(101,)]",
+    "sql_time_exec": 0.0022556250041816384,
+    "id": "f0ffcc51-4b85-461f-8e11-c49a2fe114d4",
+    "query": "Count the number of customers with accounts and loans."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE tran_amt > 100 AND tran_dt >= NOW() - INTERVAL '3 months'",
+    "sql_time_llm_gen": 7.2562429170066025,
+    "sql_answer": "[(15,)]",
+    "sql_time_exec": 0.002337165999051649,
+    "id": "31f46726-e652-4bd7-a398-3af6cf81217e",
+    "query": "Count the number of transactions with amount above 100 in the last 3 months."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE acc_id = 126;",
+    "sql_time_llm_gen": 4.943280958003015,
+    "sql_answer": "[(2,)]",
+    "sql_time_exec": 0.001112250000005588,
+    "id": "3db3a75d-976e-4455-af5e-1081aa5369bf",
+    "query": "Count the number of transactions per account with ID 126."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE cus_id = 126;",
+    "sql_time_llm_gen": 8.557310208001581,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.001131000004534144,
+    "id": "441f8962-17c1-490c-a570-c1a72e3c3e70",
+    "query": "Count the number of deposits per customer with ID 126."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) AS loan_count FROM loans WHERE cus_id = 126;",
+    "sql_time_llm_gen": 3.8341956669974024,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0019931670030928217,
+    "id": "7c4837b5-77f3-447a-926c-7e9afebbff4f",
+    "query": "Count the number of loans per customer with ID 126."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM cards WHERE cus_id = 126;",
+    "sql_time_llm_gen": 3.8582304579977063,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0019469170001684688,
+    "id": "47dbc525-f894-40dd-85cb-dd51e1154f89",
+    "query": "Count the number of cards per customer with ID 126."
+  },
+  {
+    "sql_command": "SELECT branches.id AS branch_id, branches.brc, COUNT(accounts.id) AS account_count FROM branches LEFT JOIN accounts ON branches.id = accounts.cus_id WHERE branches.id = 126 GROUP BY branches.id, branches.brc;",
+    "sql_time_llm_gen": 12.262646916999074,
+    "sql_answer": "",
+    "sql_time_exec": 0.001426166003511753,
+    "id": "5af9c97a-22b5-4c0b-994a-096c65a036c5",
+    "query": "Count the number of accounts per branch with ID 126."
+  },
+  {
+    "sql_command": "SELECT COUNT(t.id) AS transaction_count FROM transactions t JOIN accounts a ON t.acc_id = a.id WHERE a.cus_id = 126;",
+    "sql_time_llm_gen": 6.79173958300089,
+    "sql_answer": "[(4,)]",
+    "sql_time_exec": 0.002295458994922228,
+    "id": "75712724-9760-4de7-89da-d9e1a20dba0a",
+    "query": "Count the number of transactions per customer with ID 126."
+  },
+  {
+    "sql_command": "SELECT COUNT(deposits.id) AS deposit_count FROM deposits JOIN customers ON deposits.cus_id = customers.id WHERE customers.brc = 126;",
+    "sql_time_llm_gen": 14.369307125001797,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0016126249975059181,
+    "id": "3767abbc-8e65-4b4d-a688-da5b732f7870",
+    "query": "Count the number of deposits per branch with ID 126."
+  },
+  {
+    "sql_command": "SELECT COUNT(loans.id) FROM loans JOIN customers ON loans.cus_id = customers.id WHERE customers.brc = 126;",
+    "sql_time_llm_gen": 9.617075791997195,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0014696660000481643,
+    "id": "92a8cef1-d13f-40b1-aef7-eb6011a26e55",
+    "query": "Count the number of loans per branch with ID 126."
+  },
+  {
+    "sql_command": "SELECT COUNT(cards.id) as card_count FROM cards JOIN customers ON cards.cus_id = customers.id WHERE customers.brc = 126;",
+    "sql_time_llm_gen": 6.879836250001972,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0013968749990453944,
+    "id": "5dc2a160-6b45-4791-9b80-406c06f5c152",
+    "query": "Count the number of cards per branch with ID 126."
+  },
+  {
+    "sql_command": "SELECT lt.id AS loan_type_id, lt.ln_type, COUNT(*) AS loan_count\nFROM loans l\nJOIN loan_types lt ON l.ln_type_id = lt.id\nWHERE l.ln_type_id = 126\nGROUP BY lt.id, lt.ln_type\nLIMIT 5;",
+    "sql_time_llm_gen": 6.734770417002437,
+    "sql_answer": "",
+    "sql_time_exec": 0.0022588330029975623,
+    "id": "66fb3c83-b4c7-4dd6-a00d-942cbe4a2447",
+    "query": "Count the number of loans per loan type with ID 126."
+  },
+  {
+    "sql_command": "SELECT dt.de_type, COUNT(d.id) as number_of_deposits\nFROM deposits d\nJOIN deposit_types dt ON d.de_type_id = dt.id\nWHERE d.de_type_id = 126\nGROUP BY dt.de_type\nLIMIT 5;",
+    "sql_time_llm_gen": 5.200837374999537,
+    "sql_answer": "",
+    "sql_time_exec": 0.0011184579998371191,
+    "id": "13ecd21c-fca2-4a65-b9bb-7921bd04caba",
+    "query": "Count the number of deposits per deposit type with ID 126."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE acc_id = 127;",
+    "sql_time_llm_gen": 5.590806790998613,
+    "sql_answer": "[(2,)]",
+    "sql_time_exec": 0.0019924170046579093,
+    "id": "dac61d45-f0f3-4d45-b486-de4d57220b83",
+    "query": "Count the number of transactions per account with ID 127."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE cus_id = 127;",
+    "sql_time_llm_gen": 5.503591040993342,
+    "sql_answer": "[(3,)]",
+    "sql_time_exec": 0.002124374994309619,
+    "id": "bc8a507c-6a1e-4cd9-91ff-7e73574d0b0e",
+    "query": "Count the number of deposits per customer with ID 127."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) AS loan_count FROM loans WHERE cus_id = 127;",
+    "sql_time_llm_gen": 5.411605708999559,
+    "sql_answer": "[(1,)]",
+    "sql_time_exec": 0.0021582919944194146,
+    "id": "aa0dce6a-f469-43d7-a191-5e5ce25f3a48",
+    "query": "Count the number of loans per customer with ID 127."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM cards WHERE cus_id = 127;",
+    "sql_time_llm_gen": 5.832098792001489,
+    "sql_answer": "[(1,)]",
+    "sql_time_exec": 0.00200349999795435,
+    "id": "68f502f5-3dd4-44b7-b5e1-48b801cb8afd",
+    "query": "Count the number of cards per customer with ID 127."
+  },
+  {
+    "sql_command": "SELECT branches.id AS branch_id, branches.brc AS branch_name, COUNT(accounts.id) AS num_accounts \nFROM accounts \nJOIN customers ON accounts.cus_id = customers.id \nJOIN branches ON customers.brc = branches.id \nWHERE branches.id = 127 \nGROUP BY branches.id, branches.brc;",
+    "sql_time_llm_gen": 8.613165624999965,
+    "sql_answer": "",
+    "sql_time_exec": 0.0011287919987807982,
+    "id": "d742add0-c8cd-44b0-b2b9-2ee6862c8c71",
+    "query": "Count the number of accounts per branch with ID 127."
+  },
+  {
+    "sql_command": "SELECT COUNT(t.id) AS transaction_count \nFROM transactions t \nJOIN accounts a ON t.acc_id = a.id \nWHERE a.cus_id = 127;",
+    "sql_time_llm_gen": 7.10337887499918,
+    "sql_answer": "[(4,)]",
+    "sql_time_exec": 0.0024386659933952615,
+    "id": "59843346-eddd-4166-acb3-4d9f1067c71b",
+    "query": "Count the number of transactions per customer with ID 127."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) AS loan_count FROM loans WHERE ln_id = '127' GROUP BY ln_type_id LIMIT 5;",
+    "sql_time_llm_gen": 12.890810124998097,
+    "sql_answer": "",
+    "sql_time_exec": 0.0019416669965721667,
+    "id": "ec8f33cc-71a0-4d01-9a16-e29ac49c4a69",
+    "query": "Count the number of loans per branch with ID 127."
+  },
+  {
+    "sql_command": "SELECT cus_id, COUNT(*) as num_of_cards FROM cards WHERE cus_id = 127 GROUP BY cus_id LIMIT 5;",
+    "sql_time_llm_gen": 7.417502124997554,
+    "sql_answer": "[(127, 1)]",
+    "sql_time_exec": 0.00181154200254241,
+    "id": "0d07e340-f26f-4a2c-b4e5-feacc73bd523",
+    "query": "Count the number of cards per branch with ID 127."
+  },
+  {
+    "sql_command": "SELECT dt.de_type, COUNT(t.id) AS transaction_count \nFROM transactions t \nJOIN deposits d ON t.acc_id = d.id \nJOIN deposit_types dt ON d.de_type_id = dt.id \nWHERE d.de_type_id = 127 \nGROUP BY dt.de_type \nLIMIT 5;",
+    "sql_time_llm_gen": 6.8585882499974105,
+    "sql_answer": "",
+    "sql_time_exec": 0.002474207998602651,
+    "id": "8a4a6bd1-dad7-4d5d-a71e-d3c54be7af88",
+    "query": "Count the number of transactions per deposit type with ID 127."
+  },
+  {
+    "sql_command": "SELECT lt.ln_type, COUNT(l.id) AS number_of_loans \nFROM loans l \nJOIN loan_types lt ON l.ln_type_id = lt.id \nWHERE l.ln_type_id = 127 \nGROUP BY lt.ln_type;",
+    "sql_time_llm_gen": 6.858453375003592,
+    "sql_answer": "",
+    "sql_time_exec": 0.0022521249993587844,
+    "id": "fd94cbc6-3453-42d9-beaa-2ccd074449d5",
+    "query": "Count the number of loans per loan type with ID 127."
+  },
+  {
+    "sql_command": "SELECT dt.de_type, COUNT(d.id) AS deposit_count \nFROM deposits d\nJOIN deposit_types dt ON d.de_type_id = dt.id\nWHERE d.de_type_id = 127\nGROUP BY dt.de_type\nLIMIT 5;",
+    "sql_time_llm_gen": 6.567928625001514,
+    "sql_answer": "",
+    "sql_time_exec": 0.0022543750019394793,
+    "id": "16d4f6df-ac18-4b96-ac78-a8bb1ec14463",
+    "query": "Count the number of deposits per deposit type with ID 127."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE acc_id = 128;",
+    "sql_time_llm_gen": 5.646776250003313,
+    "sql_answer": "[(4,)]",
+    "sql_time_exec": 0.0011872089962707832,
+    "id": "0c043855-9154-48fb-b4da-164e30c3cea1",
+    "query": "Count the number of transactions per account with ID 128."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE cus_id = 128;",
+    "sql_time_llm_gen": 5.413975124996796,
+    "sql_answer": "[(1,)]",
+    "sql_time_exec": 0.0020275409988244064,
+    "id": "785a55f2-f844-4054-b4d2-a4c9462e5b86",
+    "query": "Count the number of deposits per customer with ID 128."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE cus_id = 128;",
+    "sql_time_llm_gen": 5.88142712500121,
+    "sql_answer": "[(1,)]",
+    "sql_time_exec": 0.0020367500037536956,
+    "id": "72074bba-f6dd-4be3-9793-f26c0404205e",
+    "query": "Count the number of loans per customer with ID 128."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM cards WHERE cus_id = 128;",
+    "sql_time_llm_gen": 6.379526292002993,
+    "sql_answer": "[(1,)]",
+    "sql_time_exec": 0.0019252920028520748,
+    "id": "7770c2a0-9020-42f8-b36b-2fbdcbf65dcc",
+    "query": "Count the number of cards per customer with ID 128."
+  },
+  {
+    "sql_command": "SELECT COUNT(a.id) AS account_count, b.brc FROM accounts a JOIN branches b ON a.id = b.id WHERE b.id = 128 GROUP BY b.brc;",
+    "sql_time_llm_gen": 6.914388999997755,
+    "sql_answer": "",
+    "sql_time_exec": 0.001287874998524785,
+    "id": "00767fb6-3c82-41f3-be6b-e21c61958916",
+    "query": "Count the number of accounts per branch with ID 128."
+  },
+  {
+    "sql_command": "SELECT COUNT(t.id) AS transaction_count FROM transactions t JOIN accounts a ON t.acc_id = a.id WHERE a.cus_id = 128;",
+    "sql_time_llm_gen": 6.494622541998979,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0021679170022252947,
+    "id": "af9aa552-757a-4b2c-8b63-731a7b60ef23",
+    "query": "Count the number of transactions per customer with ID 128."
+  },
+  {
+    "sql_command": "SELECT COUNT(deposits.id) AS num_deposits \nFROM deposits \nJOIN customers ON deposits.cus_id = customers.id \nWHERE customers.brc = 128;",
+    "sql_time_llm_gen": 8.395589416999428,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0025127499975496903,
+    "id": "ffc1d5a0-fdb5-4ea1-ba34-090643e8e24a",
+    "query": "Count the number of deposits per branch with ID 128."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE ln_id = '128'",
+    "sql_time_llm_gen": 7.574971083995479,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0017266249997192062,
+    "id": "aaba9c67-2399-4fe4-bfe9-1668a77ef80d",
+    "query": "Count the number of loans per branch with ID 128."
+  },
+  {
+    "sql_command": "SELECT b.id AS branch_id, COUNT(c.id) AS number_of_cards\nFROM branches b\nJOIN customers cu ON cu.brc = b.id\nJOIN cards c ON c.cus_id = cu.id\nWHERE b.id = 128\nGROUP BY b.id;",
+    "sql_time_llm_gen": 12.383223459000874,
+    "sql_answer": "",
+    "sql_time_exec": 0.0009686669945949689,
+    "id": "415d8aa9-0cc9-43ef-a0a0-c1795b1e0836",
+    "query": "Count the number of cards per branch with ID 128."
+  },
+  {
+    "sql_command": "SELECT dt.de_type, COUNT(t.id) AS transaction_count\nFROM deposits d \nJOIN transactions t ON d.id = t.acc_id\nJOIN deposit_types dt ON d.de_type_id = dt.id\nWHERE d.de_type_id = 128\nGROUP BY dt.de_type\nLIMIT 5;",
+    "sql_time_llm_gen": 9.808367000005092,
+    "sql_answer": "",
+    "sql_time_exec": 0.002050542003416922,
+    "id": "3b35c344-cb08-4940-98fe-0582c634bee8",
+    "query": "Count the number of transactions per deposit type with ID 128."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) AS loan_count, ln_type_id FROM loans WHERE ln_type_id = 128 GROUP BY ln_type_id;",
+    "sql_time_llm_gen": 6.268415333004668,
+    "sql_answer": "",
+    "sql_time_exec": 0.0017482500043115579,
+    "id": "f8963a37-7d92-401b-97f0-361bd38abd69",
+    "query": "Count the number of loans per loan type with ID 128."
+  },
+  {
+    "sql_command": "SELECT deposit_types.de_type, COUNT(deposits.id) AS deposit_count \nFROM deposits \nJOIN deposit_types ON deposits.de_type_id = deposit_types.id \nWHERE deposits.de_type_id = 128 \nGROUP BY deposit_types.de_type\nLIMIT 5;",
+    "sql_time_llm_gen": 6.799173541003256,
+    "sql_answer": "",
+    "sql_time_exec": 0.002260209002997726,
+    "id": "667ad1fe-dd91-4d20-b4f8-6aeb989ba813",
+    "query": "Count the number of deposits per deposit type with ID 128."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE acc_id = 129;",
+    "sql_time_llm_gen": 5.591264292001142,
+    "sql_answer": "[(3,)]",
+    "sql_time_exec": 0.00199133299611276,
+    "id": "38c92431-9273-4dac-b069-dfdea3755679",
+    "query": "Count the number of transactions per account with ID 129."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE cus_id = 129;",
+    "sql_time_llm_gen": 5.116480042001058,
+    "sql_answer": "[(1,)]",
+    "sql_time_exec": 0.0019489170008455403,
+    "id": "b2c2305d-d123-4648-9ae7-a0d9a361a21c",
+    "query": "Count the number of deposits per customer with ID 129."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE cus_id = 129;",
+    "sql_time_llm_gen": 3.653846709006757,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.00212154199834913,
+    "id": "7e4f10ee-131c-4a0f-8a58-a009ce75f8e3",
+    "query": "Count the number of loans per customer with ID 129."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM cards WHERE cus_id = 129;",
+    "sql_time_llm_gen": 5.503017417002411,
+    "sql_answer": "[(1,)]",
+    "sql_time_exec": 0.0016711670032236725,
+    "id": "7787ae2b-aca4-4784-8372-5d788558c7fa",
+    "query": "Count the number of cards per customer with ID 129."
+  },
+  {
+    "sql_command": "SELECT branches.id, COUNT(accounts.id) AS account_count FROM branches LEFT JOIN accounts ON branches.id = accounts.cus_id WHERE branches.id = 129 GROUP BY branches.id;",
+    "sql_time_llm_gen": 7.216220374997647,
+    "sql_answer": "",
+    "sql_time_exec": 0.0012714999975287355,
+    "id": "a663ee0a-9d37-4b5b-a03e-a8e988233e0f",
+    "query": "Count the number of accounts per branch with ID 129."
+  },
+  {
+    "sql_command": "SELECT COUNT(t.id) AS transaction_count FROM transactions t JOIN accounts a ON t.acc_id = a.id WHERE a.cus_id = 129;",
+    "sql_time_llm_gen": 6.655716583001777,
+    "sql_answer": "[(6,)]",
+    "sql_time_exec": 0.0028253749987925403,
+    "id": "d02b45e7-48a3-4237-850d-6699b9eab909",
+    "query": "Count the number of transactions per customer with ID 129."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) as deposit_count FROM deposits WHERE cus_id IN (SELECT id FROM customers WHERE brc = 129)",
+    "sql_time_llm_gen": 10.406422459003807,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.002448708997690119,
+    "id": "c1f5ddc8-18f3-4d06-8bfe-fb6eaa1c5036",
+    "query": "Count the number of deposits per branch with ID 129."
+  },
+  {
+    "sql_command": "SELECT brc AS branch_id, COUNT(cards.id) AS card_count\nFROM cards\nJOIN customers ON cards.cus_id = customers.id\nWHERE customers.brc = 129\nGROUP BY branch_id\nLIMIT 5;",
+    "sql_time_llm_gen": 7.8969096669970895,
+    "sql_answer": "",
+    "sql_time_exec": 0.0023968749956111424,
+    "id": "a809664a-8610-426c-b694-314c9ed39d2e",
+    "query": "Count the number of cards per branch with ID 129."
+  },
+  {
+    "sql_command": "SELECT dt.de_type, COUNT(t.id) AS num_transactions \nFROM deposit_types dt \nJOIN deposits d ON dt.id = d.de_type_id\nJOIN transactions t ON d.id = t.acc_id\nWHERE dt.id = 129\nGROUP BY dt.de_type \nLIMIT 5;",
+    "sql_time_llm_gen": 8.574188625003444,
+    "sql_answer": "",
+    "sql_time_exec": 0.002471874999173451,
+    "id": "8303913d-16e2-4d3d-b398-95711336addc",
+    "query": "Count the number of transactions per deposit type with ID 129."
+  },
+  {
+    "sql_command": "SELECT l.ln_type_id, lt.ln_type, COUNT(*) AS loan_count FROM loans l JOIN loan_types lt ON l.ln_type_id = lt.id WHERE l.ln_type_id = 129 GROUP BY l.ln_type_id, lt.ln_type LIMIT 5;",
+    "sql_time_llm_gen": 7.266743584004871,
+    "sql_answer": "",
+    "sql_time_exec": 0.0016536250041099265,
+    "id": "725c07b5-f5b4-449b-8ec5-8b8a28a44c02",
+    "query": "Count the number of loans per loan type with ID 129."
+  },
+  {
+    "sql_command": "SELECT dt.de_type, COUNT(d.id) AS deposit_count \nFROM deposits d\nJOIN deposit_types dt ON d.de_type_id = dt.id\nWHERE d.id = 129\nGROUP BY dt.de_type\nLIMIT 5;",
+    "sql_time_llm_gen": 6.667656708996219,
+    "sql_answer": "[('Auto Loan', 1)]",
+    "sql_time_exec": 0.0012570000035339035,
+    "id": "168358e9-97a7-4298-95fa-e8919c62cf12",
+    "query": "Count the number of deposits per deposit type with ID 129."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) AS transaction_count FROM transactions WHERE acc_id = 130;",
+    "sql_time_llm_gen": 3.5107750419992954,
+    "sql_answer": "[(4,)]",
+    "sql_time_exec": 0.003775541998038534,
+    "id": "825ea22a-1dc3-4b5d-81b5-a49313294153",
+    "query": "Count the number of transactions per account with ID 130."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE cus_id = 130;",
+    "sql_time_llm_gen": 9.379269709002983,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0017576249956618994,
+    "id": "67bb77a9-d716-4fbc-92a8-c364d6d80b44",
+    "query": "Count the number of deposits per customer with ID 130."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE cus_id = 130;",
+    "sql_time_llm_gen": 6.246806208997441,
+    "sql_answer": "[(1,)]",
+    "sql_time_exec": 0.002038500002527144,
+    "id": "40f3b813-018e-4672-992a-d1393d50b22c",
+    "query": "Count the number of loans per customer with ID 130."
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM cards WHERE cus_id = 130;",
+    "sql_time_llm_gen": 3.3223833329975605,
+    "sql_answer": "[(1,)]",
+    "sql_time_exec": 0.001171000003523659,
+    "id": "692531ea-ea54-47d9-a12f-52b7030b1045",
+    "query": "Count the number of cards per customer with ID 130."
+  },
+  {
+    "sql_command": "SELECT branches.brc, COUNT(accounts.id) as account_count \nFROM accounts \nJOIN customers ON accounts.cus_id = customers.id \nJOIN branches ON customers.brc = branches.id \nWHERE branches.id = 130 \nGROUP BY branches.brc LIMIT 5;",
+    "sql_time_llm_gen": 16.82255741699919,
+    "sql_answer": "",
+    "sql_time_exec": 0.004323416003899183,
+    "id": "e730faf5-149a-44e6-bd4c-b9d1a85bed1e",
+    "query": "Count the number of accounts per branch with ID 130."
+  },
+  {
+    "sql_command": "SELECT b.brc, COUNT(c.id) AS customer_count\nFROM branches b\nJOIN customers c ON b.id = c.brc\nGROUP BY b.brc;",
+    "sql_time_llm_gen": 6.939134291998926,
+    "sql_answer": "[('Gallagher-Mullen', 47), ('Anthony, Rogers and Fields', 58), ('Allison Group', 38), ('Harris Ltd', 57)]",
+    "sql_time_exec": 0.002466042002197355,
+    "id": "073d9147-6101-47b7-898c-0c386260280a",
+    "query": "How many customers belong to each branch in total?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM transactions t \nJOIN accounts a ON t.acc_id = a.id \nJOIN customers c ON a.cus_id = c.id;",
+    "sql_time_llm_gen": 4.647465040994575,
+    "sql_answer": "[(1000,)]",
+    "sql_time_exec": 0.0028652499968302436,
+    "id": "b74de8fd-57c9-40a2-8070-a51e5cdeb656",
+    "query": "How many transactions are linked to accounts owned by customers?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM loans;",
+    "sql_time_llm_gen": 8.169608834003157,
+    "sql_answer": "[(126,)]",
+    "sql_time_exec": 0.002001583001401741,
+    "id": "1be106a7-4449-4b4a-90b5-fa75253051bf",
+    "query": "How many loans are linked to customers?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE cus_id IS NOT NULL;",
+    "sql_time_llm_gen": 5.852919959004794,
+    "sql_answer": "[(200,)]",
+    "sql_time_exec": 0.0020395419996930286,
+    "id": "4e301b23-25bd-4d71-8fd0-4e11e8b8ebba",
+    "query": "How many deposits are linked to customers?"
+  },
+  {
+    "sql_command": "SELECT SUM(acc_bal) AS total_balance FROM accounts;",
+    "sql_time_llm_gen": 6.861619249997602,
+    "sql_answer": "[(Decimal('13796040.49'),)]",
+    "sql_time_exec": 0.0017682499965303577,
+    "id": "dcda2e5d-d35e-4ebe-8f94-327140caad00",
+    "query": "What is the total balance of accounts belonging to customers?"
+  },
+  {
+    "sql_command": "SELECT SUM(bal) AS total_loan_balance FROM loans;",
+    "sql_time_llm_gen": 5.352970291001839,
+    "sql_answer": "[(Decimal('-5123070.45'),)]",
+    "sql_time_exec": 0.002079792000586167,
+    "id": "cc719a16-4080-4aeb-bb5a-f39625a4e810",
+    "query": "What is the total loan balance for all customers?"
+  },
+  {
+    "sql_command": "SELECT SUM(bal) AS total_deposit_balance FROM deposits;",
+    "sql_time_llm_gen": 5.5902530000021216,
+    "sql_answer": "[(Decimal('5301555.72'),)]",
+    "sql_time_exec": 0.002309791001607664,
+    "id": "caed05a7-06b6-45be-8f5e-50101f0e1428",
+    "query": "What is the total deposit balance for all customers?"
+  },
+  {
+    "sql_command": "SELECT AVG(interest) AS average_interest_rate FROM loans;",
+    "sql_time_llm_gen": 6.659888458998466,
+    "sql_answer": "[(Decimal('5.1350000000000000'),)]",
+    "sql_time_exec": 0.0011355409951647744,
+    "id": "093dc1ee-b080-48e3-ac25-84f605627315",
+    "query": "What is the average loan interest rate across all loan types?"
+  },
+  {
+    "sql_command": "SELECT AVG(interest) AS average_interest_rate FROM deposits;",
+    "sql_time_llm_gen": 6.2435706250034855,
+    "sql_answer": "[(Decimal('5.5095000000000000'),)]",
+    "sql_time_exec": 0.0010756670017144643,
+    "id": "b29504ed-4e30-4da8-a992-64b1ea91f28f",
+    "query": "What is the average deposit interest rate across all deposit types?"
+  },
+  {
+    "sql_command": "SELECT branches.brc, COUNT(accounts.id) AS account_count \nFROM accounts \nJOIN customers ON accounts.cus_id = customers.id \nJOIN branches ON customers.brc = branches.id \nGROUP BY branches.brc \nORDER BY account_count DESC \nLIMIT 5;",
+    "sql_time_llm_gen": 8.503538625001966,
+    "sql_answer": "[('Harris Ltd', 87), ('Anthony, Rogers and Fields', 84), ('Gallagher-Mullen', 81), ('Allison Group', 48)]",
+    "sql_time_exec": 0.003882540993799921,
+    "id": "16089c0a-ad22-4113-856f-9cfa51e4fe00",
+    "query": "How many accounts exist per branch?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT l.cus_id) FROM loans l JOIN deposits d ON l.cus_id = d.cus_id;",
+    "sql_time_llm_gen": 7.0615547920024255,
+    "sql_answer": "[(90,)]",
+    "sql_time_exec": 0.0023921669999253936,
+    "id": "70c62fc3-7fe8-4c58-a764-91e52aadf819",
+    "query": "How many customers have both loans and deposits?"
+  },
+  {
+    "sql_command": "SELECT SUM(transactions.tran_amt) AS total_transaction_amount \nFROM transactions \nJOIN accounts ON transactions.acc_id = accounts.id \nJOIN customers ON accounts.cus_id = customers.id \nWHERE customers.id IN (SELECT DISTINCT cus_id FROM loans);",
+    "sql_time_llm_gen": 6.652629416996206,
+    "sql_answer": "[(Decimal('86763.23'),)]",
+    "sql_time_exec": 0.00386774999788031,
+    "id": "72aedee6-424d-48a6-99ae-d9208581d43a",
+    "query": "What is the total transaction amount for customers with loans?"
+  },
+  {
+    "sql_command": "SELECT SUM(acc.acc_bal) AS total_balance\nFROM accounts AS acc\nJOIN customers AS cus ON acc.cus_id = cus.id\nJOIN branches AS br ON cus.brc = br.id\nGROUP BY br.id\nHAVING COUNT(cus.id) > 10;",
+    "sql_time_llm_gen": 8.291221958999813,
+    "sql_answer": "[(Decimal('2198433.26'),), (Decimal('3911293.40'),), (Decimal('3957402.39'),), (Decimal('3728911.44'),)]",
+    "sql_time_exec": 0.0029275420019985177,
+    "id": "562146be-14b8-4c9c-bf57-30aaaf2dd85c",
+    "query": "What is the total balance of accounts in branches with more than 10 customers?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cards.id) FROM cards JOIN deposits ON cards.cus_id = deposits.cus_id;",
+    "sql_time_llm_gen": 6.54946516599739,
+    "sql_answer": "[(90,)]",
+    "sql_time_exec": 0.002532917002099566,
+    "id": "e349454f-de1d-42ad-bd02-20a7d2be3ad5",
+    "query": "How many cards are linked to customers with deposits?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT cards.id) AS card_count FROM cards JOIN loans ON cards.cus_id = loans.cus_id;",
+    "sql_time_llm_gen": 6.851449416994001,
+    "sql_answer": "[(97,)]",
+    "sql_time_exec": 0.0015375000002677552,
+    "id": "063a221c-1d1f-435b-90d2-ac083539777c",
+    "query": "How many cards are linked to customers with loans?"
+  },
+  {
+    "sql_command": "SELECT SUM(d.bal) AS total_deposit_balance FROM deposits d WHERE d.cus_id IN (SELECT DISTINCT l.cus_id FROM loans l);",
+    "sql_time_llm_gen": 8.198370332997001,
+    "sql_answer": "[(Decimal('3668767.31'),)]",
+    "sql_time_exec": 0.0021156250004423782,
+    "id": "9677fa8d-d5b0-46ed-87f0-8df648f71d66",
+    "query": "What is the total deposit balance of customers who also have loans?"
+  },
+  {
+    "sql_command": "SELECT SUM(loans.bal) AS total_loan_balance\nFROM customers\nJOIN deposits ON customers.id = deposits.cus_id\nJOIN loans ON customers.id = loans.cus_id;",
+    "sql_time_llm_gen": 8.01845525000681,
+    "sql_answer": "[(Decimal('-5932854.47'),)]",
+    "sql_time_exec": 0.002169207997212652,
+    "id": "1150dc61-f0fb-4ec4-8868-c5cff95ef23c",
+    "query": "What is the total loan balance of customers who also have deposits?"
+  },
+  {
+    "sql_command": "SELECT COUNT(t.id) AS transaction_count FROM transactions AS t JOIN accounts AS a ON t.acc_id = a.id JOIN cards AS c ON a.cus_id = c.cus_id;",
+    "sql_time_llm_gen": 7.681174292003561,
+    "sql_answer": "[(763,)]",
+    "sql_time_exec": 0.003196124998794403,
+    "id": "a24fe6fe-d765-4527-b6f0-c81dfe2541aa",
+    "query": "What is the number of transactions for customers with cards?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) as blocked_card_count FROM cards WHERE is_blocked = TRUE AND cus_id IN (SELECT DISTINCT cus_id FROM loans);",
+    "sql_time_llm_gen": 8.31398650000483,
+    "sql_answer": "[(48,)]",
+    "sql_time_exec": 0.0023483749973820522,
+    "id": "01bd2538-0567-455f-98cc-b3f9b9164308",
+    "query": "What is the number of blocked cards linked to customers with loans?"
+  },
+  {
+    "sql_command": "SELECT branches.brc, COUNT(deposits.id) AS number_of_deposits \nFROM deposits \nJOIN customers ON deposits.cus_id = customers.id \nJOIN branches ON customers.brc = branches.id \nGROUP BY branches.brc \nLIMIT 5;",
+    "sql_time_llm_gen": 9.855842749995645,
+    "sql_answer": "[('Gallagher-Mullen', 53), ('Anthony, Rogers and Fields', 50), ('Allison Group', 44), ('Harris Ltd', 53)]",
+    "sql_time_exec": 0.0026257499994244426,
+    "id": "3b0f42d7-cc57-4ba3-a6e6-a1feb6e0b259",
+    "query": "What is the number of deposits linked to customers per branch?"
+  },
+  {
+    "sql_command": "SELECT branches.brc, COUNT(loans.id) AS loan_count FROM loans JOIN customers ON loans.cus_id = customers.id JOIN branches ON customers.brc = branches.id GROUP BY branches.brc LIMIT 5;",
+    "sql_time_llm_gen": 7.508626416994957,
+    "sql_answer": "[('Gallagher-Mullen', 51), ('Anthony, Rogers and Fields', 64), ('Allison Group', 41), ('Harris Ltd', 44)]",
+    "sql_time_exec": 0.0035624579977593385,
+    "id": "0d0e4579-edc5-4518-8151-5487e89810e6",
+    "query": "What is the number of loans linked to customers per branch?"
+  },
+  {
+    "sql_command": "SELECT branches.brc, COUNT(transactions.id) AS total_transactions\nFROM transactions\nJOIN accounts ON transactions.acc_id = accounts.id\nJOIN customers ON accounts.cus_id = customers.id\nJOIN branches ON customers.brc = branches.id\nGROUP BY branches.brc\nORDER BY total_transactions DESC\nLIMIT 5;",
+    "sql_time_llm_gen": 9.95619025000633,
+    "sql_answer": "[('Anthony, Rogers and Fields', 280), ('Gallagher-Mullen', 272), ('Harris Ltd', 268), ('Allison Group', 180)]",
+    "sql_time_exec": 0.004392292001284659,
+    "id": "9cb4c340-b228-4ae8-8d2d-9d35f7c75261",
+    "query": "How many transactions exist for each branch?"
+  },
+  {
+    "sql_command": "SELECT b.brc, SUM(a.acc_bal) AS total_balance\nFROM accounts a\nJOIN customers c ON a.cus_id = c.id\nJOIN branches b ON c.brc = b.id\nGROUP BY b.brc\nORDER BY total_balance DESC\nLIMIT 5;",
+    "sql_time_llm_gen": 8.293977790999634,
+    "sql_answer": "[('Gallagher-Mullen', Decimal('3957402.39')), ('Harris Ltd', Decimal('3911293.40')), ('Anthony, Rogers and Fields', Decimal('3728911.44')), ('Allison Group', Decimal('2198433.26'))]",
+    "sql_time_exec": 0.0018827909952960908,
+    "id": "40698261-dca0-49d2-9c95-82f21d4befb4",
+    "query": "What is the total account balance for each branch?"
+  },
+  {
+    "sql_command": "SELECT b.brc, SUM(l.bal) AS total_loan_balance \nFROM loans l \nJOIN customers c ON l.cus_id = c.id \nJOIN branches b ON c.brc = b.id \nGROUP BY b.brc\nORDER BY total_loan_balance DESC\nLIMIT 5;",
+    "sql_time_llm_gen": 9.77305499999784,
+    "sql_answer": "[('Harris Ltd', Decimal('-1018920.28')), ('Allison Group', Decimal('-1035517.47')), ('Gallagher-Mullen', Decimal('-1289766.11')), ('Anthony, Rogers and Fields', Decimal('-1778866.59'))]",
+    "sql_time_exec": 0.0039747080008964986,
+    "id": "4e7177b3-22b7-4d02-ac2d-53b7645a3980",
+    "query": "What is the total loan balance per branch?"
+  },
+  {
+    "sql_command": "SELECT branches.brc, SUM(deposits.bal) AS total_deposit_balance\nFROM deposits\nJOIN customers ON deposits.cus_id = customers.id\nJOIN branches ON customers.brc = branches.id\nGROUP BY branches.brc\nORDER BY total_deposit_balance DESC\nLIMIT 5;",
+    "sql_time_llm_gen": 10.913656875003653,
+    "sql_answer": "[('Gallagher-Mullen', Decimal('1463967.16')), ('Harris Ltd', Decimal('1403943.50')), ('Anthony, Rogers and Fields', Decimal('1295444.91')), ('Allison Group', Decimal('1138200.15'))]",
+    "sql_time_exec": 0.0027041669964091852,
+    "id": "050972c8-8273-49d1-939a-996987de52ad",
+    "query": "What is the total deposit balance per branch?"
+  },
+  {
+    "sql_command": "SELECT branches.brc, SUM(transactions.tran_amt) AS total_transaction_amount FROM transactions JOIN accounts ON transactions.acc_id = accounts.id JOIN customers ON accounts.cus_id = customers.id JOIN branches ON customers.brc = branches.id GROUP BY branches.brc LIMIT 5;",
+    "sql_time_llm_gen": 13.041239999998652,
+    "sql_answer": "[('Gallagher-Mullen', Decimal('18322.69')), ('Anthony, Rogers and Fields', Decimal('26146.63')), ('Allison Group', Decimal('100191.83')), ('Harris Ltd', Decimal('46365.68'))]",
+    "sql_time_exec": 0.004911249998258427,
+    "id": "45645563-f46f-4974-99a1-901905f33ac2",
+    "query": "What is the total transaction amount per branch?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT c.id) AS customer_count \nFROM customers c\nJOIN accounts a ON c.id = a.cus_id\nJOIN cards ca ON c.id = ca.cus_id;",
+    "sql_time_llm_gen": 4.852359500000603,
+    "sql_answer": "[(85,)]",
+    "sql_time_exec": 0.0014059579989407212,
+    "id": "0297be39-9953-49ca-a8d5-cd7afe3c61b9",
+    "query": "How many customers have accounts and cards?"
+  },
+  {
+    "sql_command": "SELECT COUNT(DISTINCT c.id) AS num_customers_with_accounts_and_transactions\nFROM customers c\nJOIN accounts a ON c.id = a.cus_id\nJOIN transactions t ON a.id = t.acc_id;",
+    "sql_time_llm_gen": 6.404728374996921,
+    "sql_answer": "[(152,)]",
+    "sql_time_exec": 0.002925958004198037,
+    "id": "dd9dd26e-3435-4743-9675-88ac30840925",
+    "query": "How many customers have accounts and transactions?"
+  },
+  {
+    "sql_command": "SELECT SUM(acc.acc_bal) AS total_balance FROM accounts acc INNER JOIN cards crd ON acc.cus_id = crd.cus_id;",
+    "sql_time_llm_gen": 6.275766875005502,
+    "sql_answer": "[(Decimal('10284618.82'),)]",
+    "sql_time_exec": 0.0012690830044448376,
+    "id": "0df6c18f-163d-47d5-89e2-9a3b95113cfb",
+    "query": "What is the total balance of customers with both accounts and cards?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) AS expired_deposits_count FROM deposits WHERE de_en_dt < CURRENT_DATE;",
+    "sql_time_llm_gen": 3.7506017920022714,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.0018513329996494576,
+    "id": "1ea8fa8f-265b-4b3b-9e0c-5cbc7e3a7a85",
+    "query": "What is the number of expired deposits linked to customers?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) as expired_loans_count FROM loans WHERE ln_en_dt < CURRENT_DATE;",
+    "sql_time_llm_gen": 6.0444058749999385,
+    "sql_answer": "[(12,)]",
+    "sql_time_exec": 0.0019289999981992878,
+    "id": "08b47fa2-f7aa-4c73-a42b-01e114c36c12",
+    "query": "What is the number of expired loans linked to customers?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) AS active_deposits_count\nFROM deposits\nWHERE de_en_dt IS NULL OR de_en_dt > CURRENT_DATE;",
+    "sql_time_llm_gen": 3.990635249996558,
+    "sql_answer": "[(200,)]",
+    "sql_time_exec": 0.0011474999992060475,
+    "id": "83c317ad-7088-4b66-81c7-54512c025ea1",
+    "query": "What is the number of active deposits linked to customers?"
+  },
+  {
+    "sql_command": "SELECT COUNT(*) as active_loan_count FROM loans WHERE ln_en_dt IS NULL;",
+    "sql_time_llm_gen": 6.040813542000251,
+    "sql_answer": "[(0,)]",
+    "sql_time_exec": 0.001901499999803491,
+    "id": "ba971bfd-8bc2-4490-be67-423d13f8d6a0",
+    "query": "What is the number of active loans linked to customers?"
+  },
+  {
+    "sql_command": "SELECT SUM(d.bal) as total_deposit_balance\nFROM deposits d\nJOIN loans l ON d.cus_id = l.cus_id\nWHERE l.ln_en_dt IS NULL OR l.ln_en_dt > CURRENT_DATE;",
+    "sql_time_llm_gen": 7.444592792002368,
+    "sql_answer": "[(Decimal('5531988.09'),)]",
+    "sql_time_exec": 0.0018045000033453107,
+    "id": "b30f5496-d7c6-48be-a6cc-55f5d0405042",
+    "query": "What is the total deposit balance for customers with active loans?"
+  },
+  {
+    "sql_command": "SELECT SUM(loans.bal) as total_loan_balance\nFROM loans\nJOIN deposits ON loans.cus_id = deposits.cus_id\nWHERE deposits.de_en_dt IS NULL;",
+    "sql_time_llm_gen": 6.760542541000177,
+    "sql_answer": "[(None,)]",
+    "sql_time_exec": 0.0025165000042761676,
+    "id": "ce0c9dc9-cabf-436f-9bca-5ef7b6ecab66",
+    "query": "What is the total loan balance for customers with active deposits?"
+  }
+]

@@ -1,0 +1,121 @@
+-- Drop tables in reverse order to handle foreign key dependencies
+DROP TABLE IF EXISTS branches CASCADE;
+DROP TABLE IF EXISTS loan_types CASCADE;
+DROP TABLE IF EXISTS deposit_types CASCADE;
+DROP TABLE IF EXISTS customers CASCADE;
+DROP TABLE IF EXISTS cards CASCADE;
+DROP TABLE IF EXISTS accounts CASCADE;
+DROP TABLE IF EXISTS loans CASCADE;
+DROP TABLE IF EXISTS deposits CASCADE;
+DROP TABLE IF EXISTS transactions CASCADE;
+
+-- Create Branches table
+CREATE TABLE branches (
+    id SERIAL PRIMARY KEY,
+    brc VARCHAR(255) NOT NULL,
+    brc_address TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create Loan Types table
+CREATE TABLE loan_types (
+    id SERIAL PRIMARY KEY,
+    ln_type VARCHAR(100) NOT NULL,
+    ln_des TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- Create Loan Types table
+CREATE TABLE deposit_types (
+    id SERIAL PRIMARY KEY,
+    de_type VARCHAR(100) NOT NULL,
+    de_des TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- Create Customers table
+CREATE TABLE customers (
+    id SERIAL PRIMARY KEY,
+    brc INTEGER NOT NULL REFERENCES branches(id) ON DELETE RESTRICT,
+    cus_name VARCHAR(255) NOT NULL,
+    cus_dob DATE NOT NULL,
+    cus_addr TEXT NOT NULL,
+    cus_phone VARCHAR(30),
+    cus_email VARCHAR(255) UNIQUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- Create Accounts table
+CREATE TABLE accounts (
+    id SERIAL PRIMARY KEY,
+    acc_num VARCHAR(50) UNIQUE,
+    cus_id INTEGER NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
+    acc_bal DECIMAL(15, 2) NOT NULL DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- Create Cards table
+CREATE TABLE cards (
+    id SERIAL PRIMARY KEY,
+    cc_num VARCHAR(50) UNIQUE,
+    cus_id INTEGER NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
+    bal DECIMAL(15, 2) NOT NULL DEFAULT 0 CHECK (bal <= 0),
+    card_exp_date DATE NOT NULL,
+    is_blocked BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- Create Loans table
+CREATE TABLE loans (
+    id SERIAL PRIMARY KEY,
+    cus_id INTEGER NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
+    ln_id VARCHAR(50),
+    ln_type_id INTEGER NOT NULL REFERENCES loan_types(id) ON DELETE RESTRICT,
+    bal DECIMAL(15, 2) NOT NULL DEFAULT 0 CHECK (bal <= 0),
+    pmt_term VARCHAR(30),
+    interest DECIMAL(6, 4) NOT NULL DEFAULT 0 CHECK (interest >= 0),
+    ln_st_dt DATE NOT NULL,
+    ln_en_dt DATE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CHECK (ln_en_dt IS NULL OR ln_en_dt > ln_st_dt)
+);
+
+
+-- Create Deposits table
+CREATE TABLE deposits (
+    id SERIAL PRIMARY KEY,
+    cus_id INTEGER NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
+    de_id VARCHAR(50),
+    de_type_id INTEGER NOT NULL REFERENCES deposit_types(id) ON DELETE RESTRICT,
+    bal DECIMAL(15, 2) NOT NULL DEFAULT 0 CHECK (bal >= 0),
+    tem VARCHAR(30),
+    interest DECIMAL(6, 4) NOT NULL DEFAULT 0 CHECK (interest >= 0),
+    de_st_dt DATE NOT NULL,
+    de_en_dt DATE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CHECK (de_en_dt IS NULL OR de_en_dt > de_st_dt)
+);
+
+
+-- Create Transactions table
+CREATE TABLE transactions (
+    id SERIAL PRIMARY KEY,
+    acc_id INTEGER NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+    tran_amt DECIMAL(15, 2) NOT NULL CHECK (tran_amt != 0),
+    tran_dt TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);

@@ -1,0 +1,10 @@
+[
+  {
+    "query": "How many customers are in the system?",
+    "sql_command": "SELECT COUNT(*) FROM Customers;",
+    "cypher_command": "MATCH (c:Customers)\nRETURN count(c) AS numberOfCustomers",
+    "answer": "Your number or list.",
+    "id": "a4ac9287-a597-4c04-9a84-85642d538ca0"
+  },
+  ...
+]

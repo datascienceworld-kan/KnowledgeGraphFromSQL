@@ -41,6 +41,10 @@ Create a postgresql by migration:
 ```
 ### 1.3. Setup Neo4j
 
+Download neo4j at: https://drive.google.com/file/d/1D47FNFfEsoXJ736fuHbe-yeq9_1HLx31/view?usp=sharing
+
+unzip and set at root as neo4j folder.
+
 ```
 docker compose up --build
 ```
