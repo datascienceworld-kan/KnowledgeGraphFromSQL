@@ -2,131 +2,183 @@
   {
     "query": "What is the total loan balance for customers who own at least one card?",
     "sql_command": "SELECT SUM(l.balance) FROM Loans l JOIN Customers c ON l.customer_id = c.customer_id JOIN Cards cd ON c.customer_id = cd.customer_id;",
+    "cypher_command": "",
+    "answer": "",
     "id": "2e98c429-2190-4db3-b9ca-1f4d76b29582"
   },
   {
     "query": "What is the number of deposits with interest rate less than 5% for customers with loans?",
     "sql_command": "SELECT COUNT(*) FROM Deposits d JOIN Customers c ON d.customer_id = c.customer_id JOIN Loans l ON c.customer_id = l.customer_id WHERE d.interest_rate < 5;",
+    "cypher_command": "",
+    "answer": "",
     "id": "fc60cf4c-0c70-4900-8638-c14b45544353"
   },
   {
     "query": "What is the total number of deposits for customers with more than one loan?",
     "sql_command": "SELECT COUNT(*) FROM Deposits d JOIN (SELECT customer_id FROM Loans GROUP BY customer_id HAVING COUNT(*) > 1) sub ON d.customer_id = sub.customer_id;",
+    "cypher_command": "",
+    "answer": "",
     "id": "0801b241-943d-41bb-8f27-ba10e9324a4f"
   },
   {
     "query": "What is the number of customers from branch 4 with accounts, loans, and deposits?",
     "sql_command": "SELECT COUNT(DISTINCT c.customer_id) FROM Customers c JOIN Accounts a ON c.customer_id = a.customer_id JOIN Loans l ON c.customer_id = l.customer_id JOIN Deposits d ON c.customer_id = d.customer_id WHERE c.branch_id = 4;",
+    "cypher_command": "",
+    "answer": "",
     "id": "b69d29f2-2260-4b58-b82b-3da041aee57c"
   },
   {
     "query": "Count the number of accounts with balance above 1000 per branch.",
     "sql_command": "SELECT COUNT(*) FROM Accounts WHERE account_balance > 1000 AND customer_id IN (SELECT customer_id FROM Customers WHERE branch_id = 123);",
+    "cypher_command": "",
+    "answer": "",
     "id": "06ce7455-1c9b-4eb6-8348-c1442400c489"
   },
   {
     "query": "Count the number of deposits with balance above average per branch.",
     "sql_command": "SELECT COUNT(*) FROM Deposits d JOIN Customers c ON d.customer_identifier = c.customer_id WHERE d.balance > (SELECT AVG(balance) FROM Deposits d2 JOIN Customers c2 ON d2.customer_identifier = c2.customer_id WHERE c2.branch_id = c.branch_id) AND c.branch_id = 123;",
+    "cypher_command": "",
+    "answer": "",
     "id": "b3451ab8-8563-4f7f-a4db-d22aba88b354"
   },
   {
     "query": "Count the number of transactions in the last 60 days per account.",
     "sql_command": "SELECT COUNT(*) FROM Transactions WHERE account_id = 123 AND transaction_date >= CURRENT_DATE - INTERVAL '60 days';",
+    "cypher_command": "",
+    "answer": "",
     "id": "2ca2eb44-e185-4f36-8641-368b04d7f7c7"
   },
   {
     "query": "Count the number of transactions with amount above 500 in the last 6 months.",
     "sql_command": "SELECT COUNT(*) FROM Transactions WHERE transaction_amount > 500 AND transaction_date >= CURRENT_DATE - INTERVAL '6 months';",
+    "cypher_command": "",
+    "answer": "",
     "id": "308d4450-b988-49ae-80e4-eb86d21fad8f"
   },
   {
     "query": "Count the number of accounts with more than 2000 in transactions.",
     "sql_command": "SELECT COUNT(DISTINCT account_id) FROM Transactions GROUP BY account_id HAVING SUM(transaction_amount) > 2000;",
+    "cypher_command": "",
+    "answer": "",
     "id": "53adfe1a-b673-4858-a58f-5652a0496c5c"
   },
   {
     "query": "How many customers belong to each branch in total?",
     "sql_command": "SELECT COUNT(*) FROM Customers c JOIN Branches b ON c.branch_id = b.branch_id;",
+    "cypher_command": "",
+    "answer": "",
     "id": "073d9147-6101-47b7-898c-0c386260280a"
   },
   {
     "query": "What is the total balance of accounts in branches with more than 10 customers?",
     "sql_command": "SELECT SUM(a.account_balance) FROM Accounts a JOIN Customers c ON a.customer_id = c.customer_id JOIN Branches b ON c.branch_id = b.branch_id GROUP BY b.branch_id HAVING COUNT(c.customer_id) > 10;",
+    "cypher_command": "",
+    "answer": "",
     "id": "562146be-14b8-4c9c-bf57-30aaaf2dd85c"
   },
   {
     "query": "What is the total account balance for each branch?",
     "sql_command": "SELECT SUM(a.account_balance) FROM Accounts a JOIN Customers c ON a.customer_id = c.customer_id JOIN Branches b ON c.branch_id = b.branch_id;",
+    "cypher_command": "",
+    "answer": "",
     "id": "40698261-dca0-49d2-9c95-82f21d4befb4"
   },
   {
     "query": "What is the total deposit balance per branch?",
     "sql_command": "SELECT SUM(d.balance) FROM Deposits d JOIN Customers c ON d.customer_id = c.customer_id JOIN Branches b ON c.branch_id = b.branch_id;",
+    "cypher_command": "",
+    "answer": "",
     "id": "050972c8-8273-49d1-939a-996987de52ad"
   },
   {
     "query": "What is the total transaction amount per branch?",
     "sql_command": "SELECT SUM(t.transaction_amount) FROM Transactions t JOIN Accounts a ON t.account_id = a.account_id JOIN Customers c ON a.customer_id = c.customer_id JOIN Branches b ON c.branch_id = b.branch_id;",
+    "cypher_command": "",
+    "answer": "",
     "id": "45645563-f46f-4974-99a1-901905f33ac2"
   },
   {
     "query": "How many customers have both transactions and loans?",
     "sql_command": "SELECT COUNT(DISTINCT c.customer_id) FROM Customers c JOIN Accounts a ON c.customer_id = a.customer_id JOIN Transactions t ON a.account_id = t.account_id JOIN Loans l ON c.customer_id = l.customer_id;",
+    "cypher_command": "",
+    "answer": "",
     "id": "a75faa1f-0611-42fa-afd8-d017bfd88763"
   },
   {
     "query": "How many employees work in the bank?",
     "sql_command": "SELECT COUNT(*) FROM Employees;",
+    "cypher_command": "",
+    "answer": "",
     "id": "bb515142-1f66-49f8-b496-eb2d7b34e920"
   },
   {
     "query": "How many customers are female?",
     "sql_command": "SELECT COUNT(*) FROM Customers WHERE gender = 'F';",
+    "cypher_command": "",
+    "answer": "",
     "id": "4253b44b-4e82-4394-8d50-551c908bd138"
   },
   {
     "query": "How many customers are male?",
     "sql_command": "SELECT COUNT(*) FROM Customers WHERE gender = 'M';",
+    "cypher_command": "",
+    "answer": "",
     "id": "b4eea654-2110-483a-b9e5-765035678aa6"
   },
   {
     "query": "How many employees have 'Manager' as their job title?",
     "sql_command": "SELECT COUNT(*) FROM Employees WHERE job_title = 'Manager';",
+    "cypher_command": "",
+    "answer": "",
     "id": "afff2662-f083-4c0b-af32-1bb9de386f77"
   },
   {
     "query": "How many employees work in the 'Finance' department?",
     "sql_command": "SELECT COUNT(*) FROM Employees WHERE department = 'Finance';",
+    "cypher_command": "",
+    "answer": "",
     "id": "cf66d0cd-8a44-45ba-9122-0d17198bdf87"
   },
   {
     "query": "How many employees work in the 'IT' department?",
     "sql_command": "SELECT COUNT(*) FROM Employees WHERE department = 'IT';",
+    "cypher_command": "",
+    "answer": "",
     "id": "0f06b745-8b1a-4e0a-9e86-0bab3815ec13"
   },
   {
     "query": "How many employees have salaries greater than 50000?",
     "sql_command": "SELECT COUNT(*) FROM Employees WHERE salary > 50000;",
+    "cypher_command": "",
+    "answer": "",
     "id": "eb0b19ab-ff4c-45a4-8b83-2d6ee3816280"
   },
   {
     "query": "How many employees have salaries less than 30000?",
     "sql_command": "SELECT COUNT(*) FROM Employees WHERE salary < 30000;",
+    "cypher_command": "",
+    "answer": "",
     "id": "cbb2d72a-591a-4cf6-827d-7e2ac0d91f0d"
   },
   {
     "query": "How many transactions are marked as 'Failed'?",
     "sql_command": "SELECT COUNT(*) FROM Transactions WHERE status = 'Failed';",
+    "cypher_command": "",
+    "answer": "",
     "id": "4a2afd53-f465-46c3-8bab-8fb31a6f1551"
   },
   {
     "query": "How many transactions are marked as 'Successful'?",
     "sql_command": "SELECT COUNT(*) FROM Transactions WHERE status = 'Successful';",
+    "cypher_command": "",
+    "answer": "",
     "id": "dd3b2e88-63df-4fed-a8e7-50a672a03951"
   },
   {
     "query": "How many employees are supervisors?",
     "sql_command": "SELECT COUNT(*) FROM Employees WHERE job_title = 'Supervisor';",
+    "cypher_command": "",
+    "answer": "",
     "id": "341b6773-250c-4afa-b147-7d54307569ed"
   }
 ]
