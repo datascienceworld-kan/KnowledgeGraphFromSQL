@@ -1,0 +1,842 @@
+[
+  {
+    "query": "How many customers share a birthday with at least one other customer?",
+    "sql_command": "SELECT COUNT(DISTINCT c1.id) AS customer_count FROM customers c1 JOIN customers c2 ON c1.cus_dob = c2.cus_dob AND c1.id <> c2.id;",
+    "cypher_command": "MATCH (c1:Customers), (c2:Customers)\nWHERE c1.customer_id <> c2.customer_id AND c1.date_of_birth = c2.date_of_birth\nRETURN COUNT(DISTINCT c1.customer_id) AS shared_birthday_customers",
+    "answer": "2",
+    "id": "e9a1672e-4f3f-40e8-bd5e-9aa12f4322de"
+  },
+  {
+    "query": "What is the total number of transactions made by the customer 'Robert Williams'?",
+    "sql_command": "SELECT COUNT(t.id) AS total_transactions\nFROM transactions t\nJOIN accounts a ON t.acc_id = a.id\nJOIN customers c ON a.cus_id = c.id\nWHERE c.cus_name = 'Robert Williams';",
+    "cypher_command": "MATCH (c:Customers {customer_name: 'Robert Williams'})<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)<-[:HAS_TRANSACTION]-(t:Transactions)\nRETURN COUNT(t) AS total_transactions",
+    "answer": "0",
+    "id": "65d6c97b-cdde-4005-bd6e-21e6ae438a28"
+  },
+  {
+    "query": "Count the number of customers with loans expiring in 2025.",
+    "sql_command": "SELECT COUNT(DISTINCT customers.id) AS customer_count\nFROM loans\nJOIN customers ON loans.cus_id = customers.id\nWHERE EXTRACT(YEAR FROM loans.ln_en_dt) = 2025;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nWHERE date(l.end_date) >= date('2025-01-01') AND date(l.end_date) < date('2026-01-01')\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "11",
+    "id": "b5f01b98-0d6a-4dd9-bc22-d5fd98dddefb"
+  },
+  {
+    "query": "Count the number of customers with average deposit balance above 2000.",
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM deposits GROUP BY cus_id HAVING AVG(bal) > 2000;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nWITH c, AVG(d.balance) AS avg_balance\nWHERE avg_balance > 2000\nRETURN COUNT(c) AS customer_count",
+    "answer": "131",
+    "id": "2a740e1c-3c13-4dce-93cc-9783597ce819"
+  },
+  {
+    "query": "Count customers who have a deposit whose term in months is greater than their age in months when the deposit started.",
+    "sql_command": "SELECT COUNT(DISTINCT customers.id) AS customer_count\nFROM customers\nJOIN deposits ON customers.id = deposits.cus_id\nWHERE \n  (CAST(SUBSTR(deposits.tem, 1, LENGTH(deposits.tem) - 1) AS INTEGER) > 0) AND \n  ((EXTRACT(YEAR FROM deposits.de_st_dt) * 12 + EXTRACT(MONTH FROM deposits.de_st_dt) - \n    (EXTRACT(YEAR FROM customers.cus_dob) * 12 + EXTRACT(MONTH FROM customers.cus_dob))) < \n  CAST(SUBSTR(deposits.tem, 1, LENGTH(deposits.tem) - 1) AS INTEGER));",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nWHERE toInteger(d.term) > (date().year * 12 + date().month) - (date(c.date_of_birth).year * 12 + date(c.date_of_birth).month)\nRETURN count(distinct c) AS customer_count",
+    "answer": "0",
+    "id": "b5064d57-8979-4226-ac1c-8837af068b9b"
+  },
+  {
+    "query": "How many customers have more than 1 deposit?",
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM deposits GROUP BY cus_id HAVING COUNT(id) > 1;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nWITH c, COUNT(d) AS depositCount\nWHERE depositCount > 1\nRETURN COUNT(c) AS customerCount",
+    "answer": "52",
+    "id": "d15e7376-6fd4-4109-9a01-b45e85f26375"
+  },
+  {
+    "query": "How many customers have a '@yahoo.com' email address?",
+    "sql_command": "SELECT COUNT(*) FROM customers WHERE cus_email LIKE '%@yahoo.com'",
+    "cypher_command": "MATCH (c:Customers)\nWHERE c.email ENDS WITH '@yahoo.com'\nRETURN COUNT(c) AS yahoo_customers_count",
+    "answer": "0",
+    "id": "17ebb2a6-e42c-4008-905d-6df407851c3f"
+  },
+  {
+    "query": "Count the number of customers with transactions in all branches.",
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) AS customer_count FROM accounts WHERE id IN (SELECT DISTINCT acc_id FROM transactions) AND cus_id IN (SELECT DISTINCT cus_id FROM accounts WHERE acc_bal > 0) AND id IN (SELECT acc_id FROM transactions GROUP BY acc_id HAVING COUNT(DISTINCT acc_id) = (SELECT COUNT(*) FROM branches));",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)<-[:HAS_TRANSACTION]-(t:Transactions)\nWITH c, COUNT(DISTINCT a) AS branchCount\nWHERE branchCount = 4\nRETURN COUNT(c) AS customerCount",
+    "answer": "7",
+    "id": "14c0ea0a-8855-43e0-a928-981704cab879"
+  },
+  {
+    "query": "What is the total balance of accounts for customers from the branch with code 'NYC-01'?",
+    "sql_command": "SELECT SUM(acc_bal) AS total_balance FROM accounts \nJOIN customers ON accounts.cus_id = customers.id \nJOIN branches ON customers.brc = branches.id \nWHERE branches.brc = 'NYC-01';",
+    "cypher_command": "MATCH (b:Branches {branch_code: 'NYC-01'})<-[:BELONGS_TO_BRANCH]-(c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)\nRETURN SUM(a.account_balance) AS total_balance",
+    "answer": "0",
+    "id": "48bcafd5-c2c3-4dbe-9f3b-1385b3f022c6"
+  },
+  {
+    "query": "Find the top 5 customers with the highest total account balance across all their accounts.",
+    "sql_command": "SELECT c.cus_name, SUM(a.acc_bal) AS total_balance FROM customers c JOIN accounts a ON c.id = a.cus_id GROUP BY c.id, c.cus_name ORDER BY total_balance DESC LIMIT 5;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)\nWITH c, SUM(a.account_balance) AS total_balance\nORDER BY total_balance DESC\nLIMIT 5\nRETURN c.customer_id, c.customer_name, total_balance",
+    "answer": "[\\\"Alice Peterson\\\", \\\"Mckenzie Price\\\", \\\"Robert Munoz\\\", \\\"Tiffany Newton\\\", \\\"Jennifer Bryan\\\"]",
+    "id": "6841c300-5521-4c6a-a60b-27607be76a46"
+  },
+  {
+    "query": "How many unique addresses are shared by two or more customers?",
+    "sql_command": "SELECT COUNT(DISTINCT cus_addr) AS unique_shared_addresses \nFROM customers\nGROUP BY cus_addr\nHAVING COUNT(cus_addr) > 1;",
+    "cypher_command": "MATCH (c:Customers)\nWITH c.address AS address, COUNT(DISTINCT c.customer_id) AS customer_count\nWHERE customer_count >= 2\nRETURN COUNT(DISTINCT address) AS unique_address_count",
+    "answer": "0",
+    "id": "7c820db4-238f-4e9c-9121-eccbfb0a8c25"
+  },
+  {
+    "query": "How many deposits belong to customers who also made at least 10 transactions?",
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE cus_id IN (SELECT cus_id FROM transactions GROUP BY cus_id HAVING COUNT(*) >= 10);",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)<-[:HAS_TRANSACTION]-(t:Transactions)\nWITH c, COUNT(t) AS transaction_count\nWHERE transaction_count >= 10\nMATCH (c)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nRETURN COUNT(d) AS deposit_count",
+    "answer": "200",
+    "id": "ec8e0e4e-3f5a-42f6-b4a5-b985d1910379"
+  },
+  {
+    "query": "What is the total number of transactions made by customers who currently have a 'Home Equity' loan?",
+    "sql_command": "SELECT COUNT(*)\nFROM transactions t\nJOIN loans l ON l.cus_id = t.acc_id\nJOIN loan_types lt ON l.ln_type_id = lt.id\nWHERE lt.ln_type = 'Home Equity';",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans {loan_type_id: 'Home Equity'})<-[:HAS_LOAN_TYPE]-(lType:LoanTypes)\nMATCH (c)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)<-[:HAS_TRANSACTION]-(t:Transactions)\nRETURN COUNT(t) AS total_transactions",
+    "answer": "0",
+    "id": "811ef808-51f9-4824-9d1f-4fcdc824de3f"
+  },
+  {
+    "query": "How many customers have expired loans but active deposits?",
+    "sql_command": "SELECT COUNT(DISTINCT d.cus_id) AS customer_count \nFROM deposits d \nJOIN loans l ON d.cus_id = l.cus_id \nWHERE l.ln_en_dt < CURRENT_DATE AND (d.de_en_dt IS NULL OR d.de_en_dt > CURRENT_DATE);",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans), (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nWHERE date(l.end_date) < date() AND date(d.end_date) >= date()\nRETURN COUNT(DISTINCT c) AS expired_loans_active_deposits",
+    "answer": "7",
+    "id": "99b8054f-6ed6-43c5-9785-fdb7ca20c4c0"
+  },
+  {
+    "query": "Count the number of active (not blocked) cards that expire in or after the year 2030.",
+    "sql_command": "SELECT COUNT(*) FROM cards WHERE is_blocked = FALSE AND EXTRACT(YEAR FROM card_exp_date) >= 2030;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(card:Cards)\nWHERE card.is_blocked = false AND date(card.expiration_date) >= date('2030-01-01')\nRETURN count(card) AS active_cards_count",
+    "answer": "7",
+    "id": "35a5b582-51fd-4f6b-98dd-d2387342543a"
+  },
+  {
+    "query": "Count the number of transactions per customer with ID 128.",
+    "sql_command": "SELECT COUNT(t.id) FROM transactions t JOIN accounts a ON t.acc_id = a.id WHERE a.cus_id = 128;",
+    "cypher_command": "MATCH (c:Customers {customer_id: 128})<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)<-[:HAS_TRANSACTION]-(t:Transactions)\nRETURN count(t) AS transaction_count",
+    "answer": "0",
+    "id": "0f381964-f9f6-4f3a-a214-d798353599cc"
+  },
+  {
+    "query": "How many customers have a card expiring in the same month and year as their oldest loan's end date?",
+    "sql_command": "SELECT COUNT(DISTINCT c.id) AS customer_count\nFROM customers c\nJOIN cards ca ON c.id = ca.cus_id\nJOIN loans l ON c.id = l.cus_id\nWHERE EXTRACT(YEAR FROM ca.card_exp_date) = EXTRACT(YEAR FROM l.ln_en_dt)\n  AND EXTRACT(MONTH FROM ca.card_exp_date) = EXTRACT(MONTH FROM l.ln_en_dt)\n  AND l.ln_en_dt = (SELECT MIN(l2.ln_en_dt) FROM loans l2 WHERE l2.cus_id = c.id);",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans), (c)<-[:BELONGS_TO_CUSTOMER]-(card:Cards)\nWITH c, l, card\nWHERE date(card.expiration_date) = date(l.end_date)\nRETURN COUNT(c) AS customer_count",
+    "answer": "0",
+    "id": "81cb353f-1b17-4aad-8390-d3d52884f7de"
+  },
+  {
+    "query": "Count the number of customers with deposits and cards.",
+    "sql_command": "SELECT COUNT(DISTINCT customers.id) AS customer_count\nFROM customers\nJOIN cards ON customers.id = cards.cus_id\nJOIN deposits ON customers.id = deposits.cus_id;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits), (c)<-[:BELONGS_TO_CUSTOMER]-(card:Cards)\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "66",
+    "id": "16aaeb0c-a427-4c21-98bf-9f591c9bd865"
+  },
+  {
+    "query": "How many distinct customers have taken out a 'Mortgage'?",
+    "sql_command": "SELECT COUNT(DISTINCT loans.cus_id) AS mortgage_customers_count FROM loans JOIN loan_types ON loans.ln_type_id = loan_types.id WHERE loan_types.ln_type = 'Mortgage';",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nWHERE l.loan_type_id = 'Mortgage'\nRETURN COUNT(DISTINCT c) AS distinct_customers_with_mortgage",
+    "answer": "0",
+    "id": "af133fa5-9a44-4995-907e-d684aea61bca"
+  },
+  {
+    "query": "How many accounts have balances above the average account balance?",
+    "sql_command": "SELECT COUNT(*) FROM accounts WHERE acc_bal > (SELECT AVG(acc_bal) FROM accounts);",
+    "cypher_command": "MATCH (a:Accounts)\nWITH avg(a.account_balance) AS avg_balance\nMATCH (b:Accounts)\nWHERE b.account_balance > avg_balance\nRETURN count(b) AS accounts_above_average_balance",
+    "answer": "142",
+    "id": "520c629c-801e-4230-bbc1-115149d4a275"
+  },
+  {
+    "query": "Count the number of customers with more than three cards.",
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) AS customer_count FROM cards GROUP BY cus_id HAVING COUNT(id) > 3;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(card:Cards)\nWITH c, COUNT(card) AS cardCount\nWHERE cardCount > 3\nRETURN COUNT(c) AS customerCount",
+    "answer": "3",
+    "id": "fdf89cb4-55a1-4c5f-bfae-0455816f09ca"
+  },
+  {
+    "query": "What was the total transaction amount last month for all customers in the 'CHI-03' branch?",
+    "sql_command": "SELECT SUM(transactions.tran_amt) AS total_transaction_amount\nFROM transactions\nJOIN accounts ON transactions.acc_id = accounts.id\nJOIN customers ON accounts.cus_id = customers.id\nJOIN branches ON customers.brc = branches.id\nWHERE branches.brc = 'CHI-03'\nAND transactions.tran_dt >= date_trunc('month', NOW()) - INTERVAL '1 month' \nAND transactions.tran_dt < date_trunc('month', NOW());",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)<-[:HAS_TRANSACTION]-(t:Transactions)-[:HAS_TRANSACTION]->(a)\nWHERE c.branch_id = 'CHI-03' AND date(t.transaction_date) >= date({ year: date().year, month: date().month - 1, day: 1 }) \nAND date(t.transaction_date) < date({ year: date().year, month: date().month, day: 1 })\nRETURN SUM(t.transaction_amount) AS total_transaction_amount",
+    "answer": "0",
+    "id": "e117f86a-c98a-4f1c-995e-ac2f4a89b71e"
+  },
+  {
+    "query": "How many customers are suspected duplicates, having the same name and date of birth as another customer?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT cus_name, cus_dob FROM customers GROUP BY cus_name, cus_dob HAVING COUNT(*) > 1) AS duplicate_customers;",
+    "cypher_command": "MATCH (c1:Customers), (c2:Customers)\nWHERE c1.customer_id <> c2.customer_id AND c1.customer_name = c2.customer_name AND c1.date_of_birth = c2.date_of_birth\nRETURN COUNT(*) AS suspected_duplicates",
+    "answer": "0",
+    "id": "c459851b-10f2-449a-865a-067c8e052f44"
+  },
+  {
+    "query": "How many branches have total loan balances above 1 million?",
+    "sql_command": "SELECT COUNT(DISTINCT b.id) AS branch_count\nFROM branches b\nJOIN loans l ON l.cus_id IN (SELECT cus_id FROM loans GROUP BY cus_id HAVING SUM(bal) < -1000000)\nWHERE b.id = l.cus_id;",
+    "cypher_command": "MATCH (b:Branches)<-[:BELONGS_TO_BRANCH]-(c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nWITH b, SUM(l.balance) AS totalLoanBalance\nWHERE totalLoanBalance > 1000000\nRETURN COUNT(b) AS branchesAboveOneMillion",
+    "answer": "0",
+    "id": "cc93e4d3-c7d0-4e26-ae36-0c42fd677594"
+  },
+  {
+    "query": "Count the number of cards per customer with ID 128.",
+    "sql_command": "SELECT COUNT(*) FROM cards WHERE cus_id = 128;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(card:Cards)\nWHERE c.customer_id = 128\nRETURN count(card) AS number_of_cards",
+    "answer": "1",
+    "id": "327be4b5-c2ef-47df-8d53-d1672df5268d"
+  },
+  {
+    "query": "How many customers have both loans and accounts?",
+    "sql_command": "SELECT COUNT(DISTINCT customers.id) \nFROM customers \nJOIN accounts ON customers.id = accounts.cus_id \nJOIN loans ON customers.id = loans.cus_id;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts), (c)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "101",
+    "id": "5e5b2051-2e54-4175-bc74-43ca448686c2"
+  },
+  {
+    "query": "Count the number of loans with interest rate between 2% and 4%.",
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE interest > 0.02 AND interest < 0.04;",
+    "cypher_command": "MATCH (l:Loans)\nWHERE l.interest_rate >= 2 AND l.interest_rate <= 4\nRETURN COUNT(l) AS loan_count",
+    "answer": "45",
+    "id": "d3503c49-5688-4a80-aba7-8f4bbc522239"
+  },
+  {
+    "query": "Count the number of accounts with total transactions exceeding 10000.",
+    "sql_command": "SELECT COUNT(DISTINCT acc_id) AS num_accounts FROM transactions GROUP BY acc_id HAVING SUM(tran_amt) > 10000;",
+    "cypher_command": "MATCH (a:Accounts)<-[:HAS_TRANSACTION]-(t:Transactions)\nWITH a, SUM(t.transaction_amount) AS total_transactions\nWHERE total_transactions > 10000\nRETURN COUNT(a) AS account_count",
+    "answer": "12",
+    "id": "20b1f5d2-35f1-4416-b190-8ed1574c86e2"
+  },
+  {
+    "query": "Count the number of loans per loan type with ID 127.",
+    "sql_command": "SELECT COUNT(*) AS loan_count, loan_types.ln_type FROM loans JOIN loan_types ON loans.ln_type_id = loan_types.id WHERE loan_types.id = 127 GROUP BY loan_types.ln_type;",
+    "cypher_command": "MATCH (lt:LoanTypes)<-[:HAS_LOAN_TYPE]-(l:Loans)\nWHERE lt.loan_type_id = 127\nRETURN lt.type AS LoanType, COUNT(l) AS LoanCount",
+    "answer": "[]",
+    "id": "d4f7e70a-afb2-4fd8-a5b4-95cfa7a95783"
+  },
+  {
+    "query": "How many customers made at least one transaction greater than 10,000?",
+    "sql_command": "SELECT COUNT(DISTINCT customers.id) AS customer_count\nFROM customers\nJOIN accounts ON customers.id = accounts.cus_id\nJOIN transactions ON accounts.id = transactions.acc_id\nWHERE transactions.tran_amt > 10000;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)<-[:HAS_TRANSACTION]-(t:Transactions)\nWHERE t.transaction_amount > 10000\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "0",
+    "id": "803b8f10-59d6-442c-8e18-22ec952802b7"
+  },
+  {
+    "query": "Count the number of loans with interest rate above 7%.",
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE interest > 7.0;",
+    "cypher_command": "MATCH (l:Loans)\nWHERE l.interest_rate > 7\nRETURN count(l) AS numberOfLoans",
+    "answer": "69",
+    "id": "c889b26f-9320-478f-a320-c936cc74d358"
+  },
+  {
+    "query": "Count the number of deposits per deposit type with ID 128.",
+    "sql_command": "SELECT dt.de_type, COUNT(d.id) AS deposit_count \nFROM deposits d \nJOIN deposit_types dt ON d.de_type_id = dt.id \nWHERE dt.id = 128 \nGROUP BY dt.de_type \nLIMIT 5;",
+    "cypher_command": "MATCH (d:Deposits)-[:HAS_DEPOSIT_TYPE]->(dt:DepositTypes)\nWHERE dt.deposit_type_id = 128\nRETURN COUNT(d) AS numberOfDeposits",
+    "answer": "0",
+    "id": "f1c7d99d-e4dd-40dd-9fdc-54ad19d414a1"
+  },
+  {
+    "query": "How many customers have deposits with interest rates above the average deposit interest rate?",
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM deposits WHERE interest > (SELECT AVG(interest) FROM deposits);",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nWITH AVG(d.interest_rate) AS avg_interest_rate\nMATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nWHERE d.interest_rate > avg_interest_rate\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "83",
+    "id": "5ce236d3-92fd-4060-a856-f5cfef318bf1"
+  },
+  {
+    "query": "How many unblocked cards have a balance greater than $10,000?",
+    "sql_command": "SELECT COUNT(*) FROM cards WHERE is_blocked = FALSE AND bal > 10000;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(card:Cards)\nWHERE card.is_blocked = false AND card.balance > 10000\nRETURN count(card) AS unblocked_cards_with_high_balance",
+    "answer": "0",
+    "id": "6fa40624-43dc-4f0a-a8c9-5f9f6f215970"
+  },
+  {
+    "query": "How many customers have a loan with an interest rate in the top 1% for that specific loan type?",
+    "sql_command": "WITH TopLoans AS (\n    SELECT ln_type_id, \n           PERCENTILE_CONT(0.99) WITHIN GROUP (ORDER BY interest) AS top_1_percent_interest\n    FROM loans\n    GROUP BY ln_type_id\n)\n\nSELECT COUNT(DISTINCT loans.cus_id) AS customer_count\nFROM loans\nJOIN TopLoans ON loans.ln_type_id = TopLoans.ln_type_id\nWHERE loans.interest >= TopLoans.top_1_percent_interest;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nWITH l, c, percentileCont(l.interest_rate, 0.99) AS top1PercentInterestRate\nWHERE l.interest_rate >= top1PercentInterestRate\nRETURN COUNT(DISTINCT c) AS customerCount",
+    "answer": "126",
+    "id": "447ff64b-90ba-4aa1-9a73-c8bc808ae65f"
+  },
+  {
+    "query": "How many customers have loans with interest rates above the average loan interest rate?",
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM loans WHERE interest > (SELECT AVG(interest) FROM loans);",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nWITH AVG(l.interest_rate) AS avg_interest_rate\nMATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nWHERE l.interest_rate > avg_interest_rate\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "75",
+    "id": "7784a09d-281d-47bb-b5ac-ef30976a779e"
+  },
+  {
+    "query": "How many customers have a greater total balance in 'Savings' deposits than in 'Auto' loans?",
+    "sql_command": "SELECT COUNT(DISTINCT d.cus_id) \nFROM deposits d\nJOIN loans l ON d.cus_id = l.cus_id\nJOIN deposit_types dt ON d.de_type_id = dt.id\nJOIN loan_types lt ON l.ln_type_id = lt.id\nWHERE dt.de_type = 'Savings' AND lt.ln_type = 'Auto Loan' AND d.bal > -l.bal;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits), (c)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nWITH c, SUM(d.balance) AS total_savings, SUM(l.balance) AS total_auto_loans\nWHERE total_savings > total_auto_loans\nRETURN COUNT(c) AS customer_count",
+    "answer": "90",
+    "id": "bf166cd2-70df-4640-9498-2b4195c2c95a"
+  },
+  {
+    "query": "How many customers have deposits, loans, and cards all together?",
+    "sql_command": "SELECT COUNT(DISTINCT c.id) AS num_customers_with_all\nFROM customers c\nJOIN deposits d ON c.id = d.cus_id\nJOIN loans l ON c.id = l.cus_id\nJOIN cards cr ON c.id = cr.cus_id;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits), (c)<-[:BELONGS_TO_CUSTOMER]-(l:Loans), (c)<-[:BELONGS_TO_CUSTOMER]-(card:Cards)\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "49",
+    "id": "74e328a6-f3a2-425a-9695-8884826b2a9d"
+  },
+  {
+    "query": "How many branches have customers with blocked cards?",
+    "sql_command": "SELECT COUNT(DISTINCT c.brc) AS branch_count\nFROM customers c\nJOIN cards ca ON c.id = ca.cus_id\nWHERE ca.is_blocked = TRUE;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(card:Cards)\nWHERE card.is_blocked = true\nRETURN COUNT(DISTINCT c.branch_id) AS branches_with_blocked_cards",
+    "answer": "4",
+    "id": "b258bf24-5229-4a1b-ad86-f16ba1a83814"
+  },
+  {
+    "query": "How many customers have a total transaction value that's over 20 times the balance of their oldest account?",
+    "sql_command": "SELECT COUNT(DISTINCT customers.id)\nFROM customers\nJOIN accounts ON customers.id = accounts.cus_id\nJOIN transactions ON accounts.id = transactions.acc_id\nWHERE (SELECT SUM(tran_amt) FROM transactions WHERE acc_id = accounts.id) > 20 * accounts.acc_bal\nAND accounts.created_at = (\n    SELECT MIN(created_at) FROM accounts WHERE cus_id = customers.id\n);",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)\nMATCH (a)<-[:HAS_TRANSACTION]-(t:Transactions)\nWITH c, a, SUM(t.transaction_amount) AS total_transaction_value, MIN(a.created_at) AS oldest_account_date\nWHERE total_transaction_value > 20 * a.account_balance AND date(a.created_at) = date(oldest_account_date)\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "24",
+    "id": "5e50406b-7b38-4586-836a-168a66dd6d18"
+  },
+  {
+    "query": "How many customers have a total outstanding loan balance of more than $500,000?",
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM loans WHERE bal < -500000;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nWITH c, SUM(l.balance) AS total_loan_balance\nWHERE total_loan_balance > 500000\nRETURN COUNT(c) AS customer_count",
+    "answer": "0",
+    "id": "c7337c65-af80-43c6-9721-dedf63e17fb4"
+  },
+  {
+    "query": "What is the total account balance for accounts with more than 20 transactions this month?",
+    "sql_command": "SELECT SUM(a.acc_bal) as total_balance\nFROM accounts a\nJOIN transactions t ON a.id = t.acc_id\nWHERE t.tran_dt >= DATE_TRUNC('month', CURRENT_DATE) \nGROUP BY a.id\nHAVING COUNT(t.id) > 20;",
+    "cypher_command": "MATCH (a:Accounts)<-[:HAS_TRANSACTION]-(t:Transactions)\nWHERE date(t.transaction_date) >= date({ year: date().year, month: date().month, day: 1 })\nWITH a, count(t) AS transaction_count\nWHERE transaction_count > 20\nRETURN sum(a.account_balance) AS total_account_balance",
+    "answer": "0",
+    "id": "7039d0d1-4b47-43e2-bb52-63b94dd68994"
+  },
+  {
+    "query": "Find the average account balance for customers aged above 60.",
+    "sql_command": "SELECT AVG(acc.acc_bal) AS average_balance\nFROM accounts acc\nJOIN customers cust ON acc.cus_id = cust.id\nWHERE (DATE_PART('year', AGE(cust.cus_dob)) > 60);",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)\nWHERE date().year - date(c.date_of_birth).year > 60\nRETURN avg(a.account_balance) AS average_account_balance",
+    "answer": "45152.77",
+    "id": "c8f6b356-6f2d-4f81-9229-f029f8f0e0e2"
+  },
+  {
+    "query": "Count the number of transactions per account with ID 128.",
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE acc_id = 128;",
+    "cypher_command": "MATCH (a:Accounts)<-[:HAS_TRANSACTION]-(t:Transactions)\nWHERE a.account_id = 128\nRETURN COUNT(t) AS transaction_count",
+    "answer": "4",
+    "id": "aac8812d-f565-4db8-877b-5ff3f4959eba"
+  },
+  {
+    "query": "How many accounts belong to customers who have blocked cards?",
+    "sql_command": "SELECT COUNT(DISTINCT accounts.id) AS num_accounts\nFROM accounts\nJOIN cards ON accounts.cus_id = cards.cus_id\nWHERE cards.is_blocked = TRUE;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(card:Cards)\nWHERE card.is_blocked = true\nMATCH (c)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)\nRETURN count(a) AS account_count",
+    "answer": "106",
+    "id": "4fe27df6-1189-467a-afff-58819e107d52"
+  },
+  {
+    "query": "Count the number of customers with average loan term above 18 months.",
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM loans WHERE CAST(TRIM(TRAILING 'M' FROM pmt_term) AS INTEGER) > 18;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nWHERE toInteger(l.payment_term) > 18\nRETURN count(DISTINCT c) AS customer_count",
+    "answer": "0",
+    "id": "b63933ad-dc6d-4913-95ae-e93a84d8df53"
+  },
+  {
+    "query": "Count the number of loans per branch with ID 128.",
+    "sql_command": "SELECT b.id AS branch_id, COUNT(l.id) AS loan_count \nFROM branches b \nJOIN loans l ON b.id = l.cus_id \nWHERE b.id = 128 \nGROUP BY b.id;",
+    "cypher_command": "MATCH (b:Branches {branch_id: 128})<-[:BELONGS_TO_BRANCH]-(c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nRETURN COUNT(l) AS numberOfLoansPerBranch",
+    "answer": "0",
+    "id": "3cbd5f3d-c603-4b13-be4c-7f40ac1e5a2b"
+  },
+  {
+    "query": "How many customers have a total deposit balance exceeding $250,000?",
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM deposits GROUP BY cus_id HAVING SUM(bal) > 250000;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nWITH c, SUM(d.balance) AS total_deposit_balance\nWHERE total_deposit_balance > 250000\nRETURN COUNT(c) AS customer_count",
+    "answer": "0",
+    "id": "01f3fe1b-18fe-4dc6-baf2-16ee7d8d44e6"
+  },
+  {
+    "query": "Count the number of customers with more than 2000 in deposits.",
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM deposits WHERE bal > 2000;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nWHERE d.balance > 2000\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "131",
+    "id": "5419c31d-8c4e-4ed3-a3de-5fbaad539f72"
+  },
+  {
+    "query": "Count the number of customers with loans and cards expiring before 2026.",
+    "sql_command": "SELECT COUNT(DISTINCT customers.id) FROM customers \nJOIN loans ON customers.id = loans.cus_id \nJOIN cards ON customers.id = cards.cus_id \nWHERE loans.ln_en_dt < '2026-01-01' AND cards.card_exp_date < '2026-01-01';",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nMATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(ca:Cards)\nWHERE date(l.end_date) < date('2026-01-01') AND date(ca.expiration_date) < date('2026-01-01')\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "0",
+    "id": "5ad7e735-c3ec-41ee-ad8e-223a61fe7f4a"
+  },
+  {
+    "query": "How many deposits have balances above the average deposit balance?",
+    "sql_command": "SELECT COUNT(*) AS count_above_average\nFROM deposits\nWHERE bal > (SELECT AVG(bal) FROM deposits);",
+    "cypher_command": "MATCH (d:Deposits)\nWITH AVG(d.balance) AS avg_balance\nMATCH (d:Deposits)\nWHERE d.balance > avg_balance\nRETURN COUNT(d) AS count_above_average",
+    "answer": "208",
+    "id": "4b7273d3-1a2e-4d32-80f3-04fe140c2545"
+  },
+  {
+    "query": "Count the number of customers with accounts and loans.",
+    "sql_command": "SELECT COUNT(DISTINCT c.id) FROM customers c JOIN accounts a ON c.id = a.cus_id JOIN loans l ON c.id = l.cus_id;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts), (c)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "101",
+    "id": "1e799dcf-4b0f-4a4b-9b36-d697dd4c039b"
+  },
+  {
+    "query": "What is the highest total transaction amount generated by a single customer?",
+    "sql_command": "SELECT c.cus_name, SUM(t.tran_amt) as total_amount\nFROM customers c\nJOIN accounts a ON c.id = a.cus_id\nJOIN transactions t ON a.id = t.acc_id\nGROUP BY c.cus_name\nORDER BY total_amount DESC\nLIMIT 1;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)<-[:HAS_TRANSACTION]-(t:Transactions)\nRETURN c.customer_id, SUM(t.transaction_amount) AS total_transaction_amount\nORDER BY total_transaction_amount DESC\nLIMIT 1",
+    "answer": "Alex Jimenez: 24710.95",
+    "id": "d458323b-4ebd-42f3-9f1c-e26b56ec8251"
+  },
+  {
+    "query": "How many customers are registered with the branch located at '123 Finance St'?",
+    "sql_command": "SELECT COUNT(customers.id) \nFROM customers \nJOIN branches ON customers.brc = branches.id \nWHERE branches.brc_address = '123 Finance St'",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_BRANCH]->(b:Branches {branch_address: '123 Finance St'})\nRETURN count(c) AS registered_customers",
+    "answer": "0",
+    "id": "6273428e-a53e-4559-8fdd-9af06df6a045"
+  },
+  {
+    "query": "How many customers have expired deposits but active loans?",
+    "sql_command": "SELECT COUNT(DISTINCT customers.id) \nFROM customers \nJOIN deposits ON customers.id = deposits.cus_id \nJOIN loans ON customers.id = loans.cus_id \nWHERE deposits.de_en_dt < CURRENT_DATE AND (loans.ln_en_dt IS NULL OR loans.ln_en_dt > CURRENT_DATE);",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits), (c)<-[:BELONGS_TO_CUSTOMER]-(l:Loans\n)\nWHERE date(d.end_date) < date() AND date(l.end_date) >= date()\nRETURN COUNT(DISTINCT c) AS expired_deposits_with_active_loans",
+    "answer": "0",
+    "id": "efb8c729-ced2-4d59-96ff-20e7e881cecb"
+  },
+  {
+    "query": "Count the number of transactions with amount between 1000 and 5000.",
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE tran_amt BETWEEN 1000 AND 5000;",
+    "cypher_command": "MATCH (t:Transactions)\nWHERE t.transaction_amount >= 1000 AND t.transaction_amount <= 5000\nRETURN COUNT(t) AS transaction_count",
+    "answer": "430",
+    "id": "6445a657-3e5d-4364-a8fc-1b4e65935909"
+  },
+  {
+    "query": "Count the number of deposits per customer with average term above 12 months.",
+    "sql_command": "SELECT cus_id, COUNT(*) as num_deposits\nFROM deposits\nWHERE (substring(tem from '\\d+')::integer > 12 AND tem LIKE '%M') OR tem LIKE '%Y'\nGROUP BY cus_id LIMIT 5;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nWHERE toInteger(d.term) > 12\nRETURN c.customer_id, count(d) AS deposit_count",
+    "answer": "[]",
+    "id": "d2f043c8-7d3a-4bc7-9200-7a3587abd1da"
+  },
+  {
+    "query": "How many customers hold more than 3 cards?",
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM cards GROUP BY cus_id HAVING COUNT(id) > 3;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(card:Cards)\nWITH c, COUNT(card) AS cardCount\nWHERE cardCount > 3\nRETURN COUNT(c) AS customerCount",
+    "answer": "3",
+    "id": "7688245d-59fd-40e0-95b8-a37fa8becc69"
+  },
+  {
+    "query": "How many customers hold every single type of deposit the bank offers?",
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) \nFROM deposits \nWHERE cus_id IN (\n    SELECT cus_id\n    FROM deposits\n    GROUP BY cus_id\n    HAVING COUNT(DISTINCT de_type_id) = (SELECT COUNT(*) FROM deposit_types)\n);",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nWITH c, COUNT(d) AS depositCount\nMATCH (d:Deposits)\nWITH c, depositCount, COUNT(d) AS totalDeposits\nWHERE depositCount = totalDeposits\nRETURN COUNT(c) AS customerCount",
+    "answer": "0",
+    "id": "1c79da5b-8515-43b2-bc7f-b2e1a83b2fbd"
+  },
+  {
+    "query": "How many customers have both blocked and unblocked cards?",
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM cards WHERE is_blocked = true AND cus_id IN (SELECT DISTINCT cus_id FROM cards WHERE is_blocked = false);",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(card:Cards)\nWHERE card.is_blocked = true\nWITH c\nMATCH (c)<-[:BELONGS_TO_CUSTOMER]-(card2:Cards)\nWHERE card2.is_blocked = false\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "22",
+    "id": "875894fd-32a1-4e0e-aeec-221efce23c2d"
+  },
+  {
+    "query": "Count the number of transactions per deposit type with ID 127.",
+    "sql_command": "SELECT dt.de_type, COUNT(t.id) as transaction_count\nFROM transactions t\nJOIN deposits d ON t.acc_id = d.id\nJOIN deposit_types dt ON d.de_type_id = dt.id\nWHERE dt.id = 127\nGROUP BY dt.de_type\nLIMIT 5;",
+    "cypher_command": "MATCH (d:Deposits)-[:HAS_DEPOSIT_TYPE]->(dt:DepositTypes)\nMATCH (a:Accounts)<-[:HAS_TRANSACTION]-(t:Transactions)\nWHERE dt.deposit_type_id = 127\nRETURN COUNT(t) AS transaction_count",
+    "answer": "0",
+    "id": "cede2e0a-0a75-4ef9-bab7-e23b7b69e71c"
+  },
+  {
+    "query": "What is the sum of balances for all deposits of the 'Retirement' type?",
+    "sql_command": "SELECT SUM(d.bal) as total_retirement_balances \nFROM deposits d\nJOIN deposit_types dt ON d.de_type_id = dt.id\nWHERE dt.de_type = 'Retirement';",
+    "cypher_command": "MATCH (d:Deposits)<-[:BELONGS_TO_CUSTOMER]-(c:Customers)-[:HAS_DEPOSIT_TYPE]->(dt:DepositTypes)\nWHERE dt.type = 'Retirement'\nRETURN SUM(d.balance) AS total_retirement_deposit_balance",
+    "answer": "0",
+    "id": "23088e50-0046-41e6-a538-855495b04e81"
+  },
+  {
+    "query": "Count the number of loans with interest rate above branch average.",
+    "sql_command": "SELECT COUNT(*) FROM loans l1 WHERE interest > (SELECT AVG(l2.interest) FROM loans l2 WHERE l1.ln_id = l2.ln_id);",
+    "cypher_command": "MATCH (l:Loans)<-[:BELONGS_TO_CUSTOMER]-(c:Customers)-[:BELONGS_TO_BRANCH]->(b:Branches)\nWITH AVG(l.interest_rate) AS branch_average\nMATCH (l:Loans)\nWHERE l.interest_rate > branch_average\nRETURN COUNT(l) AS loans_above_average",
+    "answer": "0",
+    "id": "d592d366-39ff-471e-b120-22b3e3cb7f69"
+  },
+  {
+    "query": "What's the average transaction amount for accounts with over $20,000 in balance?",
+    "sql_command": "SELECT AVG(t.tran_amt) AS average_transaction_amount FROM transactions t JOIN accounts a ON t.acc_id = a.id WHERE a.acc_bal > 20000;",
+    "cypher_command": "MATCH (a:Accounts)<-[:HAS_TRANSACTION]-(t:Transactions)\nWHERE a.account_balance > 20000\nRETURN AVG(t.transaction_amount) AS average_transaction_amount",
+    "answer": "324.9925606469003",
+    "id": "83ed444e-5fe7-4d20-938d-87dccbe65d21"
+  },
+  {
+    "query": "How many customers with an expired card have made a transaction in the last 30 days?",
+    "sql_command": "SELECT COUNT(DISTINCT c.cus_id) AS num_customers_with_expired_cards\nFROM cards c\nJOIN transactions t ON c.cus_id = t.acc_id\nWHERE c.card_exp_date < CURRENT_DATE\nAND t.tran_dt >= CURRENT_DATE - INTERVAL '30 days';",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(card:Cards)\nMATCH (a:Accounts)<-[:HAS_TRANSACTION]-(t:Transactions)\nWHERE card.expiration_date < date() AND date(t.transaction_date) >= date() - duration('P30D')\nRETURN count(DISTINCT c) AS expired_card_customers_with_recent_transactions",
+    "answer": "0",
+    "id": "cd542037-1b9a-4bb7-8672-d5fc5cc7d7ed"
+  },
+  {
+    "query": "How many loans have balances above the average loan balance?",
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE bal < (SELECT AVG(bal) FROM loans);",
+    "cypher_command": "MATCH (l:Loans)\nWITH AVG(l.balance) AS avg_balance\nMATCH (l:Loans)\nWHERE l.balance > avg_balance\nRETURN COUNT(l) AS loans_above_average",
+    "answer": "102",
+    "id": "e9558e21-6cfb-4c10-b83d-72b665167108"
+  },
+  {
+    "query": "Count the number of loans with payment term between 24 and 36 months.",
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE pmt_term BETWEEN '24M' AND '36M';",
+    "cypher_command": "MATCH (l:Loans)\nWHERE toInteger(l.payment_term) >= 24 AND toInteger(l.payment_term) <= 36\nRETURN count(l) AS loan_count",
+    "answer": "0",
+    "id": "cd2c8d94-0c83-43fe-8035-041ace667c8a"
+  },
+  {
+    "query": "Count the number of loans with end date before 2024.",
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE ln_en_dt < '2024-01-01';",
+    "cypher_command": "MATCH (l:Loans)\nWHERE date(l.end_date) < date('2024-01-01')\nRETURN count(l) AS numberOfLoans",
+    "answer": "0",
+    "id": "9679c5cb-baee-40d6-bdc4-05f8a90ae238"
+  },
+  {
+    "query": "Find deposits that have already matured but are not yet closed.",
+    "sql_command": "SELECT id, cus_id, de_id, de_type_id, bal, tem, interest, de_st_dt, de_en_dt FROM deposits WHERE de_en_dt <= CURRENT_DATE LIMIT 5;",
+    "cypher_command": "MATCH (d:Deposits)\nWHERE date(d.end_date) < date() AND d.balance > 0\nRETURN d",
+    "answer": "[]",
+    "id": "a3847704-b831-4bfe-87d9-cbf2419cd082"
+  },
+  {
+    "query": "What is the average account balance for customers who also have a loan?",
+    "sql_command": "SELECT AVG(acc.acc_bal) as average_account_balance \nFROM accounts acc\nINNER JOIN loans ln ON acc.cus_id = ln.cus_id;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans), (c)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)\nRETURN AVG(a.account_balance) AS average_account_balance",
+    "answer": "45288.432686084142",
+    "id": "6cbc7b5f-d42e-45aa-8011-ff1aaebe2ccd"
+  },
+  {
+    "query": "How many 'Auto Loan' types were granted in the year 2024?",
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE ln_type_id = (SELECT id FROM loan_types WHERE ln_type = 'Auto Loan') AND EXTRACT(YEAR FROM ln_st_dt) = 2024;",
+    "cypher_command": "MATCH (l:Loans)<-[:BELONGS_TO_CUSTOMER]-(c:Customers)\nWHERE l.start_date >= date({ year: 2024, month: 1, day: 1 }) AND l.start_date < date({ year: 2025, month: 1, day: 1 })\nAND (l)-[:HAS_LOAN_TYPE]->(:LoanTypes {type: 'Auto Loan'})\nRETURN count(l) AS auto_loan_count",
+    "answer": "9",
+    "id": "3547cddf-e91c-440a-88bd-945e5bb9cf85"
+  },
+  {
+    "query": "Count the number of loans per customer with ID 128.",
+    "sql_command": "SELECT COUNT(*) FROM loans WHERE cus_id = 128;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nWHERE c.customer_id = 128\nRETURN COUNT(l) AS loan_count",
+    "answer": "1",
+    "id": "8889cefa-df9b-4adf-b425-94cda451cc77"
+  },
+  {
+    "query": "How many customers have both deposits and accounts?",
+    "sql_command": "SELECT COUNT(DISTINCT c.id) AS customer_count FROM customers c INNER JOIN accounts a ON c.id = a.cus_id INNER JOIN deposits d ON c.id = d.cus_id;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits), (c)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "99",
+    "id": "005fdc8d-1efe-49a8-bc37-ddf4a293093c"
+  },
+  {
+    "query": "How many customers took out their first loan within 60 days of opening their first account?",
+    "sql_command": "SELECT COUNT(DISTINCT c.id) AS customer_count\nFROM customers c\nJOIN accounts a ON c.id = a.cus_id\nJOIN loans l ON c.id = l.cus_id\nGROUP BY c.id\nHAVING MIN(a.created_at) <= MIN(l.ln_st_dt) AND MIN(l.ln_st_dt) <= MIN(a.created_at) + INTERVAL '60 days';",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)\nMATCH (c)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nWHERE date(l.created_at) <= date(a.created_at) + duration('P60D')\nRETURN count(DISTINCT c) AS first_time_loan_customers",
+    "answer": "101",
+    "id": "cbc347e3-5c65-4033-9093-f48170d4c224"
+  },
+  {
+    "query": "Count the number of transactions per deposit type with ID 128.",
+    "sql_command": "SELECT de_type_id, COUNT(transactions.id) AS transaction_count \nFROM transactions \nJOIN deposits ON transactions.acc_id = deposits.id \nWHERE de_type_id = 128 \nGROUP BY de_type_id \nLIMIT 5;",
+    "cypher_command": "MATCH (d:Deposits)<-[:BELONGS_TO_CUSTOMER]-(c:Customers)<-[:HAS_TRANSACTION]-(t:Transactions)\nWHERE d.deposit_type_id = 128\nRETURN COUNT(t) AS transaction_count",
+    "answer": "0",
+    "id": "90be39ac-978e-4cda-a4e1-49b8da1d1395"
+  },
+  {
+    "query": "Count the number of deposits with start date after 2022.",
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE de_st_dt > '2022-01-01';",
+    "cypher_command": "MATCH (d:Deposits)\nWHERE date(d.start_date) > date('2022-12-31')\nRETURN count(d) AS numberOfDeposits",
+    "answer": "200",
+    "id": "5e1de881-b56e-4ead-9612-255be7327001"
+  },
+  {
+    "query": "Count the number of deposits with term greater than 24 months.",
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE CAST(LEFT(tem, -1) AS INTEGER) > 24 AND RIGHT(tem, 1) = 'M'",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nWHERE toInteger(d.term) > 24\nRETURN count(d) AS numberOfDeposits",
+    "answer": "0",
+    "id": "56042188-d4db-4b99-a64d-dd688c43da35"
+  },
+  {
+    "query": "Count the number of cards per branch with ID 128.",
+    "sql_command": "SELECT COUNT(cards.id) AS card_count\nFROM cards\nJOIN customers ON cards.cus_id = customers.id\nWHERE customers.brc = 128;",
+    "cypher_command": "MATCH (b:Branches {branch_id: 128})<-[:BELONGS_TO_BRANCH]-(c:Customers)<-[:BELONGS_TO_CUSTOMER]-(card:Cards)\nRETURN COUNT(card) AS numberOfCardsPerBranch",
+    "answer": "0",
+    "id": "d5fb14e0-3dc7-4cdc-b3de-5de47211ff31"
+  },
+  {
+    "query": "How many customers have more than 3 cards?",
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) AS customer_count \nFROM cards \nGROUP BY cus_id \nHAVING COUNT(id) > 3;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(card:Cards)\nWITH c, COUNT(card) AS cardCount\nWHERE cardCount > 3\nRETURN COUNT(c) AS customerCount",
+    "answer": "3",
+    "id": "8b270f67-1b9a-48bf-8969-eefdb25bf75c"
+  },
+  {
+    "query": "Count the number of loans per loan type with ID 128.",
+    "sql_command": "SELECT loan_types.ln_type, COUNT(loans.id) AS loan_count \nFROM loans \nJOIN loan_types ON loans.ln_type_id = loan_types.id \nWHERE loan_types.id = 128 \nGROUP BY loan_types.ln_type;",
+    "cypher_command": "MATCH (l:Loans)-[:HAS_LOAN_TYPE]->(lt:LoanTypes)\nWHERE lt.loan_type_id = 128\nRETURN COUNT(l) AS numberOfLoans",
+    "answer": "0",
+    "id": "aa087527-35a8-4c5c-a3e4-55afdc83eaa6"
+  },
+  {
+    "query": "Count the number of cards expiring before 2024 per customer.",
+    "sql_command": "SELECT c.cus_name, COUNT(cd.id) AS expiring_cards_count\nFROM customers c\nJOIN cards cd ON c.id = cd.cus_id\nWHERE cd.card_exp_date < '2024-01-01'\nGROUP BY c.id, c.cus_name\nLIMIT 5;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(card:Cards)\nWHERE date(card.expiration_date) < date('2024-01-01')\nRETURN c.customer_id, COUNT(card) AS expiring_cards_count",
+    "answer": "[]",
+    "id": "0d1172a4-f608-4b6f-8a70-3a997d76a921"
+  },
+  {
+    "query": "Count the number of customers whose full name is a substring of another customer's full name.",
+    "sql_command": "SELECT COUNT(DISTINCT c1.id) AS substring_count FROM customers c1, customers c2 WHERE c1.id <> c2.id AND c1.cus_name LIKE '%' || c2.cus_name || '%';",
+    "cypher_command": "MATCH (c1:Customers), (c2:Customers)\nWHERE c1.customer_name CONTAINS c2.customer_name AND c1.customer_id <> c2.customer_id\nRETURN COUNT(DISTINCT c1) AS customer_count",
+    "answer": "2",
+    "id": "d333b22b-f74d-4542-96f2-8247fc6fd881"
+  },
+  {
+    "query": "Count how many customers have all of their associated cards active (not blocked).",
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM cards WHERE is_blocked = False AND cus_id NOT IN (SELECT DISTINCT cus_id FROM cards WHERE is_blocked = True AND cus_id IS NOT NULL);",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(card:Cards) WHERE card.is_blocked = false WITH c, COUNT(card) AS activeCardCount MATCH (c)<-[:BELONGS_TO_CUSTOMER]-(allCards:Cards) WITH c, activeCardCount, COUNT(allCards) AS totalCardCount WHERE activeCardCount = totalCardCount RETURN COUNT(DISTINCT c) AS customerCount",
+    "answer": "42",
+    "id": "f3c2b1ac-e01e-4c5a-94e4-69876896396d"
+  },
+  {
+    "query": "Count the number of customers with more than three loans.",
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) FROM loans GROUP BY cus_id HAVING COUNT(id) > 3;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nWITH c, COUNT(l) AS loanCount\nWHERE loanCount > 3\nRETURN COUNT(c) AS customerCount",
+    "answer": "4",
+    "id": "a33a034e-6895-4c5b-b3e3-ebbd45ac3e78"
+  },
+  {
+    "query": "Count customers who have taken a new loan before their previous loan's official end date.",
+    "sql_command": "SELECT COUNT(DISTINCT l1.cus_id) FROM loans l1 JOIN loans l2 ON l1.cus_id = l2.cus_id AND l1.ln_st_dt < l2.ln_st_dt AND l1.ln_en_dt > l2.ln_st_dt;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nMATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(n:Loans)\nWHERE date(n.start_date) < date(l.end_date)\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "126",
+    "id": "f47ff2ae-462c-432b-ae76-c8e73699f3aa"
+  },
+  {
+    "query": "Count the number of customers with more than three accounts.",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT cus_id FROM accounts GROUP BY cus_id HAVING COUNT(id) > 3) subquery;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)\nWITH c, COUNT(a) AS accountCount\nWHERE accountCount > 3\nRETURN COUNT(c) AS customerCount",
+    "answer": "12",
+    "id": "fce39ee9-f16f-4760-ab30-d772a29f9c64"
+  },
+  {
+    "query": "Count the number of deposits with end date in the next 3 months.",
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE de_en_dt <= CURRENT_DATE + INTERVAL '3 months';",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits) WHERE d.end_date >= date() AND d.end_date < date() + duration('P3M') RETURN count(d) AS deposit_count",
+    "answer": "4",
+    "id": "ba0aaf8e-83ce-4444-815a-41942c07850d"
+  },
+  {
+    "query": "Find the number of customers who opened an account, took a loan, and got a card all within the same calendar year.",
+    "sql_command": "SELECT COUNT(DISTINCT a.cus_id) AS num_customers\nFROM accounts a\nJOIN loans l ON a.cus_id = l.cus_id\nJOIN cards c ON a.cus_id = c.cus_id\nWHERE EXTRACT(YEAR FROM a.created_at) = EXTRACT(YEAR FROM l.created_at)\nAND EXTRACT(YEAR FROM a.created_at) = EXTRACT(YEAR FROM c.created_at);",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts),\n      (c)<-[:BELONGS_TO_CUSTOMER]-(l:Loans),\n      (c)<-[:BELONGS_TO_CUSTOMER]-(card:Cards)\nWHERE date(a.created_at) >= date({ year: date().year, month: 1, day: 1 }) AND \n      date(l.created_at) >= date({ year: date().year, month: 1, day: 1 }) AND \n      date(card.created_at) >= date({ year: date().year, month: 1, day: 1 })\nRETURN count(DISTINCT c) AS numberOfCustomers",
+    "answer": "58",
+    "id": "9c86b5fa-15df-4599-ae04-51edae950609"
+  },
+  {
+    "query": "How many customers have a loan that started on the same day of the week they were born?",
+    "sql_command": "SELECT COUNT(*) FROM customers c JOIN loans l ON c.id = l.cus_id WHERE EXTRACT(DOW FROM c.cus_dob) = EXTRACT(DOW FROM l.ln_st_dt);",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nWHERE date(l.start_date).dayOfWeek = date(c.date_of_birth).dayOfWeek\nRETURN count(c) AS customer_count",
+    "answer": "33",
+    "id": "1c35c086-2ddf-4fa0-8ce6-8588e2f4edb6"
+  },
+  {
+    "query": "How many cards have balances above the average card balance?",
+    "sql_command": "SELECT COUNT(*) AS num_of_cards_above_average FROM cards WHERE bal > (SELECT AVG(bal) FROM cards);",
+    "cypher_command": "MATCH (c:Cards)\nWITH AVG(c.balance) AS avg_balance\nMATCH (c:Cards)\nWHERE c.balance > avg_balance\nRETURN COUNT(c) AS count_above_average_balance",
+    "answer": "81",
+    "id": "7f5ec88a-2c3d-47a6-be5e-d8d5968b528a"
+  },
+  {
+    "query": "Retrieve customers who have the same phone number registered more than once.",
+    "sql_command": "SELECT cus_phone, COUNT(*) as phone_count FROM customers GROUP BY cus_phone HAVING COUNT(*) > 1 LIMIT 5;",
+    "cypher_command": "MATCH (c:Customers)\nWITH c.phone AS phone, COUNT(c) AS phone_count\nWHERE phone_count > 1\nRETURN phone",
+    "answer": "[]",
+    "id": "dd1b60c1-e281-46af-9118-05284de526d2"
+  },
+  {
+    "query": "How many customers have both deposits and cards?",
+    "sql_command": "SELECT COUNT(DISTINCT c.id) AS customer_count FROM customers c JOIN cards cr ON c.id = cr.cus_id JOIN deposits d ON c.id = d.cus_id;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits), (c)<-[:BELONGS_TO_CUSTOMER]-(card:Cards)\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "66",
+    "id": "97333359-a9ba-4452-b0d1-6ab05c8566c3"
+  },
+  {
+    "query": "How many customers hold both loans of more than 50,000 and deposits of more than 50,000?",
+    "sql_command": "SELECT COUNT(DISTINCT customers.id)\nFROM customers \nJOIN deposits ON customers.id = deposits.cus_id \nJOIN loans ON customers.id = loans.cus_id \nWHERE deposits.bal > 50000 AND loans.bal < -50000;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans), (c)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nWHERE l.balance > 50000 AND d.balance > 50000\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "0",
+    "id": "7eebeb7c-163f-4d4f-8802-d4ea38df4281"
+  },
+  {
+    "query": "How many customers have at least one loan for every account they hold?",
+    "sql_command": "SELECT COUNT(DISTINCT cu.id) AS customer_count\nFROM customers cu\nJOIN accounts a ON cu.id = a.cus_id\nWHERE NOT EXISTS (\n    SELECT 1 FROM accounts acc\n    WHERE acc.cus_id = cu.id AND NOT EXISTS (\n        SELECT 1 FROM loans l\n        WHERE l.cus_id = acc.cus_id\n    )\n);",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)\nMATCH (c)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nWITH c, COUNT(DISTINCT a) AS accountCount, COUNT(DISTINCT l) AS loanCount\nWHERE accountCount = loanCount\nRETURN COUNT(DISTINCT c) AS customerCount",
+    "answer": "35",
+    "id": "e3a403f8-68b7-4e85-9035-b27bb450e876"
+  },
+  {
+    "query": "How many customers have a total account balance that is greater than their total loan balance?",
+    "sql_command": "SELECT COUNT(DISTINCT c.id) AS customer_count\nFROM customers c\nJOIN accounts a ON c.id = a.cus_id\nJOIN loans l ON c.id = l.cus_id\nGROUP BY c.id\nHAVING SUM(a.acc_bal) > ABS(SUM(l.bal));",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts), (c)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nWITH c, SUM(a.account_balance) AS total_account_balance, SUM(l.balance) AS total_loan_balance\nWHERE total_account_balance > total_loan_balance\nRETURN COUNT(c) AS customer_count",
+    "answer": "101",
+    "id": "7548bcfc-fb66-4035-9484-7544b45ab267"
+  },
+  {
+    "query": "What is the total number of transactions that occurred on a weekend (Saturday or Sunday)?",
+    "sql_command": "SELECT COUNT(*) AS weekend_transaction_count FROM transactions WHERE EXTRACT(DOW FROM tran_dt) IN (0, 6)",
+    "cypher_command": "MATCH (t:Transactions)\nWHERE date(t.transaction_date).dayOfWeek IN [6, 7]\nRETURN COUNT(t) AS total_weekend_transactions",
+    "answer": "285",
+    "id": "6c9e135d-ba83-451b-a726-87537e691277"
+  },
+  {
+    "query": "How many branches serve more than 500 customers?",
+    "sql_command": "SELECT COUNT(*) FROM (\n    SELECT brc, COUNT(*) as customer_count\n    FROM customers\n    GROUP BY brc\n    HAVING COUNT(*) > 500\n) as branch_customer_counts;",
+    "cypher_command": "MATCH (b:Branches)<-[:BELONGS_TO_BRANCH]-(c:Customers)\nWITH b, COUNT(c) AS customerCount\nWHERE customerCount > 500\nRETURN COUNT(b) AS branchCount",
+    "answer": "0",
+    "id": "f8b5fcc5-be16-4d2d-91b7-fdb9d4d9574a"
+  },
+  {
+    "query": "Count the number of deposits per branch with ID 128.",
+    "sql_command": "SELECT COUNT(d.id) AS deposit_count FROM deposits d JOIN branches b ON d.de_type_id = b.id WHERE b.id = 128;",
+    "cypher_command": "MATCH (b:Branches {branch_id: 128})<-[:BELONGS_TO_BRANCH]-(c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nRETURN COUNT(d) AS numberOfDeposits",
+    "answer": "0",
+    "id": "4fad9880-426f-42af-a18d-4104d555f163"
+  },
+  {
+    "query": "Count the number of transactions per customer with total amount over 5000.",
+    "sql_command": "SELECT c.cus_name, COUNT(t.id) AS transaction_count\nFROM transactions t\nJOIN accounts a ON t.acc_id = a.id\nJOIN customers c ON a.cus_id = c.id\nWHERE t.tran_amt > 5000\nGROUP BY c.cus_name\nLIMIT 5;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)<-[:HAS_TRANSACTION]-(t:Transactions)\nWHERE t.transaction_amount > 5000\nRETURN c.customer_id, COUNT(t) AS transaction_count",
+    "answer": "[]",
+    "id": "dc124068-9e6b-40f7-830b-6dfb242ea76d"
+  },
+  {
+    "query": "How many customers have more than 1 loan?",
+    "sql_command": "SELECT COUNT(*) FROM (SELECT cus_id, COUNT(*) as loan_count FROM loans GROUP BY cus_id HAVING COUNT(*) > 1) as multiple_loans_customers;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nWITH c, COUNT(l) AS loanCount\nWHERE loanCount > 1\nRETURN COUNT(c) AS customerCount",
+    "answer": "50",
+    "id": "09239628-8021-46a1-9b88-84a51cf50b0c"
+  },
+  {
+    "query": "How many branches have an average customer account balance greater than $25,000?",
+    "sql_command": "SELECT COUNT(DISTINCT branches.id) \nFROM branches \nJOIN accounts ON branches.id = accounts.id \nGROUP BY branches.id \nHAVING AVG(accounts.acc_bal) > 25000;",
+    "cypher_command": "MATCH (b:Branches)<-[:BELONGS_TO_BRANCH]-(c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)\nWITH b, AVG(a.account_balance) AS avg_balance\nWHERE avg_balance > 25000\nRETURN COUNT(b) AS branch_count",
+    "answer": "4",
+    "id": "030f9044-5634-49ff-a190-7d1e8c06796c"
+  },
+  {
+    "query": "Count the number of deposits per customer with ID 128.",
+    "sql_command": "SELECT COUNT(*) FROM deposits WHERE cus_id = 128;",
+    "cypher_command": "MATCH (c:Customers {customer_id: 128})<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nRETURN count(d) AS number_of_deposits",
+    "answer": "1",
+    "id": "e25910c1-8ae1-4ece-8219-bf1325cec35d"
+  },
+  {
+    "query": "What is the total number of 'Student' loans given to customers under 25 years old?",
+    "sql_command": "SELECT COUNT(*)\nFROM loans\nJOIN loan_types ON loans.ln_type_id = loan_types.id\nJOIN customers ON loans.cus_id = customers.id\nWHERE loan_types.ln_type = 'Student Loan' AND CURRENT_DATE - INTERVAL '25 years' > customers.cus_dob;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nWHERE date().year - date(c.date_of_birth).year < 25\nRETURN count(l) AS total_student_loans",
+    "answer": "27",
+    "id": "c9844da0-4ebd-42c9-a391-1c06a6138a25"
+  },
+  {
+    "query": "Get the total number of unique customers who hold both accounts and cards.",
+    "sql_command": "SELECT COUNT(DISTINCT a.cus_id) AS unique_customers\nFROM accounts a\nJOIN cards c ON a.cus_id = c.cus_id;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts), (c)<-[:BELONGS_TO_CUSTOMER]-(k:Cards)\nRETURN COUNT(DISTINCT c) AS unique_customers_with_accounts_and_cards",
+    "answer": "85",
+    "id": "222b8ed5-bf56-4398-bc1a-4fa9635987cc"
+  },
+  {
+    "query": "Count the number of transactions updated in the last 60 days.",
+    "sql_command": "SELECT COUNT(*) FROM transactions WHERE updated_at >= NOW() - INTERVAL '60 days'",
+    "cypher_command": "MATCH (t:Transactions)\nWHERE date(t.updated_at) >= date() - duration('P60D')\nRETURN count(t) AS updated_transactions_count",
+    "answer": "1000",
+    "id": "481d3899-ce17-43bc-ba20-066805ddbb6b"
+  },
+  {
+    "query": "Count the number of customers with deposits ending in 2025 and loans starting in 2025.",
+    "sql_command": "SELECT COUNT(DISTINCT c.id) \nFROM customers c\nJOIN deposits d ON c.id = d.cus_id\nJOIN loans l ON c.id = l.cus_id\nWHERE EXTRACT(YEAR FROM d.de_en_dt) = 2025 AND EXTRACT(YEAR FROM l.ln_st_dt) = 2025;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nMATCH (c)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nWHERE date(d.end_date) >= date('2025-01-01') AND date(l.start_date) < date('2026-01-01')\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "90",
+    "id": "c8a06a30-2ee8-49b3-8896-bbfa2e4122da"
+  },
+  {
+    "query": "How many customers have a deposit with an interest rate lower than the bank's lowest loan rate?",
+    "sql_command": "SELECT COUNT(DISTINCT deposits.cus_id) FROM deposits WHERE deposits.interest < (SELECT MIN(loans.interest) FROM loans);",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits), (c)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nWHERE d.interest_rate < l.interest_rate\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "56",
+    "id": "edb628a6-f4b7-48ba-8853-6a703c3fcdf0"
+  },
+  {
+    "query": "How many loan types have an average interest rate below 3.5%?",
+    "sql_command": "SELECT COUNT(DISTINCT lt.id) AS low_interest_loan_type_count\nFROM loan_types lt\nJOIN loans l ON lt.id = l.ln_type_id\nGROUP BY lt.id\nHAVING AVG(l.interest) < 3.5;",
+    "cypher_command": "MATCH (lt:LoanTypes)<-[:HAS_LOAN_TYPE]-(l:Loans)\nWITH lt, AVG(l.interest_rate) AS avg_interest_rate\nWHERE avg_interest_rate < 3.5\nRETURN COUNT(lt) AS loan_type_count",
+    "answer": "0",
+    "id": "e1b07a8a-44d1-4b5c-9318-dc3f42eac30b"
+  },
+  {
+    "query": "Count customers whose most recent transaction was for a lower amount than their overall average transaction amount.",
+    "sql_command": "WITH recent_avg_transactions AS (\n    SELECT \n        acc_id,\n        FIRST_VALUE(tran_amt) OVER (PARTITION BY acc_id ORDER BY tran_dt DESC) as recent_tran_amt,\n        AVG(tran_amt) OVER (PARTITION BY acc_id) as avg_tran_amt\n    FROM transactions\n) \nSELECT COUNT(DISTINCT c.id) as customer_count\nFROM recent_avg_transactions rat\nJOIN accounts a ON rat.acc_id = a.id\nJOIN customers c ON a.cus_id = c.id\nWHERE rat.recent_tran_amt < rat.avg_tran_amt;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)<-[:HAS_TRANSACTION]-(t:Transactions) \nWITH c, AVG(t.transaction_amount) AS avg_amount \nMATCH (c)<-[:BELONGS_TO_CUSTOMER]-(a2:Accounts)<-[:HAS_TRANSACTION]-(t2:Transactions) \nWITH c, avg_amount, t2, MAX(t2.transaction_date) AS max_date \nWHERE t2.transaction_date = max_date \nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "152",
+    "id": "0f6f4718-5983-41cb-a3f0-6bf11272fa49"
+  },
+  {
+    "query": "How many customers have at least one blocked card and at least one active loan?",
+    "sql_command": "SELECT COUNT(DISTINCT c.id) AS customer_count\nFROM customers c\nJOIN cards ca ON c.id = ca.cus_id\nJOIN loans l ON c.id = l.cus_id\nWHERE ca.is_blocked = true AND l.bal < 0;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(cards:Cards), (c)<-[:BELONGS_TO_CUSTOMER]-(loans:Loans)\nWHERE cards.is_blocked = true\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "42",
+    "id": "61768143-6755-4ac5-a861-e6abec29c88f"
+  },
+  {
+    "query": "Count the number of customers with accounts created in 2022.",
+    "sql_command": "SELECT COUNT(*) FROM customers WHERE EXTRACT(YEAR FROM created_at) = 2022;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)\nWHERE date(a.created_at) >= date({ year: 2022, month: 1, day: 1 }) AND date(a.created_at) < date({ year: 2023, month: 1, day: 1 })\nRETURN count(c) AS customer_count",
+    "answer": "0",
+    "id": "d8ec6476-d0ad-488a-83b2-175c0f294a7e"
+  },
+  {
+    "query": "Count the number of deposits per deposit type with ID 127.",
+    "sql_command": "SELECT dt.de_type, COUNT(d.id) as deposit_count \nFROM deposits d \nJOIN deposit_types dt ON d.de_type_id = dt.id \nWHERE d.de_type_id = 127 \nGROUP BY dt.de_type \nLIMIT 5;",
+    "cypher_command": "MATCH (d:Deposits)-[:HAS_DEPOSIT_TYPE]->(dt:DepositTypes)\nWHERE dt.deposit_type_id = 127\nRETURN COUNT(d) AS numberOfDeposits",
+    "answer": "0",
+    "id": "8eafad22-127b-4cb6-8545-5871ff5edc99"
+  },
+  {
+    "query": "How many accounts were opened in the same month as the owner's birthday?",
+    "sql_command": "SELECT COUNT(*) AS birthday_month_accounts\nFROM accounts a\nJOIN customers c ON a.cus_id = c.id\nWHERE EXTRACT(MONTH FROM a.created_at) = EXTRACT(MONTH FROM c.cus_dob)",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)\nWHERE date(a.created_at).month = date(c.date_of_birth).month AND date(a.created_at).year = date(c.date_of_birth).year\nRETURN count(a) AS accounts_opened_same_month_as_birthday",
+    "answer": "22",
+    "id": "46816891-e1ca-4ca9-9a6d-03e940ba56ea"
+  },
+  {
+    "query": "What is the number of customers who have both expired loans and expired deposits?",
+    "sql_command": "SELECT COUNT(DISTINCT loans.cus_id) AS customer_count \nFROM loans\nJOIN deposits ON loans.cus_id = deposits.cus_id\nWHERE loans.ln_en_dt < CURRENT_DATE AND deposits.de_en_dt < CURRENT_DATE;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans), (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nWHERE date(l.end_date) < date() AND date(d.end_date) < date()\nRETURN COUNT(DISTINCT c) AS numberOfCustomers",
+    "answer": "0",
+    "id": "3e2368d1-47d1-4c90-a021-8dd6db5233c2"
+  },
+  {
+    "query": "List all branches with the number of customers, number of accounts, and total balance across accounts.",
+    "sql_command": "SELECT b.brc, COUNT(DISTINCT c.id) AS num_customers, COUNT(a.id) AS num_accounts, COALESCE(SUM(a.acc_bal), 0) AS total_balance \nFROM branches b\nLEFT JOIN customers c ON b.id = c.brc\nLEFT JOIN accounts a ON c.id = a.cus_id\nGROUP BY b.brc\nORDER BY b.brc LIMIT 5;",
+    "cypher_command": "MATCH (b:Branches)<-[:BELONGS_TO_BRANCH]-(c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts) \nWITH b.branch_id AS BranchID, \n     COUNT(DISTINCT c.customer_id) AS NumberOfCustomers, \n     COUNT(DISTINCT a.account_id) AS NumberOfAccounts, \n     SUM(a.account_balance) AS TotalBalance \nRETURN BranchID, NumberOfCustomers, NumberOfAccounts, TotalBalance",
+    "answer": "[{\"BranchID\": 1, \"NumberOfCustomers\": \"38\", \"NumberOfAccounts\": \"48\", \"TotalBalance\": \"2198433.26\"}, {\"BranchID\": 2, \"NumberOfCustomers\": \"58\", \"NumberOfAccounts\": \"84\", \"TotalBalance\": \"3728911.44\"}, {\"BranchID\": 3, \"NumberOfCustomers\": \"47\", \"NumberOfAccounts\": \"81\", \"TotalBalance\": \"3957402.39\"}, {\"BranchID\": 4, \"NumberOfCustomers\": \"57\", \"NumberOfAccounts\": \"87\", \"TotalBalance\": \"3911293.40\"}]",
+    "id": "53bffb4d-841a-4d55-8664-2114b4089b35"
+  },
+  {
+    "query": "How many customers have both loans and cards?",
+    "sql_command": "SELECT COUNT(DISTINCT l.cus_id) AS customer_count\nFROM loans l\nJOIN cards c ON l.cus_id = c.cus_id;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans), (c)<-[:BELONGS_TO_CUSTOMER]-(card:Cards)\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "70",
+    "id": "36d91656-b59f-47b6-8585-f47aecca592d"
+  },
+  {
+    "query": "What is the average loan interest rate for customers whose total account balance is over $75,000?",
+    "sql_command": "SELECT AVG(l.interest) AS average_interest_rate FROM loans l JOIN accounts a ON l.cus_id = a.cus_id WHERE a.acc_bal > 75000;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)\nWHERE a.account_balance > 75000\nMATCH (c)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nRETURN AVG(l.interest_rate) AS average_interest_rate",
+    "answer": "4.787012987012987",
+    "id": "f5940574-a101-48f0-bb4c-d0287f6a0a46"
+  },
+  {
+    "query": "How many customers opened their first account with the bank over 5 years ago?",
+    "sql_command": "SELECT COUNT(DISTINCT cus_id) AS customer_count FROM accounts WHERE created_at < NOW() - INTERVAL '5 years';",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)\nWHERE date(a.created_at) < date({ year: date().year - 5, month: 1, day: 1 })\nRETURN count(DISTINCT c) AS customers_count",
+    "answer": "0",
+    "id": "5790f94b-af47-4258-9992-51f23159628d"
+  },
+  {
+    "query": "Count the number of deposits with balance below 2000 per customer.",
+    "sql_command": "SELECT cus_id, COUNT(*) as deposit_count \nFROM deposits \nWHERE bal < 2000 \nGROUP BY cus_id \nLIMIT 5;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nWHERE d.balance < 2000\nRETURN c.customer_id, COUNT(d) AS deposit_count",
+    "answer": "[42, 52, 64, 157]",
+    "id": "965d6e31-257c-4689-b537-cd48be6d3974"
+  },
+  {
+    "query": "How many customers took loans with interest rates higher than their deposit interest rates?",
+    "sql_command": "SELECT COUNT(DISTINCT loans.cus_id) FROM loans JOIN deposits ON loans.cus_id = deposits.cus_id WHERE loans.interest > deposits.interest;",
+    "cypher_command": "MATCH (c:Customers)<-[:BELONGS_TO_CUSTOMER]-(l:Loans), (c)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nWHERE l.interest_rate > d.interest_rate\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "56",
+    "id": "60355c3e-316a-434e-92c3-97e76a4f2d86"
+  }
+]

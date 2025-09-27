@@ -1,0 +1,67 @@
+[
+  {
+    "query": "What is the number of accounts created this year?",
+    "sql_command": "SELECT COUNT(*) FROM Accounts WHERE EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE);",
+    "id": "3ae1e8f7-2434-431f-92bd-3c97a6be3c93"
+  },
+  {
+    "query": "What is the number of transactions recorded this year?",
+    "sql_command": "SELECT COUNT(*) FROM Transactions WHERE EXTRACT(YEAR FROM transaction_date) = EXTRACT(YEAR FROM CURRENT_DATE);",
+    "id": "746bbb4f-26d1-4950-935e-e4ccdb17b3d4"
+  },
+  {
+    "query": "What is the number of cards issued this year?",
+    "sql_command": "SELECT COUNT(*) FROM Cards WHERE EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE);",
+    "id": "8be39bd6-13a7-4648-ac27-b5c3d3ac4251"
+  },
+  {
+    "query": "What is the number of customers registered this year?",
+    "sql_command": "SELECT COUNT(*) FROM Customers WHERE EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE);",
+    "id": "15bd0f5d-79f2-4c09-87bb-4662d1aab9d6"
+  },
+  {
+    "query": "Count the number of branches with code starting with 'A'.",
+    "sql_command": "SELECT COUNT(*) FROM Branches WHERE branch_code LIKE 'A%';",
+    "id": "d34440e7-ff85-405f-a5c3-b7f52e555b9c"
+  },
+  {
+    "query": "Count the number of loans with payment term over 12 months.",
+    "sql_command": "SELECT COUNT(*) FROM Loans WHERE payment_term > 12;",
+    "id": "8bda622e-f05f-4a45-ae94-4becd352fde5"
+  },
+  {
+    "query": "Count the number of customers with email ending in '.com'.",
+    "sql_command": "SELECT COUNT(*) FROM Customers WHERE email LIKE '%.com';",
+    "id": "83c98275-72dd-4c73-bb64-a857b33fc1d1"
+  },
+  {
+    "query": "Count the number of deposits with term less than 6 months.",
+    "sql_command": "SELECT COUNT(*) FROM Deposits WHERE term < 6;",
+    "id": "50a33670-6fa1-4403-b866-b935464b387b"
+  },
+  {
+    "query": "Count the number of customers with phone starting with '1'.",
+    "sql_command": "SELECT COUNT(*) FROM Customers WHERE phone LIKE '1%';",
+    "id": "2d372324-8004-42bf-afaa-4baf43d8ea78"
+  },
+  {
+    "query": "What is the total outstanding balance of all active loans?",
+    "sql_command": "SELECT SUM(balance) FROM Loans;",
+    "id": "c1d389c2-9ec6-4905-9893-3423b617250a"
+  },
+  {
+    "query": "What is the total transaction volume (count) from last calendar year?",
+    "sql_command": "SELECT COUNT(*) FROM Transactions WHERE EXTRACT(YEAR FROM transaction_date) = EXTRACT(YEAR FROM CURRENT_DATE) - 1;",
+    "id": "9b85f7b4-0191-414c-aa80-7949490bb253"
+  },
+  {
+    "query": "What is the total loan balance for loans starting this year?",
+    "sql_command": "SELECT SUM(balance) FROM Loans WHERE EXTRACT(YEAR FROM start_date) = EXTRACT(YEAR FROM CURRENT_DATE);",
+    "id": "9c98238a-3a66-4e45-9022-2809b89ffa73"
+  },
+  {
+    "query": "What is the highest transaction amount recorded on a weekend?",
+    "sql_command": "SELECT MAX(transaction_amount) FROM Transactions WHERE EXTRACT(ISODOW FROM transaction_date) IN (6, 7);",
+    "id": "44626372-ec7f-48d0-b1f4-22078a0aa3c7"
+  }
+]
