@@ -1,0 +1,2362 @@
+[
+  {
+    "query": "Find the top 5 customers with the highest total account balance across all their accounts.",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)\nRETURN c.customer_id, c.customer_name, SUM(a.account_balance) AS total_account_balance\nORDER BY total_account_balance DESC\nLIMIT 5",
+    "answer": "",
+    "id": "6841c300-5521-4c6a-a60b-27607be76a46",
+    "llm_generation_time": 1.973728895187378,
+    "cypher_execution_time": 0.017408370971679688,
+    "total_token": 3573,
+    "success": true
+  },
+  {
+    "query": "Retrieve customers who have both loans and deposits, listing their total loan balance and total deposit balance.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "980f382a-ff1b-4dd4-a16d-0243a0dba7ba",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "List all branches with the number of customers, number of accounts, and total balance across accounts.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "53bffb4d-841a-4d55-8664-2114b4089b35",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Find customers whose total deposits are greater than twice their total loans.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "d6e31c95-30ca-4cc3-b0c8-a687adbdff5a",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Get the top 10 customers who made the largest number of transactions in the last year.",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)-[:HAS_TRANSACTION]->(t:Transactions)\nWHERE t.transaction_date >= datetime().epochSecond - 31536000\nWITH c, COUNT(t) AS transactionCount\nRETURN c.customer_id, c.customer_name, transactionCount\nORDER BY transactionCount DESC\nLIMIT 10",
+    "answer": "",
+    "id": "70172d66-64a4-4fe4-9289-f0ce15ea20b8",
+    "llm_generation_time": 2.3346874713897705,
+    "cypher_execution_time": 0.03074026107788086,
+    "total_token": 3600,
+    "success": true
+  },
+  {
+    "query": "Identify accounts that have never had a transaction.",
+    "cypher_command": "MATCH (a:Accounts)\nWHERE NOT (a)-[:HAS_TRANSACTION]->(:Transactions)\nRETURN a",
+    "answer": "17",
+    "id": "06ed3285-8f23-4611-a5f0-65f86ad18bda",
+    "llm_generation_time": 2.4332993030548096,
+    "cypher_execution_time": 0.04908943176269531,
+    "total_token": 3538,
+    "success": true
+  },
+  {
+    "query": "Find the average loan balance by loan type and branch.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "3f048d7f-a3fb-41b1-8f05-816511b034cf",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Retrieve customers who own more than 2 cards and at least 1 loan.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "b526346f-b67e-4272-956f-870e09b62c84",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Find customers who made a transaction larger than their account balance at that time.",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)-[:HAS_TRANSACTION]->(t:Transactions)\nWHERE t.transaction_amount > a.account_balance\nRETURN c.customer_id, c.customer_name, a.account_id, a.account_number, t.transaction_id, t.transaction_amount, a.account_balance",
+    "answer": "",
+    "id": "4d26d1a3-1d00-4092-959f-aac6ad166f59",
+    "llm_generation_time": 2.986971616744995,
+    "cypher_execution_time": 0.0251004695892334,
+    "total_token": 3588,
+    "success": true
+  },
+  {
+    "query": "Calculate the percentage of blocked cards per branch.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "0350d041-93ef-40c6-90ea-bbd209f91b42",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Find deposits that have already matured but are not yet closed.",
+    "cypher_command": "MATCH (d:Deposits)\nWHERE d.end_date <= datetime() AND NOT EXISTS((d)-[:BELONGS_TO_CUSTOMER]-())\nRETURN d",
+    "answer": "",
+    "id": "a3847704-b831-4bfe-87d9-cbf2419cd082",
+    "llm_generation_time": 2.6665916442871094,
+    "cypher_execution_time": 0.016922712326049805,
+    "total_token": 3553,
+    "success": true
+  },
+  {
+    "query": "List the top 3 branches with the highest number of loans disbursed in the past 2 years.",
+    "cypher_command": "MATCH (b:Branches)<-[:BELONGS_TO_BRANCH]-(c:Customers)-[:BELONGS_TO_CUSTOMER]->(l:Loans)\nWHERE l.end_date >= date('2023-01-01')\nRETURN b.branch_id, b.branch_name, COUNT(l) AS loanCount\nORDER BY loanCount DESC\nLIMIT 3",
+    "answer": "",
+    "id": "c7afc597-21b4-40c5-97f4-6224ed8dca78",
+    "llm_generation_time": 3.1743617057800293,
+    "cypher_execution_time": 0.025754928588867188,
+    "total_token": 3602,
+    "success": true
+  },
+  {
+    "query": "How many customers who have deposits and loans.",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Deposits))\n  AND EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Loans))\nRETURN COUNT(DISTINCT c)",
+    "answer": "90",
+    "id": "a63095c7-05af-4172-aca3-f840884e0bb9",
+    "llm_generation_time": 3.030503273010254,
+    "cypher_execution_time": 0.021698951721191406,
+    "total_token": 3567,
+    "success": true
+  },
+  {
+    "query": "Retrieve customers who have the same phone number registered more than once.",
+    "cypher_command": "MATCH (c1:Customers)-[:BELONGS_TO_CUSTOMER]->()\nWHERE c1.phone IS NOT NULL\nWITH c1.phone AS phone, collect(c1) AS customers\nWHERE size(customers) > 1\nRETURN phone, customers",
+    "answer": "",
+    "id": "dd1b60c1-e281-46af-9118-05284de526d2",
+    "llm_generation_time": 3.076993227005005,
+    "cypher_execution_time": 0.020502805709838867,
+    "total_token": 3572,
+    "success": true
+  },
+  {
+    "query": "Find the average account balance for customers aged above 60.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "c8f6b356-6f2d-4f81-9229-f029f8f0e0e2",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "List transactions that occurred on the same day a loan was disbursed for that customer.",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(l:Loans)\nMATCH (c)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)-[:HAS_TRANSACTION]->(t:Transactions)\nWHERE t.transaction_date = l.start_date\nRETURN t, l, a",
+    "answer": "",
+    "id": "17c7e0a4-4aa3-410b-848a-16b9f74e05da",
+    "llm_generation_time": 3.0044403076171875,
+    "cypher_execution_time": 0.02200794219970703,
+    "total_token": 3585,
+    "success": true
+  },
+  {
+    "query": "Identify the loan type with the highest average interest rate.",
+    "cypher_command": "MATCH (lt:LoanTypes)<-[:HAS_LOAN_TYPE]-(l:Loans)\nRETURN lt.type AS loanType, AVG(l.interest_rate) AS averageInterestRate\nORDER BY averageInterestRate DESC\nLIMIT 1",
+    "answer": "Overdraft Facility",
+    "id": "8976fa04-b55c-4d6e-8fc1-25ebad52d8b6",
+    "llm_generation_time": 2.8517720699310303,
+    "cypher_execution_time": 0.016504287719726562,
+    "total_token": 3568,
+    "success": true
+  },
+  {
+    "query": "List customers whose account balance is below the average balance of all customers in their branch.",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_BRANCH]->(b:Branches)\nWITH c, b\nMATCH (c)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)\nWITH c, b, SUM(a.account_balance) / COUNT(a) AS branchAvgBalance\nMATCH (c)-[:BELONGS_TO_CUSTOMER]->(a2:Accounts)\nWHERE a2.account_balance < branchAvgBalance\nRETURN DISTINCT c.customer_id, c.customer_name, b.branch_id, b.branch_code, branchAvgBalance ORDER BY branchAvgBalance DESC",
+    "answer": "",
+    "id": "337d8b8e-db0a-4a7b-b150-9b251b879dc9",
+    "llm_generation_time": 2.71112060546875,
+    "cypher_execution_time": 0.04625201225280762,
+    "total_token": 3639,
+    "success": true
+  },
+  {
+    "query": "Find customers with at least one expired card but who are still active with deposits.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "9124138d-a542-42ff-b59b-ba33ec7fd4bf",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Get the total number of unique customers who hold both accounts and cards.",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Accounts))\n  AND EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Cards))\nRETURN COUNT(DISTINCT c)",
+    "answer": "85",
+    "id": "222b8ed5-bf56-4398-bc1a-4fa9635987cc",
+    "llm_generation_time": 1.9359416961669922,
+    "cypher_execution_time": 0.001967191696166992,
+    "total_token": 3569,
+    "success": true
+  },
+  {
+    "query": "How many customers have more than one bank account?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)\nWITH c, COUNT(a) AS accountCount\nWHERE accountCount > 1\nRETURN c.customer_id, accountCount",
+    "answer": "",
+    "id": "e49a989a-baca-43f8-933b-ab85b2aa217c",
+    "llm_generation_time": 1.9049201011657715,
+    "cypher_execution_time": 0.0015690326690673828,
+    "total_token": 3561,
+    "success": true
+  },
+  {
+    "query": "What is the total balance of accounts for customers from the branch with code 'NYC-01'?",
+    "cypher_command": "MATCH (b:Branches {branch_code: 'NYC-01'})<-[:BELONGS_TO_BRANCH]-(c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)\nRETURN SUM(a.account_balance) AS totalAccountBalance",
+    "answer": "0",
+    "id": "48bcafd5-c2c3-4dbe-9f3b-1385b3f022c6",
+    "llm_generation_time": 2.9472553730010986,
+    "cypher_execution_time": 0.02254462242126465,
+    "total_token": 3581,
+    "success": true
+  },
+  {
+    "query": "How many transactions were made by customers over the age of 60?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE c.date_of_birth <= date('1960-01-01')\nMATCH (c)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)\nMATCH (a)-[:HAS_TRANSACTION]->(t:Transactions)\nRETURN COUNT(DISTINCT t) AS transactionCount",
+    "answer": "0",
+    "id": "70f898e2-fd8c-4912-ad27-ce882dbab545",
+    "llm_generation_time": 3.184110641479492,
+    "cypher_execution_time": 0.02399158477783203,
+    "total_token": 3583,
+    "success": true
+  },
+  {
+    "query": "What's the average transaction amount for accounts with over $20,000 in balance?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "83ed444e-5fe7-4d20-938d-87dccbe65d21",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have a loan but do not have any deposits?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Loans))\nAND NOT EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Deposits))\nRETURN COUNT(DISTINCT c)",
+    "answer": "36",
+    "id": "67f715a8-aa25-425d-98e3-999ea9790404",
+    "llm_generation_time": 1.9799208641052246,
+    "cypher_execution_time": 0.023378610610961914,
+    "total_token": 3571,
+    "success": true
+  },
+  {
+    "query": "What is the total loan balance for customers who have at least one blocked card?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(card:Cards)\nWHERE card.is_blocked = true\nWITH c\nMATCH (c)-[:BELONGS_TO_CUSTOMER]->(l:Loans)\nRETURN SUM(l.balance) AS totalLoanBalance",
+    "answer": "0",
+    "id": "855fc08f-a499-417a-8a5f-8e0d957e1b29",
+    "llm_generation_time": 2.045414686203003,
+    "cypher_execution_time": 0.020934581756591797,
+    "total_token": 3579,
+    "success": true
+  },
+  {
+    "query": "How many distinct customers have taken out a 'Mortgage'?",
+    "cypher_command": "MATCH (lt:LoanTypes {type: 'Mortgage'})\nMATCH (l:Loans)-[:HAS_LOAN_TYPE]->(lt)\nMATCH (l)-[:BELONGS_TO_CUSTOMER]->(c:Customers)\nRETURN COUNT(DISTINCT c)",
+    "answer": "0",
+    "id": "af133fa5-9a44-4995-907e-d684aea61bca",
+    "llm_generation_time": 2.022998809814453,
+    "cypher_execution_time": 0.021311044692993164,
+    "total_token": 3576,
+    "success": true
+  },
+  {
+    "query": "What is the total number of transactions made by the customer 'Robert Williams'?",
+    "cypher_command": "MATCH (c:Customers {customer_name: 'Robert Williams'})\nOPTIONAL MATCH (c)<-[:BELONGS_TO_CUSTOMER]-()-[:HAS_TRANSACTION]->(t:Transactions)\nRETURN COUNT(t) AS totalTransactions",
+    "answer": "0",
+    "id": "65d6c97b-cdde-4005-bd6e-21e6ae438a28",
+    "llm_generation_time": 1.9143600463867188,
+    "cypher_execution_time": 0.0236361026763916,
+    "total_token": 3569,
+    "success": true
+  },
+  {
+    "query": "What is the average account balance for customers who also have a loan?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "6cbc7b5f-d42e-45aa-8011-ff1aaebe2ccd",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have both a 'Personal Loan' and a 'Fixed Deposit'?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Loans)-[:HAS_LOAN_TYPE]->(:LoanTypes {type: 'Personal Loan'}))\nAND EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Deposits)-[:HAS_DEPOSIT_TYPE]->(:DepositTypes {type: 'Fixed Deposit'}))\nRETURN COUNT(DISTINCT c)",
+    "answer": "0",
+    "id": "5de81322-aab6-4f26-8c2a-4522e3da4cfd",
+    "llm_generation_time": 3.2704615592956543,
+    "cypher_execution_time": 0.0442657470703125,
+    "total_token": 3608,
+    "success": true
+  },
+  {
+    "query": "What was the total transaction amount last month for all customers in the 'CHI-03' branch?",
+    "cypher_command": "MATCH (b:Branches {branch_code: 'CHI-03'})<-[:BELONGS_TO_BRANCH]-(c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)-[:HAS_TRANSACTION]->(t:Transactions)\nWHERE t.transaction_date >= date('2025-09-01') AND t.transaction_date < date('2025-10-01')\nRETURN SUM(t.transaction_amount) AS totalTransactionAmount",
+    "answer": "0",
+    "id": "e117f86a-c98a-4f1c-995e-ac2f4a89b71e",
+    "llm_generation_time": 3.498610258102417,
+    "cypher_execution_time": 0.03831815719604492,
+    "total_token": 3618,
+    "success": true
+  },
+  {
+    "query": "How many accounts have not had any transactions in the last year?",
+    "cypher_command": "MATCH (a:Accounts)\nWHERE NOT EXISTS((a)-[:HAS_TRANSACTION]->(:Transactions))\nAND a.account_balance > 0\nRETURN COUNT(a)",
+    "answer": "274",
+    "id": "82de93a1-f3e3-4e0b-9ac8-e5390a04989e",
+    "llm_generation_time": 2.755889892578125,
+    "cypher_execution_time": 0.020035505294799805,
+    "total_token": 3553,
+    "success": true
+  },
+  {
+    "query": "How many customers have a total account balance that is greater than their total loan balance?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "7548bcfc-fb66-4035-9484-7544b45ab267",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers hold more than 3 cards?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "7688245d-59fd-40e0-95b8-a37fa8becc69",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the highest total transaction amount generated by a single customer?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)-[:HAS_TRANSACTION]->(t:Transactions)\nRETURN c.customer_id, SUM(t.transaction_amount) AS totalTransactionAmount\nORDER BY totalTransactionAmount DESC\nLIMIT 1",
+    "answer": "",
+    "id": "d458323b-4ebd-42f3-9f1c-e26b56ec8251",
+    "llm_generation_time": 3.129035711288452,
+    "cypher_execution_time": 0.020036697387695312,
+    "total_token": 3574,
+    "success": true
+  },
+  {
+    "query": "How many customers have a total deposit balance exceeding $250,000?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "01f3fe1b-18fe-4dc6-baf2-16ee7d8d44e6",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total number of 'Student' loans given to customers under 25 years old?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(l:Loans)-[:HAS_LOAN_TYPE]->(lt:LoanTypes)\nWHERE lt.type = 'Student'\nAND c.date_of_birth > date('1999-01-01')\nRETURN COUNT(DISTINCT l) AS studentLoansCount",
+    "answer": "0",
+    "id": "c9844da0-4ebd-42c9-a391-1c06a6138a25",
+    "llm_generation_time": 3.327296495437622,
+    "cypher_execution_time": 0.025662899017333984,
+    "total_token": 3593,
+    "success": true
+  },
+  {
+    "query": "How many customers with an expired card have made a transaction in the last 30 days?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "cd542037-1b9a-4bb7-8672-d5fc5cc7d7ed",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the average loan interest rate for customers whose total account balance is over $75,000?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)\nWITH c, SUM(a.account_balance) AS totalAccountBalance\nWHERE totalAccountBalance > 75000\nMATCH (c)-[:BELONGS_TO_CUSTOMER]->(l:Loans)-[:HAS_LOAN_TYPE]->(lt:LoanTypes)\nRETURN AVG(l.interest_rate) AS averageLoanInterestRate",
+    "answer": "",
+    "id": "f5940574-a101-48f0-bb4c-d0287f6a0a46",
+    "llm_generation_time": 2.392087936401367,
+    "cypher_execution_time": 0.03601384162902832,
+    "total_token": 3610,
+    "success": true
+  },
+  {
+    "query": "How many branches serve more than 500 customers?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "f8b5fcc5-be16-4d2d-91b7-fdb9d4d9574a",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have taken out a loan but have never made a deposit?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Loans))\nAND NOT EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Deposits))\nRETURN COUNT(DISTINCT c)",
+    "answer": "36",
+    "id": "95667c8e-76d8-41da-b70d-a2c9a3bba065",
+    "llm_generation_time": 2.966085195541382,
+    "cypher_execution_time": 0.002001523971557617,
+    "total_token": 3573,
+    "success": true
+  },
+  {
+    "query": "How many accounts were opened in the same month as the owner's birthday?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "46816891-e1ca-4ca9-9a6d-03e940ba56ea",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the sum of balances for all deposits of the 'Retirement' type?",
+    "cypher_command": "MATCH (d:Deposits)-[:HAS_DEPOSIT_TYPE]->(dt:DepositTypes)\nWHERE dt.type = 'Retirement'\nRETURN SUM(d.balance) AS totalRetirementDeposits",
+    "answer": "0",
+    "id": "23088e50-0046-41e6-a538-855495b04e81",
+    "llm_generation_time": 1.887535810470581,
+    "cypher_execution_time": 0.01636672019958496,
+    "total_token": 3566,
+    "success": true
+  },
+  {
+    "query": "How many customers have an average transaction amount of more than $500?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)-[:HAS_TRANSACTION]->(t:Transactions)\nWITH c, AVG(t.transaction_amount) AS avgTransactionAmount\nWHERE avgTransactionAmount > 500\nRETURN COUNT(DISTINCT c) AS customerCount",
+    "answer": "0",
+    "id": "456179fa-ec79-40ea-ba55-8b623348c286",
+    "llm_generation_time": 2.0933635234832764,
+    "cypher_execution_time": 0.02178478240966797,
+    "total_token": 3581,
+    "success": true
+  },
+  {
+    "query": "How many loans are set to be fully paid off by the end of the current calendar year?",
+    "cypher_command": "MATCH (l:Loans)\nWHERE l.end_date <= date('2024-12-31')\nRETURN COUNT(l)",
+    "answer": "5",
+    "id": "a809f911-3ebb-44ba-bfce-bc198a5de8a9",
+    "llm_generation_time": 1.7386667728424072,
+    "cypher_execution_time": 0.005282402038574219,
+    "total_token": 3553,
+    "success": true
+  },
+  {
+    "query": "How many customers have a phone number with the '310' area code?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE c.phone CONTAINS '310'\nRETURN COUNT(DISTINCT c)",
+    "answer": "3",
+    "id": "2fda6341-45fe-4beb-8d71-be0164de7445",
+    "llm_generation_time": 1.6818246841430664,
+    "cypher_execution_time": 0.012174129486083984,
+    "total_token": 3545,
+    "success": true
+  },
+  {
+    "query": "What was the total value of all transactions made during the last calendar week?",
+    "cypher_command": "MATCH (t:Transactions)\nWHERE t.transaction_date >= date('2025-09-23') AND t.transaction_date < date('2025-09-30')\nRETURN SUM(t.transaction_amount) AS totalTransactionValue",
+    "answer": "0",
+    "id": "bdc47a3d-3a76-49e0-8665-c16cf1669f4a",
+    "llm_generation_time": 2.0129616260528564,
+    "cypher_execution_time": 0.0061681270599365234,
+    "total_token": 3568,
+    "success": true
+  },
+  {
+    "query": "How many customers have a deposit with an interest rate lower than the bank's lowest loan rate?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(d:Deposits)-[:HAS_DEPOSIT_TYPE]->(dt:DepositTypes)\nMATCH (c)-[:BELONGS_TO_CUSTOMER]->(l:Loans)-[:HAS_LOAN_TYPE]->(lt:LoanTypes)\nWITH c, d, dt, lt, lt.interest_rate AS loanRate\nWHERE d.interest_rate < loanRate\nRETURN COUNT(DISTINCT c) AS customerCount",
+    "answer": "0",
+    "id": "edb628a6-f4b7-48ba-8853-6a703c3fcdf0",
+    "llm_generation_time": 3.476015567779541,
+    "cypher_execution_time": 0.03321099281311035,
+    "total_token": 3625,
+    "success": true
+  },
+  {
+    "query": "How many unique customers performed a transaction in the last 24 hours?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "2faed1c9-ffb1-41a8-93e1-a4b08f5031bc",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers share a birthday with at least one other customer?",
+    "cypher_command": "MATCH (c1:Customers)-[:BELONGS_TO_CUSTOMER]->()\nMATCH (c2:Customers)-[:BELongs_TO_CUSTOMER]->()\nWHERE c1.date_of_birth = c2.date_of_birth AND c1.customer_id < c2.customer_id\nRETURN COUNT(*) AS sharedBirthdaysCount",
+    "answer": "0",
+    "id": "e9a1672e-4f3f-40e8-bd5e-9aa12f4322de",
+    "llm_generation_time": 3.108128070831299,
+    "cypher_execution_time": 0.039426565170288086,
+    "total_token": 3582,
+    "success": true
+  },
+  {
+    "query": "How many unblocked cards have a balance greater than $10,000?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(card:Cards)\nWHERE NOT card.is_blocked AND card.balance > 10000\nRETURN COUNT(card) as unblockedCardsWithBalanceOver10k",
+    "answer": "0",
+    "id": "6fa40624-43dc-4f0a-a8c9-5f9f6f215970",
+    "llm_generation_time": 2.9554948806762695,
+    "cypher_execution_time": 0.01719951629638672,
+    "total_token": 3568,
+    "success": true
+  },
+  {
+    "query": "Find the number of customers who have an account but do not possess any cards.",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Accounts))\nAND NOT EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Cards))\nRETURN COUNT(DISTINCT c)",
+    "answer": "69",
+    "id": "5b4f1d50-b084-4a81-b1bf-abd8f7a6ff00",
+    "llm_generation_time": 2.865750789642334,
+    "cypher_execution_time": 0.022459745407104492,
+    "total_token": 3571,
+    "success": true
+  },
+  {
+    "query": "What is the total account balance for accounts with more than 20 transactions this month?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "7039d0d1-4b47-43e2-bb52-63b94dd68994",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers opened their first account with the bank over 5 years ago?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "5790f94b-af47-4258-9992-51f23159628d",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many 'Auto Loan' types were granted in the year 2024?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "3547cddf-e91c-440a-88bd-945e5bb9cf85",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the count of customers with the last name 'Jones'?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE c.customer_name CONTAINS 'Jones'\nRETURN COUNT(DISTINCT c)",
+    "answer": "5",
+    "id": "358d142c-c1ff-439d-b24c-f906b54cc8de",
+    "llm_generation_time": 1.6691999435424805,
+    "cypher_execution_time": 0.004561662673950195,
+    "total_token": 3545,
+    "success": true
+  },
+  {
+    "query": "How many accounts have a balance higher than the average account balance of their branch?",
+    "cypher_command": "MATCH (b:Branches)-[:BELONGS_TO_BRANCH]->(c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)\nWITH b, AVG(a.account_balance) AS avgBalance\nMATCH (b)-[:BELONGS_TO_BRANCH]->(c2:Customers)-[:BELONGS_TO_CUSTOMER]->(a2:Accounts)\nWHERE a2.account_balance > avgBalance\nRETURN COUNT(DISTINCT a2) AS accountCount",
+    "answer": "0",
+    "id": "e635330a-21d5-44db-b6b1-9772ca476a95",
+    "llm_generation_time": 2.5031943321228027,
+    "cypher_execution_time": 0.029272794723510742,
+    "total_token": 3618,
+    "success": true
+  },
+  {
+    "query": "Count how many customers have all of their associated cards active (not blocked).",
+    "cypher_command": "",
+    "answer": "",
+    "id": "f3c2b1ac-e01e-4c5a-94e4-69876896396d",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many deposits are scheduled to mature in the next calendar quarter?",
+    "cypher_command": "MATCH (d:Deposits)\nWHERE d.end_date >= date('2025-10-01') AND d.end_date < date('2025-12-31')\nRETURN COUNT(d) as deposits_maturing_next_quarter",
+    "answer": "4",
+    "id": "803e9b7b-8a76-4e58-a291-577818758f24",
+    "llm_generation_time": 2.024531841278076,
+    "cypher_execution_time": 0.016654014587402344,
+    "total_token": 3569,
+    "success": true
+  },
+  {
+    "query": "What is the total number of transactions made by customers who currently have a 'Home Equity' loan?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(l:Loans)-[:HAS_LOAN_TYPE]->(lt:LoanTypes)\nWHERE lt.type = 'Home Equity'\nMATCH (c)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)-[:HAS_TRANSACTION]->(t:Transactions)\nRETURN COUNT(DISTINCT t) AS totalTransactions",
+    "answer": "0",
+    "id": "811ef808-51f9-4824-9d1f-4fcdc824de3f",
+    "llm_generation_time": 2.2572619915008545,
+    "cypher_execution_time": 0.03487896919250488,
+    "total_token": 3603,
+    "success": true
+  },
+  {
+    "query": "How many customers have a total outstanding loan balance of more than $500,000?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(l:Loans)\nWITH c, SUM(l.balance) AS totalLoanBalance\nWHERE totalLoanBalance > 500000\nRETURN COUNT(DISTINCT c) AS customerCount",
+    "answer": "0",
+    "id": "c7337c65-af80-43c6-9721-dedf63e17fb4",
+    "llm_generation_time": 2.022308111190796,
+    "cypher_execution_time": 0.018349409103393555,
+    "total_token": 3576,
+    "success": true
+  },
+  {
+    "query": "What is the total number of transactions that occurred on a weekend (Saturday or Sunday)?",
+    "cypher_command": "MATCH (t:Transactions)\nWHERE t.transaction_date.dayOfWeek IN [6,7]\nRETURN COUNT(t) AS weekendTransactionCount",
+    "answer": "285",
+    "id": "6c9e135d-ba83-451b-a726-87537e691277",
+    "llm_generation_time": 1.7814052104949951,
+    "cypher_execution_time": 0.013701677322387695,
+    "total_token": 3552,
+    "success": true
+  },
+  {
+    "query": "How many customers are registered with the branch located at '123 Finance St'?",
+    "cypher_command": "MATCH (b:Branches {branch_address: '123 Finance St'})<-[:BELONGS_TO_BRANCH]-(c:Customers)\nRETURN COUNT(DISTINCT c)",
+    "answer": "0",
+    "id": "6273428e-a53e-4559-8fdd-9af06df6a045",
+    "llm_generation_time": 2.0462658405303955,
+    "cypher_execution_time": 0.015068769454956055,
+    "total_token": 3560,
+    "success": true
+  },
+  {
+    "query": "How many loan types have an average interest rate below 3.5%?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "e1b07a8a-44d1-4b5c-9318-dc3f42eac30b",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers who have deposits with the bank but have no loans.",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Deposits))\nAND NOT EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Loans))\nRETURN COUNT(DISTINCT c)",
+    "answer": "41",
+    "id": "e9fb2ec1-464a-4157-bf76-2a11dbfb38dc",
+    "llm_generation_time": 3.754533290863037,
+    "cypher_execution_time": 0.022273540496826172,
+    "total_token": 3574,
+    "success": true
+  },
+  {
+    "query": "What is the total account balance for customers under the age of 30?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "30efa799-043e-45f0-bf4e-f1fc82996cb7",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many branches have an average customer account balance greater than $25,000?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "030f9044-5634-49ff-a190-7d1e8c06796c",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of active (not blocked) cards that expire in or after the year 2030.",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(card:Cards)\nWHERE NOT card.is_blocked AND card.expiration_date.year >= 2030\nRETURN COUNT(card) AS activeCardsExpire2030",
+    "answer": "0",
+    "id": "35a5b582-51fd-4f6b-98dd-d2387342543a",
+    "llm_generation_time": 3.8638391494750977,
+    "cypher_execution_time": 0.022952556610107422,
+    "total_token": 3575,
+    "success": true
+  },
+  {
+    "query": "What is the total transaction amount from accounts that were opened in the last 6 months?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "5574860f-755f-4972-8ec5-7766117815b5",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have a '@yahoo.com' email address?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE c.email CONTAINS '@yahoo.com'\nRETURN COUNT(DISTINCT c)",
+    "answer": "0",
+    "id": "17ebb2a6-e42c-4008-905d-6df407851c3f",
+    "llm_generation_time": 1.8819806575775146,
+    "cypher_execution_time": 0.0056989192962646484,
+    "total_token": 3543,
+    "success": true
+  },
+  {
+    "query": "How many customers have a total loan balance that is higher than their combined total balance from accounts and deposits?",
+    "cypher_command": "MATCH (c:Customers)\nOPTIONAL MATCH (c)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nOPTIONAL MATCH (c)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)\nOPTIONAL MATCH (c)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nWITH c, \nSUM(l.balance) AS totalLoanBalance, \nSUM(a.account_balance) AS totalAccountBalance, \nSUM(d.balance) AS totalDepositBalance\nWHERE totalLoanBalance > (totalAccountBalance + totalDepositBalance)\nRETURN COUNT(DISTINCT c.customer_id) AS customerCount",
+    "answer": "1",
+    "id": "6daba985-2483-43b8-8807-82aae339f9e3",
+    "llm_generation_time": 15.33549427986145,
+    "cypher_execution_time": 0.0524444580078125,
+    "total_token": 3656,
+    "success": true
+  },
+  {
+    "query": "Count customers whose average transaction amount last month exceeded the bank's overall average transaction amount.",
+    "cypher_command": "MATCH (t:Transactions)\nWHERE t.transaction_date >= date('2025-09-01') AND t.transaction_date < date('2025-10-01')\nWITH t, avg(t.transaction_amount) AS avgLastMonth\nMATCH (t)-[:HAS_TRANSACTION]->(a:Accounts)-[:BELONGS_TO_CUSTOMER]->(c:Customers)\nWITH c, avgLastMonth, avg(t.transaction_amount) AS avgAll\nWHERE avgLastMonth > avgAll\nRETURN COUNT(DISTINCT c) AS customerCount",
+    "answer": "0",
+    "id": "b6a83dea-54da-447b-bac8-85225c31111b",
+    "llm_generation_time": 2.882774829864502,
+    "cypher_execution_time": 0.0334017276763916,
+    "total_token": 3632,
+    "success": true
+  },
+  {
+    "query": "How many customers took out their first loan within 60 days of opening their first account?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "cbc347e3-5c65-4033-9093-f48170d4c224",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers who hold active loans from three or more different loan categories.",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(l:Loans)-[:HAS_LOAN_TYPE]->(lt:LoanTypes)\nWITH c, COUNT(DISTINCT lt) AS loanCategoryCount\nWHERE loanCategoryCount >= 3\nRETURN COUNT(DISTINCT c) AS customerCount",
+    "answer": "0",
+    "id": "c10ff004-b58f-457f-83da-bb441a702c41",
+    "llm_generation_time": 3.8428752422332764,
+    "cypher_execution_time": 0.020099639892578125,
+    "total_token": 3589,
+    "success": true
+  },
+  {
+    "query": "How many customers have made a single transaction that was larger than their current total account balance?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)\nMATCH (a)-[:HAS_TRANSACTION]->(t:Transactions)\nWHERE t.transaction_amount > a.account_balance\nRETURN COUNT(DISTINCT c) AS customer_count",
+    "answer": "0",
+    "id": "bbf57fdc-16c2-45f3-a5e7-427d9ffab96b",
+    "llm_generation_time": 3.5772037506103516,
+    "cypher_execution_time": 0.01975107192993164,
+    "total_token": 3577,
+    "success": true
+  },
+  {
+    "query": "How many customers made at least one transaction in every month of the previous calendar year?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "4aee0d54-1ab8-4f6e-b266-0bedfa8f250a",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers are in the top 5% based on their total deposit balance?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "d8cd03c5-dbc5-4c5d-9df4-ec93503a5638",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have a loan with an interest rate higher than the average deposit interest rate at their branch?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_BRANCH]->(b:Branches)\nMATCH (c)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nMATCH (c)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nWITH c, b, l, d\nWITH c, b, AVG(d.interest_rate) AS avgDepositRate, l.interest_rate AS loanRate\nWHERE loanRate > avgDepositRate\nRETURN COUNT(DISTINCT c) AS customerCount",
+    "answer": "54",
+    "id": "3730a8f7-2e9f-4342-bb06-18e6bb45c5cc",
+    "llm_generation_time": 2.646730899810791,
+    "cypher_execution_time": 0.03422379493713379,
+    "total_token": 3637,
+    "success": true
+  },
+  {
+    "query": "Find the number of customers who opened an account, took a loan, and got a card all within the same calendar year.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "9c86b5fa-15df-4599-ae04-51edae950609",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count customers whose transaction count increased by 100% from the month before last to last month.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "61414436-89fd-4334-8b90-fdc9c88313d4",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have a 'Mortgage' where their total account balance is less than a single monthly payment (balance/payment_term)?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "cfed2afc-4fa1-4f59-b097-6e95ba474596",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Find the number of customers who have made transactions on more than 5 consecutive days.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "7f4a4704-b4d5-40fc-92a0-9bac975322cb",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers' total deposit term (sum of months) is greater than their total loan payment term (sum of months)?",
+    "cypher_command": "MATCH (c:Customers)\nOPTIONAL MATCH (c)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nOPTIONAL MATCH (c)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nWITH c, \n     SUM(CASE WHEN d.term =~ '(\\d+)M' THEN toInteger(replace(d.term, 'M', '')) ELSE 0 END) AS totalDepositMonths,\n     SUM(CASE WHEN l.payment_term =~ '(\\d+)M' THEN toInteger(replace(l.payment_term, 'M', '')) ELSE 0 END) AS totalLoanMonths\nWHERE totalDepositMonths > totalLoanMonths\nRETURN COUNT(DISTINCT c) AS customerCount",
+    "answer": "75",
+    "id": "e38568f2-4ef2-4c2d-bbff-e48788fb44f6",
+    "llm_generation_time": 5.3598480224609375,
+    "cypher_execution_time": 0.03934073448181152,
+    "total_token": 3680,
+    "success": true
+  },
+  {
+    "query": "Count customers whose second loan was of a different type than their first ever loan.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "7a53e634-1ca1-4a0b-ab17-e7f0eca1d0a3",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have a total transaction value that's over 20 times the balance of their oldest account?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "5e50406b-7b38-4586-836a-168a66dd6d18",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count 'dormant whales': customers with over $1M in total balance (accounts+deposits) but no transactions in 6 months.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "036bbba9-ad32-4dcb-a582-25c7686772f9",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers' average deposit term is longer than the average loan term for their entire branch?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "6db0f386-a459-4d4f-8849-1dbf99e2c27c",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have only one type of product with the bank (e.g., only accounts, or only loans, but not both)?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "acfcfafd-cdd8-455f-9a64-0670fb77577e",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have a card balance that is greater than the average account balance of all customers in their branch?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "1383308a-f033-400b-841d-393e89846f86",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count customers with a trend of at least 4 consecutively increasing transaction amounts.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "5011a56f-79f9-4808-a372-b23420a8856c",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have a loan that started on the same day of the week they were born?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "1c35c086-2ddf-4fa0-8ce6-8588e2f4edb6",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count customers where the time gap between their 2nd and 3rd loan was shorter than between their 1st and 2nd.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "669bfce6-330e-479e-b218-33812c7e62e8",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have a greater total balance in 'Savings' deposits than in 'Auto' loans?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "bf166cd2-70df-4640-9498-2b4195c2c95a",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of branches where the total loan balance is more than three times the total deposit balance.",
+    "cypher_command": "MATCH (b:Branches)<-[:BELONGS_TO_BRANCH]-(c:Customers)\nMATCH (c)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nMATCH (c)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nWITH b, SUM(l.balance) AS totalLoans, SUM(d.balance) AS totalDeposits\nWHERE totalLoans > 3 * totalDeposits\nRETURN b.branch_id, b.branch_name, totalLoans, totalDeposits",
+    "answer": "",
+    "id": "034a0ece-b298-4dc5-a97a-708decd04dfb",
+    "llm_generation_time": 2.921614646911621,
+    "cypher_execution_time": 0.048299312591552734,
+    "total_token": 3638,
+    "success": true
+  },
+  {
+    "query": "How many customers' most frequent transaction day of the week is Friday?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)-[:HAS_TRANSACTION]->(t:Transactions)\nWITH c, t.transaction_date.dayOfWeek AS dayOfWeek, COUNT(*) AS transactionCount\nWHERE dayOfWeek = 5\nRETURN COUNT(DISTINCT c) AS customersWithMostFrequentTransactionOnFriday",
+    "answer": "0",
+    "id": "d35ae2ee-5887-425a-bf95-e7657865688b",
+    "llm_generation_time": 3.49790096282959,
+    "cypher_execution_time": 0.023436546325683594,
+    "total_token": 3591,
+    "success": true
+  },
+  {
+    "query": "Count customers who have a deposit whose term in months is greater than their age in months when the deposit started.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "b5064d57-8979-4226-ac1c-8837af068b9b",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers hold every single type of deposit the bank offers?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "1c79da5b-8515-43b2-bc7f-b2e1a83b2fbd",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count customers whose most recent transaction was for a lower amount than their overall average transaction amount.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "0f6f4718-5983-41cb-a3f0-6bf11272fa49",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many unique addresses are shared by two or more customers?",
+    "cypher_command": "MATCH (c1:Customers)-[:BELONGS_TO_BRANCH]->(b)<-[:BELONGS_TO_BRANCH]-(c2:Customers)\nWHERE c1.customer_id < c2.customer_id\nRETURN DISTINCT b.branch_address\nLIMIT 1000000",
+    "answer": "0",
+    "id": "7c820db4-238f-4e9c-9121-eccbfb0a8c25",
+    "llm_generation_time": 2.0913312435150146,
+    "cypher_execution_time": 0.039008140563964844,
+    "total_token": 3574,
+    "success": true
+  },
+  {
+    "query": "Count customers who make more transactions on weekends (Sat, Sun) than on weekdays (Mon-Fri).",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Accounts))\nWITH c\nMATCH (a:Accounts)-[:HAS_TRANSACTION]->(t:Transactions)\nWHERE t.transaction_date.dayOfWeek IN [6,7]\nWITH c, COUNT(t) AS weekendTransactions\nMATCH (a:Accounts)-[:HAS_TRANSACTION]->(t:Transactions)\nWHERE t.transaction_date.dayOfWeek IN [1,2,3,4,5]\nWITH c, weekendTransactions, COUNT(t) AS weekdayTransactions\nWHERE weekendTransactions > weekdayTransactions\nRETURN c.customer_id, weekendTransactions, weekdayTransactions",
+    "answer": "",
+    "id": "ff9aa417-17aa-491c-9a4a-d1fa361a66e9",
+    "llm_generation_time": 4.860187292098999,
+    "cypher_execution_time": 0.08001947402954102,
+    "total_token": 3655,
+    "success": true
+  },
+  {
+    "query": "How many customers have a card expiring in the same month and year as their oldest loan's end date?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "81cb353f-1b17-4aad-8390-d3d52884f7de",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have a loan-to-assets ratio (total loans / total accounts+deposits) greater than 0.9?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "494cc3b6-1068-46d3-99a5-0ee9b34e7b7f",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count customers who have never made a transaction larger than the bank's overall average transaction amount.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "1a31e4b4-1934-4be5-a0b7-5a13b3fc30d7",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have active deposits but all of their checking/savings accounts are overdrawn?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "c2c8cb55-0f92-4528-9f78-1ded6b928f71",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have at least one loan for every account they hold?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)\nWHERE NOT (c)<-[:BELongs_TO_CUSTOMER]-(:Loans)\nRETURN COUNT(DISTINCT c)",
+    "answer": "0",
+    "id": "e3a403f8-68b7-4e85-9035-b27bb450e876",
+    "llm_generation_time": 3.8099513053894043,
+    "cypher_execution_time": 0.021019697189331055,
+    "total_token": 3564,
+    "success": true
+  },
+  {
+    "query": "Count loyal customers: those with the bank over 10 years who have at least 3 product types (account, loan, card, deposit).",
+    "cypher_command": "",
+    "answer": "",
+    "id": "c7d31fa2-cf8c-451d-a78a-d63d30a690dc",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have a higher total balance in blocked cards than in their active, unblocked cards?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "65213ecf-3c99-4f5f-83b0-8f042fd6f1f1",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers whose full name is a substring of another customer's full name.",
+    "cypher_command": "MATCH (c1:Customers), (c2:Customers)\nWHERE c1.customer_id < c2.customer_id\nAND c2.customer_name CONTAINS c1.customer_name\nRETURN COUNT(DISTINCT c1) AS customerCount",
+    "answer": "1",
+    "id": "d333b22b-f74d-4542-96f2-8247fc6fd881",
+    "llm_generation_time": 3.759122371673584,
+    "cypher_execution_time": 0.03947329521179199,
+    "total_token": 3574,
+    "success": true
+  },
+  {
+    "query": "How many customers have a birthday this month and also made more than 10 transactions this month?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE date(c.date_of_birth).month = date().month\nAND EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Accounts)-[:HAS_TRANSACTION]->(:Transactions))\nWITH c, COUNT(*) AS transactionCount\nWHERE transactionCount > 10\nRETURN COUNT(DISTINCT c) AS customerCount",
+    "answer": "0",
+    "id": "73e407f0-8f59-4e9d-90e3-523eb1bca70a",
+    "llm_generation_time": 3.3647046089172363,
+    "cypher_execution_time": 0.03882861137390137,
+    "total_token": 3596,
+    "success": true
+  },
+  {
+    "query": "How many customers are suspected duplicates, having the same name and date of birth as another customer?",
+    "cypher_command": "MATCH (c1:Customers)-[:BELONGS_TO_CUSTOMER]->()\nMATCH (c2:Customers)-[:BELONGS_TO_CUSTOMER]->()\nWHERE c1.customer_id < c2.customer_id\nAND c1.customer_name = c2.customer_name\nAND c1.date_of_birth = c2.date_of_birth\nRETURN COUNT(*) AS duplicateCustomerCount",
+    "answer": "0",
+    "id": "c459851b-10f2-449a-865a-067c8e052f44",
+    "llm_generation_time": 4.039232015609741,
+    "cypher_execution_time": 0.024335861206054688,
+    "total_token": 3600,
+    "success": true
+  },
+  {
+    "query": "How many customers more than doubled their total account balance over the last year from net transactions?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)\nWHERE a.account_balance > 0\nWITH c, a\nMATCH (a)-[:HAS_TRANSACTION]->(t:Transactions)\nWHERE t.transaction_date >= datetime().epoch - 31536000\nWITH c, a, SUM(t.transaction_amount) AS totalTransactions\nWHERE totalTransactions > 2 * a.account_balance\nRETURN COUNT(DISTINCT c) AS customersWhoDoubledBalance",
+    "answer": "0",
+    "id": "7b0593f8-a6ce-4e24-8fe9-bc8991c3942b",
+    "llm_generation_time": 4.229647636413574,
+    "cypher_execution_time": 0.036266326904296875,
+    "total_token": 3624,
+    "success": true
+  },
+  {
+    "query": "How many customers have at least one loan that will end after all of their cards have expired?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "fe0f884f-9d35-4e93-b9aa-220209b0532f",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count customers who made transactions from all of their accounts on the exact same day at least once.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "c552df78-871f-4bcb-8857-4d501ed6229b",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have a loan with an interest rate in the top 1% for that specific loan type?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "447ff64b-90ba-4aa1-9a73-c8bc808ae65f",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many branches have their oldest customer as also their wealthiest customer by total account balance?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "5932c9c4-b5c8-4ee2-a902-f63152f22c94",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers started a new deposit in the same month and year as their most recent loan began?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "b9894da4-5198-4dd2-ad29-3fc3a03830a9",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have an account balance standard deviation that is greater than their average account balance?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "c52574d9-0c4d-485a-a643-4335079f9244",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count customers who have taken a new loan before their previous loan's official end date.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "f47ff2ae-462c-432b-ae76-c8e73699f3aa",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers maintained a total monthly transaction amount of at least $500 for every month of the past year?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "c10b890d-4347-4b18-b823-327fa6590a4c",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many branches have at least one customer who holds every single type of loan product?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "39ca1753-1026-4117-9ea4-b16155f76f50",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with deposits and cards.",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Deposits))\n  AND EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Cards))\nRETURN COUNT(DISTINCT c)",
+    "answer": "66",
+    "id": "16aaeb0c-a427-4c21-98bf-9f591c9bd865",
+    "llm_generation_time": 2.198922872543335,
+    "cypher_execution_time": 0.02477097511291504,
+    "total_token": 3567,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per deposit type with ID 127.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "cede2e0a-0a75-4ef9-bab7-e23b7b69e71c",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans per loan type with ID 127.",
+    "cypher_command": "MATCH (lt:LoanTypes {loan_type_id: 127})<-[:HAS_LOAN_TYPE]-(l:Loans)\nRETURN lt.type AS loanType, COUNT(l) AS loanCount",
+    "answer": "",
+    "id": "d4f7e70a-afb2-4fd8-a5b4-95cfa7a95783",
+    "llm_generation_time": 2.9314980506896973,
+    "cypher_execution_time": 0.001584768295288086,
+    "total_token": 3562,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits per deposit type with ID 127.",
+    "cypher_command": "MATCH (d:Deposits)-[:HAS_DEPOSIT_TYPE]->(dt:DepositTypes {deposit_type_id: 127})\nRETURN dt.type, COUNT(d) AS depositCount",
+    "answer": "",
+    "id": "8eafad22-127b-4cb6-8545-5871ff5edc99",
+    "llm_generation_time": 1.8960189819335938,
+    "cypher_execution_time": 0.0015785694122314453,
+    "total_token": 3559,
+    "success": true
+  },
+  {
+    "query": "Count the number of accounts with more than 2000 in transactions.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "9747aee2-3cef-4877-9ccb-3a67ac1bef1a",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with accounts and loans.",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Accounts))\n  AND EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Loans))\nRETURN COUNT(DISTINCT c)",
+    "answer": "101",
+    "id": "1e799dcf-4b0f-4a4b-9b36-d697dd4c039b",
+    "llm_generation_time": 1.976799488067627,
+    "cypher_execution_time": 0.026965618133544922,
+    "total_token": 3566,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions with amount above 100 in the last 3 months.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "73207eee-5371-4929-b5d7-3a0c897138de",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of transactions per account with ID 128.",
+    "cypher_command": "MATCH (a:Accounts {account_id: 128})-[:HAS_TRANSACTION]->(t:Transactions)\nRETURN a.account_id, COUNT(t) AS transactionCount",
+    "answer": "",
+    "id": "aac8812d-f565-4db8-877b-5ff3f4959eba",
+    "llm_generation_time": 3.314448833465576,
+    "cypher_execution_time": 0.0015091896057128906,
+    "total_token": 3554,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits per customer with ID 128.",
+    "cypher_command": "MATCH (c:Customers {customer_id: 128})-[:BELONGS_TO_CUSTOMER]->(d:Deposits)\nRETURN c.customer_id, COUNT(d) AS depositCount",
+    "answer": "",
+    "id": "e25910c1-8ae1-4ece-8219-bf1325cec35d",
+    "llm_generation_time": 1.9011783599853516,
+    "cypher_execution_time": 0.0015056133270263672,
+    "total_token": 3559,
+    "success": true
+  },
+  {
+    "query": "Count the number of loans per customer with ID 128.",
+    "cypher_command": "MATCH (c:Customers {customer_id: 128})-[:BELONGS_TO_CUSTOMER]->(l:Loans)\nRETURN c.customer_id, COUNT(l) AS loanCount",
+    "answer": "",
+    "id": "8889cefa-df9b-4adf-b425-94cda451cc77",
+    "llm_generation_time": 3.216531991958618,
+    "cypher_execution_time": 0.001684427261352539,
+    "total_token": 3558,
+    "success": true
+  },
+  {
+    "query": "Count the number of cards per customer with ID 128.",
+    "cypher_command": "MATCH (c:Customers {customer_id: 128})-[:BELONGS_TO_CUSTOMER]->(card:Cards)\nRETURN c.customer_id, COUNT(card) AS cardCount",
+    "answer": "",
+    "id": "327be4b5-c2ef-47df-8d53-d1672df5268d",
+    "llm_generation_time": 1.8781845569610596,
+    "cypher_execution_time": 0.0017917156219482422,
+    "total_token": 3557,
+    "success": true
+  },
+  {
+    "query": "Count the number of accounts per branch with ID 128.",
+    "cypher_command": "MATCH (b:Branches {branch_id: 128})<-[:BELONGS_TO_BRANCH]-(:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)\nRETURN b.branch_id, COUNT(a) AS accountCount",
+    "answer": "",
+    "id": "e486bcf0-50c8-4592-adc5-6eb85ab51b86",
+    "llm_generation_time": 3.089195489883423,
+    "cypher_execution_time": 0.00153350830078125,
+    "total_token": 3568,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions with amount greater than average per branch.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "2f8cc0c1-f901-4192-bc54-a5fc932b91d6",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of deposits with balance above average per customer type.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "dcd75f18-28ba-4ae3-9f9e-6e70eaa2d39f",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans with balance above average per loan type.",
+    "cypher_command": "MATCH (l:Loans)-[:HAS_LOAN_TYPE]->(lt:LoanTypes)\nWITH lt, AVG(l.balance) AS avgBalance\nMATCH (l2:Loans)-[:HAS_LOAN_TYPE]->(lt2:LoanTypes)\nWHERE lt2 = lt AND l2.balance > avgBalance\nRETURN lt.type AS loanType, COUNT(l2) AS loanCountAboveAverage",
+    "answer": "13",
+    "id": "2146dc2d-36cc-4604-96b7-3dcb8cf87dbe",
+    "llm_generation_time": 2.389353036880493,
+    "cypher_execution_time": 0.002215862274169922,
+    "total_token": 3602,
+    "success": true
+  },
+  {
+    "query": "Count the number of customers with more than three accounts.",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)\nWITH c, COUNT(a) AS accountCount\nWHERE accountCount > 3\nRETURN c.customer_id, accountCount",
+    "answer": "",
+    "id": "fce39ee9-f16f-4760-ab30-d772a29f9c64",
+    "llm_generation_time": 3.4310760498046875,
+    "cypher_execution_time": 0.0016634464263916016,
+    "total_token": 3562,
+    "success": true
+  },
+  {
+    "query": "Count the number of customers with more than three deposits.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "c7823fc3-24c3-42c7-b0c7-03ca2c0b6efd",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with more than three loans.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "a33a034e-6895-4c5b-b3e3-ebbd45ac3e78",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with more than three cards.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "fdf89cb4-55a1-4c5f-bfae-0455816f09ca",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of transactions in the last 90 days per account.",
+    "cypher_command": "MATCH (a:Accounts)-[:HAS_TRANSACTION]->(t:Transactions)\nWHERE t.transaction_date >= datetime().epochTime - 90 * 24 * 60 * 60 * 1000\nRETURN a.account_id, a.account_number, COUNT(t) AS transactionCount\nORDER BY transactionCount DESC",
+    "answer": "",
+    "id": "d2d53fb7-6a1d-4e98-8755-df52673d4902",
+    "llm_generation_time": 3.2145864963531494,
+    "cypher_execution_time": 0.0024597644805908203,
+    "total_token": 3585,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits with term greater than 24 months.",
+    "cypher_command": "MATCH (d:Deposits)\nWHERE d.term > '24M'\nRETURN COUNT(d) as depositCount",
+    "answer": "117",
+    "id": "56042188-d4db-4b99-a64d-dd688c43da35",
+    "llm_generation_time": 1.7121977806091309,
+    "cypher_execution_time": 0.0016770362854003906,
+    "total_token": 3545,
+    "success": true
+  },
+  {
+    "query": "Count the number of loans with interest rate above 7%.",
+    "cypher_command": "MATCH (l:Loans)\nWHERE l.interest_rate > 7\nRETURN COUNT(l) AS loanCount",
+    "answer": "69",
+    "id": "c889b26f-9320-478f-a320-c936cc74d358",
+    "llm_generation_time": 2.8564789295196533,
+    "cypher_execution_time": 0.0015621185302734375,
+    "total_token": 3544,
+    "success": true
+  },
+  {
+    "query": "Count the number of accounts with balance above 10000 per branch.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "559a4681-4b45-4d12-9bed-5bbdec8f06b5",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of transactions with amount between 1000 and 5000.",
+    "cypher_command": "MATCH (t:Transactions)\nWHERE t.transaction_amount >= 1000 AND t.transaction_amount <= 5000\nRETURN COUNT(t) AS transactionCount",
+    "answer": "430",
+    "id": "6445a657-3e5d-4364-a8fc-1b4e65935909",
+    "llm_generation_time": 1.837589979171753,
+    "cypher_execution_time": 0.0020334720611572266,
+    "total_token": 3555,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits with start date after 2022.",
+    "cypher_command": "MATCH (d:Deposits)\nWHERE d.start_date > date('2022-01-01')\nRETURN COUNT(d) AS depositCount",
+    "answer": "200",
+    "id": "5e1de881-b56e-4ead-9612-255be7327001",
+    "llm_generation_time": 1.8223001956939697,
+    "cypher_execution_time": 0.0016489028930664062,
+    "total_token": 3551,
+    "success": true
+  },
+  {
+    "query": "Count the number of loans with end date before 2024.",
+    "cypher_command": "MATCH (l:Loans)\nWHERE l.end_date < date('2024-12-31')\nRETURN COUNT(l) AS loanCount",
+    "answer": "5",
+    "id": "9679c5cb-baee-40d6-bdc4-05f8a90ae238",
+    "llm_generation_time": 1.8100132942199707,
+    "cypher_execution_time": 0.006249904632568359,
+    "total_token": 3550,
+    "success": true
+  },
+  {
+    "query": "Count the number of customers with accounts created in 2022.",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)\nWHERE a.created_at >= datetime('2022-01-01T00:00:00Z') AND a.created_at < datetime('2023-01-01T00:00:00Z')\nRETURN COUNT(DISTINCT c)",
+    "answer": "0",
+    "id": "d8ec6476-d0ad-488a-83b2-175c0f294a7e",
+    "llm_generation_time": 2.4096405506134033,
+    "cypher_execution_time": 0.008618354797363281,
+    "total_token": 3589,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per customer with ID 128.",
+    "cypher_command": "MATCH (c:Customers {customer_id: 128})-[:BELONGS_TO_CUSTOMER]->(a:Accounts)-[:HAS_TRANSACTION]->(t:Transactions)\nRETURN c.customer_id, COUNT(t) AS transactionCount",
+    "answer": "",
+    "id": "0f381964-f9f6-4f3a-a214-d798353599cc",
+    "llm_generation_time": 1.9834239482879639,
+    "cypher_execution_time": 0.0014793872833251953,
+    "total_token": 3566,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits per branch with ID 128.",
+    "cypher_command": "MATCH (b:Branches {branch_id: 128})<-[:BELONGS_TO_CUSTOMER]-(:Customers)<-[:BELONGS_TO_CUSTOMER]-(d:Deposits)\nRETURN b.branch_id, COUNT(d) AS depositCount",
+    "answer": "",
+    "id": "4fad9880-426f-42af-a18d-4104d555f163",
+    "llm_generation_time": 3.0668885707855225,
+    "cypher_execution_time": 0.007974863052368164,
+    "total_token": 3571,
+    "success": true
+  },
+  {
+    "query": "Count the number of loans per branch with ID 128.",
+    "cypher_command": "MATCH (b:Branches {branch_id: 128})<-[:BELONGS_TO_BRANCH]-(c:Customers)-[:BELONGS_TO_CUSTOMER]->(l:Loans)\nRETURN b.branch_id, COUNT(l) AS loanCount",
+    "answer": "",
+    "id": "3cbd5f3d-c603-4b13-be4c-7f40ac1e5a2b",
+    "llm_generation_time": 2.040808916091919,
+    "cypher_execution_time": 0.00638270378112793,
+    "total_token": 3571,
+    "success": true
+  },
+  {
+    "query": "Count the number of cards per branch with ID 128.",
+    "cypher_command": "MATCH (b:Branches {branch_id: 128})-[:BELONGS_TO_BRANCH]->(c:Customers)<-[:BELONGS_TO_CUSTOMER]-(card:Cards)\nRETURN b.branch_id, COUNT(card) AS cardCount",
+    "answer": "",
+    "id": "d5fb14e0-3dc7-4cdc-b3de-5de47211ff31",
+    "llm_generation_time": 3.4177677631378174,
+    "cypher_execution_time": 0.006211042404174805,
+    "total_token": 3571,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions with amount greater than 2000 per customer.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "5f03c0b3-b4b1-4e10-b8d1-70ec4b895faf",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of deposits with balance below 2000 per customer.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "965d6e31-257c-4689-b537-cd48be6d3974",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans with balance below 2000 per customer.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "05bc8955-e926-4d4c-b4e5-8936f31854b7",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of cards expiring before 2024 per customer.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "0d1172a4-f608-4b6f-8a70-3a997d76a921",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with transactions in 2023.",
+    "cypher_command": "MATCH (t:Transactions)\nWHERE t.transaction_date.year = 2023\nWITH DISTINCT t\nMATCH (t)-[:HAS_TRANSACTION]-(a:Accounts)\nMATCH (a)-[:BELONGS_TO_CUSTOMER]-(c:Customers)\nRETURN COUNT(DISTINCT c) AS customerCount",
+    "answer": "107",
+    "id": "5097e9cb-72b5-40e4-84f4-48b4854f690f",
+    "llm_generation_time": 2.178044319152832,
+    "cypher_execution_time": 0.008806705474853516,
+    "total_token": 3580,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits with term between 12 and 24 months.",
+    "cypher_command": "MATCH (d:Deposits)\nWHERE d.term >= '12M' AND d.term <= '24M'\nRETURN COUNT(d) AS depositCount",
+    "answer": "83",
+    "id": "97ee289d-5d07-4b41-bdb3-07afdf4fcde6",
+    "llm_generation_time": 1.8221147060394287,
+    "cypher_execution_time": 0.0019495487213134766,
+    "total_token": 3555,
+    "success": true
+  },
+  {
+    "query": "Count the number of loans with payment term between 24 and 36 months.",
+    "cypher_command": "MATCH (l:Loans)\nWHERE l.payment_term >= '24M' AND l.payment_term <= '36M'\nRETURN COUNT(l) AS loanCount",
+    "answer": "0",
+    "id": "cd2c8d94-0c83-43fe-8035-041ace667c8a",
+    "llm_generation_time": 1.942115306854248,
+    "cypher_execution_time": 0.0016820430755615234,
+    "total_token": 3557,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions updated in the last 60 days.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "481d3899-ce17-43bc-ba20-066805ddbb6b",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with more than 2000 in deposits.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "5419c31d-8c4e-4ed3-a3de-5fbaad539f72",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of accounts with transactions in the last 60 days.",
+    "cypher_command": "MATCH (a:Accounts)-[:HAS_TRANSACTION]->(t:Transactions)\nWHERE t.transaction_date >= datetime().epochTime - 60 * 24 * 60 * 60 * 1000\nRETURN COUNT(DISTINCT a) AS accountCount",
+    "answer": "0",
+    "id": "6d5e7717-25d3-48f5-b215-9cba1d367c2c",
+    "llm_generation_time": 2.127061367034912,
+    "cypher_execution_time": 0.0018143653869628906,
+    "total_token": 3574,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits with end date in the next 3 months.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "ba0aaf8e-83ce-4444-815a-41942c07850d",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans with interest rate between 2% and 4%.",
+    "cypher_command": "MATCH (l:Loans)\nWHERE l.interest_rate >= 2 AND l.interest_rate <= 4\nRETURN COUNT(l) AS loanCount",
+    "answer": "45",
+    "id": "d3503c49-5688-4a80-aba7-8f4bbc522239",
+    "llm_generation_time": 3.8158116340637207,
+    "cypher_execution_time": 0.0016570091247558594,
+    "total_token": 3556,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per deposit type with ID 128.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "90be39ac-978e-4cda-a4e1-49b8da1d1395",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans per loan type with ID 128.",
+    "cypher_command": "MATCH (l:Loans)-[:HAS_LOAN_TYPE]->(lt:LoanTypes)\nWHERE lt.loan_type_id = 128\nRETURN lt.type, COUNT(l) AS loanCount",
+    "answer": "",
+    "id": "aa087527-35a8-4c5c-a3e4-55afdc83eaa6",
+    "llm_generation_time": 1.9221601486206055,
+    "cypher_execution_time": 0.01755499839782715,
+    "total_token": 3561,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits per deposit type with ID 128.",
+    "cypher_command": "MATCH (d:Deposits)-[:HAS_DEPOSIT_TYPE]->(dt:DepositTypes {deposit_type_id: 128})\nRETURN dt.type, COUNT(d) AS depositCount",
+    "answer": "",
+    "id": "f1c7d99d-e4dd-40dd-9fdc-54ad19d414a1",
+    "llm_generation_time": 3.115565538406372,
+    "cypher_execution_time": 0.0016987323760986328,
+    "total_token": 3559,
+    "success": true
+  },
+  {
+    "query": "Count the total number of unique customers with active loans and deposits.",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Loans))\nAND EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Deposits))\nRETURN COUNT(DISTINCT c)",
+    "answer": "90",
+    "id": "63b316ce-4651-4ca6-8ff8-58cae6f340f2",
+    "llm_generation_time": 1.9998188018798828,
+    "cypher_execution_time": 0.007019758224487305,
+    "total_token": 3570,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per customer with total amount over 5000.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "dc124068-9e6b-40f7-830b-6dfb242ea76d",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with average deposit balance above 2000.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "2a740e1c-3c13-4dce-93cc-9783597ce819",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of accounts with total transactions exceeding 10000.",
+    "cypher_command": "MATCH (a:Accounts)-[:HAS_TRANSACTION]->(t:Transactions)\nWITH a, SUM(t.transaction_amount) AS totalTransactions\nWHERE totalTransactions > 10000\nRETURN COUNT(DISTINCT a) AS accountCount",
+    "answer": "0",
+    "id": "20b1f5d2-35f1-4416-b190-8ed1574c86e2",
+    "llm_generation_time": 4.219322204589844,
+    "cypher_execution_time": 0.03710603713989258,
+    "total_token": 3567,
+    "success": true
+  },
+  {
+    "query": "Count the number of customers with loans expiring in 2025.",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(l:Loans)\nWHERE l.end_date.year = 2025\nRETURN COUNT(DISTINCT c) AS customerCount",
+    "answer": "0",
+    "id": "b5f01b98-0d6a-4dd9-bc22-d5fd98dddefb",
+    "llm_generation_time": 3.848151206970215,
+    "cypher_execution_time": 0.015515327453613281,
+    "total_token": 3562,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits with term longer than average per branch.",
+    "cypher_command": "MATCH (b:Branches)<-[:BELONGS_TO_CUSTOMER]-(c:Customers)-[:BELONGS_TO_CUSTOMER]->(d:Deposits)\nRETURN b.branch_id, COUNT(d) AS depositCount\nORDER BY depositCount DESC",
+    "answer": "",
+    "id": "1a24e92b-ef70-4183-8616-761d26e2839d",
+    "llm_generation_time": 5.086145639419556,
+    "cypher_execution_time": 0.019393444061279297,
+    "total_token": 3573,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per account with average amount above 500.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "849ef141-be0d-4b6e-a614-d26e4996f97d",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with total loan balance above 15000.",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(l:Loans)\nWITH c, SUM(l.balance) AS totalLoanBalance\nWHERE totalLoanBalance > 15000\nRETURN c.customer_id, totalLoanBalance",
+    "answer": "",
+    "id": "89efa934-a011-4bb1-bc99-e5f702837f4b",
+    "llm_generation_time": 3.9302239418029785,
+    "cypher_execution_time": 0.01766490936279297,
+    "total_token": 3571,
+    "success": true
+  },
+  {
+    "query": "Count the number of accounts with more transactions than the branch average.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "fcd5e8f9-ada0-4507-b4b7-530d9ed0f3d1",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with deposits and no loans.",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Deposits))\nAND NOT EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Loans))\nRETURN COUNT(DISTINCT c)",
+    "answer": "41",
+    "id": "f7ee3adb-3da8-483b-9d0b-481f50b88070",
+    "llm_generation_time": 2.010146379470825,
+    "cypher_execution_time": 0.0018966197967529297,
+    "total_token": 3569,
+    "success": true
+  },
+  {
+    "query": "Count the number of loans with interest rate above branch average.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "d592d366-39ff-471e-b120-22b3e3cb7f69",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of transactions per customer with maximum amount over 2000.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "2026243a-5cb3-4cf1-8ea3-2a76fae56272",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with average loan term above 18 months.",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(l:Loans)\nWITH c, AVG(l.payment_term) AS avgPaymentTerm\nWHERE avgPaymentTerm > '18M'\nRETURN COUNT(DISTINCT c) AS customerCount",
+    "answer": "0",
+    "id": "b63933ad-dc6d-4913-95ae-e93a84d8df53",
+    "llm_generation_time": 2.065185308456421,
+    "cypher_execution_time": 0.017520904541015625,
+    "total_token": 3574,
+    "success": true
+  },
+  {
+    "query": "Count the number of accounts with total deposits exceeding loans.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "cd450325-b937-4487-abad-389d4a49ad18",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with transactions in all branches.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "14c0ea0a-8855-43e0-a928-981704cab879",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of deposits with balance above 1000 per loan type.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "ecbfaba7-046a-4120-a466-7479ad9ad063",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of transactions per customer with total amount below 1000.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "e0e62258-51fc-4564-8d73-3f595f42eef1",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with loans and cards expiring before 2026.",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Loans))\nAND EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Cards))\nRETURN COUNT(DISTINCT c)",
+    "answer": "70",
+    "id": "5ad7e735-c3ec-41ee-ad8e-223a61fe7f4a",
+    "llm_generation_time": 5.601062059402466,
+    "cypher_execution_time": 0.022800207138061523,
+    "total_token": 3571,
+    "success": true
+  },
+  {
+    "query": "Count the number of accounts with average transaction amount above 200.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "c1db13ed-2745-4c18-9719-e15b1f6f41e4",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with deposits ending in 2025 and loans starting in 2025.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "c8a06a30-2ee8-49b3-8896-bbfa2e4122da",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of transactions per account with standard deviation above 500.",
+    "cypher_command": "MATCH (a:Accounts)-[:HAS_TRANSACTION]->(t:Transactions)\nWITH a, COUNT(t) AS transactionCount\nRETURN a.account_id, transactionCount\nORDER BY transactionCount DESC\nLIMIT 1000",
+    "answer": "",
+    "id": "a218fc1d-b651-4ce2-b383-68246bcbabcf",
+    "llm_generation_time": 1.9765055179595947,
+    "cypher_execution_time": 0.018877744674682617,
+    "total_token": 3566,
+    "success": true
+  },
+  {
+    "query": "Count the number of customers with total balance across all accounts above 10000.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "07efca92-932b-4757-adf4-ba8b0ff60c11",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of deposits per customer with average term above 12 months.",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(d:Deposits)\nWITH c, COUNT(d) AS depositCount, AVG(d.term) AS avgTerm\nWHERE avgTerm > '12M'\nRETURN c.customer_id, depositCount, avgTerm",
+    "answer": "",
+    "id": "d2f043c8-7d3a-4bc7-9200-7a3587abd1da",
+    "llm_generation_time": 2.097325563430786,
+    "cypher_execution_time": 0.019258499145507812,
+    "total_token": 3580,
+    "success": true
+  },
+  {
+    "query": "Count the number of loans per customer with average interest rate above 4%.",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(l:Loans)-[:HAS_LOAN_TYPE]->(lt:LoanTypes)\nWITH c, COUNT(l) AS loanCount, AVG(l.interest_rate) AS avgInterestRate\nWHERE avgInterestRate > 4\nRETURN c.customer_id, loanCount, avgInterestRate",
+    "answer": "",
+    "id": "a65ccdac-bc46-402b-bf1f-2d8a8c1743a3",
+    "llm_generation_time": 4.326853513717651,
+    "cypher_execution_time": 0.03239583969116211,
+    "total_token": 3595,
+    "success": true
+  },
+  {
+    "query": "Count the number of accounts with more deposits than loans per customer.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "f7d85cef-77dd-4ad4-8bcd-b5fbc907644b",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with transactions in the last year per branch.",
+    "cypher_command": "MATCH (b:Branches)-[:BELONGS_TO_BRANCH]->(c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)-[:HAS_TRANSACTION]->(t:Transactions)\nWHERE t.transaction_date >= datetime().yearStart\nRETURN b.branch_id, b.branch_name, COUNT(DISTINCT c.customer_id) AS customerCount\nORDER BY b.branch_id",
+    "answer": "",
+    "id": "71cdb1fe-8f34-44fe-b983-74df00f1069a",
+    "llm_generation_time": 4.536326169967651,
+    "cypher_execution_time": 0.03464198112487793,
+    "total_token": 3599,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits with balance above average per customer.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "d8cc651d-20c2-41c2-b7bd-cdab1f878d10",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans with payment term above average per loan type.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "231837d2-0b48-4fe0-9040-16e63b8cfea0",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with total transaction amount above 5000 per branch.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "284ea351-054c-4dee-81f8-24e47d247b46",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of accounts with no transactions in the last 90 days.",
+    "cypher_command": "",
+    "answer": "",
+    "id": "342928fe-cd42-4824-b8f3-a7c8cff3d971",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have more than 2 accounts?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)\nWITH c, COUNT(a) AS accountCount\nWHERE accountCount > 2\nRETURN c.customer_id, accountCount",
+    "answer": "",
+    "id": "e4b92796-ae4c-483b-b472-4f0584e5aad3",
+    "llm_generation_time": 3.085639715194702,
+    "cypher_execution_time": 0.0015981197357177734,
+    "total_token": 3561,
+    "success": true
+  },
+  {
+    "query": "How many customers have more than 1 loan?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(l:Loans)\nWITH c, COUNT(l) AS loanCount\nWHERE loanCount > 1\nRETURN c.customer_id, loanCount",
+    "answer": "",
+    "id": "09239628-8021-46a1-9b88-84a51cf50b0c",
+    "llm_generation_time": 4.519391059875488,
+    "cypher_execution_time": 0.0017457008361816406,
+    "total_token": 3562,
+    "success": true
+  },
+  {
+    "query": "How many customers have more than 1 deposit?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "d15e7376-6fd4-4109-9a01-b45e85f26375",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have more than 3 cards?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Cards))\nWITH c, COUNT(*) AS cardCount\nWHERE cardCount > 3\nRETURN COUNT(DISTINCT c) AS customerCount",
+    "answer": "0",
+    "id": "8b270f67-1b9a-48bf-8969-eefdb25bf75c",
+    "llm_generation_time": 1.9939444065093994,
+    "cypher_execution_time": 0.020616531372070312,
+    "total_token": 3567,
+    "success": true
+  },
+  {
+    "query": "How many customers have both loans and cards?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Loans))\n  AND EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Cards))\nRETURN COUNT(DISTINCT c)",
+    "answer": "70",
+    "id": "36d91656-b59f-47b6-8585-f47aecca592d",
+    "llm_generation_time": 1.9788949489593506,
+    "cypher_execution_time": 0.007055759429931641,
+    "total_token": 3565,
+    "success": true
+  },
+  {
+    "query": "How many customers have both deposits and cards?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Deposits))\n  AND EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Cards))\nRETURN COUNT(DISTINCT c)",
+    "answer": "66",
+    "id": "97333359-a9ba-4452-b0d1-6ab05c8566c3",
+    "llm_generation_time": 2.023991823196411,
+    "cypher_execution_time": 0.001917123794555664,
+    "total_token": 3566,
+    "success": true
+  },
+  {
+    "query": "How many customers have both loans and accounts?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Loans))\n  AND EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Accounts))\nRETURN COUNT(DISTINCT c)",
+    "answer": "101",
+    "id": "5e5b2051-2e54-4175-bc74-43ca448686c2",
+    "llm_generation_time": 4.044177293777466,
+    "cypher_execution_time": 0.022382259368896484,
+    "total_token": 3565,
+    "success": true
+  },
+  {
+    "query": "How many customers have both deposits and accounts?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Deposits))\n  AND EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Accounts))\nRETURN COUNT(DISTINCT c)",
+    "answer": "99",
+    "id": "005fdc8d-1efe-49a8-bc37-ddf4a293093c",
+    "llm_generation_time": 4.829570055007935,
+    "cypher_execution_time": 0.023979663848876953,
+    "total_token": 3566,
+    "success": true
+  },
+  {
+    "query": "How many customers have at least one blocked card and at least one active loan?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "61768143-6755-4ac5-a861-e6abec29c88f",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the number of customers who made more than 5 transactions in the last month?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)-[:HAS_TRANSACTION]->(t:Transactions)\nWHERE t.transaction_date >= datetime().epochSecond - 604800\nWITH c, COUNT(t) AS transactionCount\nWHERE transactionCount > 5\nRETURN COUNT(DISTINCT c) AS customerCount",
+    "answer": "0",
+    "id": "1dc48130-aab7-42dd-8358-297eb18eec4d",
+    "llm_generation_time": 2.2981929779052734,
+    "cypher_execution_time": 0.0284426212310791,
+    "total_token": 3595,
+    "success": true
+  },
+  {
+    "query": "How many accounts have balances above the average account balance?",
+    "cypher_command": "MATCH (a:Accounts)\nWITH a, AVG(a.account_balance) AS avgBalance\nWHERE a.account_balance > avgBalance\nRETURN COUNT(a) AS accountCount",
+    "answer": "0",
+    "id": "520c629c-801e-4230-bbc1-115149d4a275",
+    "llm_generation_time": 1.8262419700622559,
+    "cypher_execution_time": 0.015617847442626953,
+    "total_token": 3553,
+    "success": true
+  },
+  {
+    "query": "How many loans have balances above the average loan balance?",
+    "cypher_command": "MATCH (l:Loans)\nWITH AVG(l.balance) AS avgBalance\nMATCH (l:Loans)\nWHERE l.balance > avgBalance\nRETURN COUNT(l) as loansAboveAverageBalance",
+    "answer": "98",
+    "id": "e9558e21-6cfb-4c10-b83d-72b665167108",
+    "llm_generation_time": 3.393592119216919,
+    "cypher_execution_time": 0.019991159439086914,
+    "total_token": 3559,
+    "success": true
+  },
+  {
+    "query": "How many deposits have balances above the average deposit balance?",
+    "cypher_command": "MATCH (d:Deposits)\nWITH AVG(d.balance) AS avgBalance\nMATCH (d:Deposits)\nWHERE d.balance > avgBalance\nRETURN COUNT(d) AS depositCount",
+    "answer": "108",
+    "id": "4b7273d3-1a2e-4d32-80f3-04fe140c2545",
+    "llm_generation_time": 3.8819499015808105,
+    "cypher_execution_time": 0.0020089149475097656,
+    "total_token": 3559,
+    "success": true
+  },
+  {
+    "query": "How many cards have balances above the average card balance?",
+    "cypher_command": "MATCH (c:Cards)\nWITH AVG(c.balance) AS avgBalance\nMATCH (c2:Cards)\nWHERE c2.balance > avgBalance\nRETURN COUNT(c2) as cardCount",
+    "answer": "81",
+    "id": "7f5ec88a-2c3d-47a6-be5e-d8d5968b528a",
+    "llm_generation_time": 3.4157967567443848,
+    "cypher_execution_time": 0.016080856323242188,
+    "total_token": 3558,
+    "success": true
+  },
+  {
+    "query": "What is the number of customers who have both expired loans and expired deposits?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Loans))\nAND EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Deposits))\nRETURN COUNT(DISTINCT c)",
+    "answer": "90",
+    "id": "3e2368d1-47d1-4c90-a021-8dd6db5233c2",
+    "llm_generation_time": 3.483126640319824,
+    "cypher_execution_time": 0.0018606185913085938,
+    "total_token": 3572,
+    "success": true
+  },
+  {
+    "query": "How many customers have only deposits but no loans?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Deposits))\nAND NOT EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Loans))\nRETURN COUNT(DISTINCT c)",
+    "answer": "41",
+    "id": "dbdf4a18-8fcd-4463-a94d-27dfb670579a",
+    "llm_generation_time": 3.5079002380371094,
+    "cypher_execution_time": 0.0017647743225097656,
+    "total_token": 3568,
+    "success": true
+  },
+  {
+    "query": "How many customers have only loans but no deposits?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Loans))\nAND NOT EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Deposits))\nRETURN COUNT(DISTINCT c)",
+    "answer": "36",
+    "id": "67f526cf-5f1b-4721-99b8-213d7fc9a489",
+    "llm_generation_time": 4.288477659225464,
+    "cypher_execution_time": 0.0017163753509521484,
+    "total_token": 3568,
+    "success": true
+  },
+  {
+    "query": "How many customers have both deposits and loans but no cards?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Deposits))\nAND EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Loans))\nAND NOT EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Cards))\nRETURN COUNT(DISTINCT c)",
+    "answer": "41",
+    "id": "49d48ff3-bf22-4af8-90ae-df7dc7b6dfe4",
+    "llm_generation_time": 2.1932218074798584,
+    "cypher_execution_time": 0.031246423721313477,
+    "total_token": 3586,
+    "success": true
+  },
+  {
+    "query": "How many customers have deposits, loans, and cards all together?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Deposits))\n  AND EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Loans))\n  AND EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Cards))\nRETURN COUNT(DISTINCT c)",
+    "answer": "49",
+    "id": "74e328a6-f3a2-425a-9695-8884826b2a9d",
+    "llm_generation_time": 2.276015520095825,
+    "cypher_execution_time": 0.02759528160095215,
+    "total_token": 3588,
+    "success": true
+  },
+  {
+    "query": "How many branches have more than 20 customers?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "2be515f2-4952-4bd0-8dd7-33e5369be8fc",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many branches have total loan balances above 1 million?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "cc93e4d3-c7d0-4e26-ae36-0c42fd677594",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many branches have average account balances above 50,000?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "7ebb2332-6c00-49e4-8c5c-8f62cb454fce",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers made at least one transaction greater than 10,000?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)-[:HAS_TRANSACTION]->(t:Transactions)\nWHERE t.transaction_amount > 10000\nRETURN COUNT(DISTINCT c)",
+    "answer": "0",
+    "id": "803b8f10-59d6-442c-8e18-22ec952802b7",
+    "llm_generation_time": 3.2818188667297363,
+    "cypher_execution_time": 0.019392728805541992,
+    "total_token": 3567,
+    "success": true
+  },
+  {
+    "query": "How many accounts belong to customers who have blocked cards?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(card:Cards)\nWHERE card.is_blocked = true\nRETURN COUNT(DISTINCT c) AS blockedCardCustomerAccountCount",
+    "answer": "0",
+    "id": "4fe27df6-1189-467a-afff-58819e107d52",
+    "llm_generation_time": 3.8453361988067627,
+    "cypher_execution_time": 0.021303892135620117,
+    "total_token": 3558,
+    "success": true
+  },
+  {
+    "query": "How many accounts belong to customers who have unblocked cards?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(card:Cards)\nWHERE NOT card.is_blocked\nMATCH (c)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)\nRETURN COUNT(DISTINCT a)",
+    "answer": "0",
+    "id": "aa7c57cb-2b59-4ce1-9d78-696e9a3e3798",
+    "llm_generation_time": 3.5844056606292725,
+    "cypher_execution_time": 0.018325090408325195,
+    "total_token": 3568,
+    "success": true
+  },
+  {
+    "query": "How many customers have loans with interest rates above the average loan interest rate?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(l:Loans)-[:HAS_LOAN_TYPE]->(lt:LoanTypes)\nWITH c, l, lt\nWITH AVG(lt.interest_rate) AS avgInterestRate\nMATCH (c2:Customers)-[:BELONGS_TO_CUSTOMER]->(l2:Loans)-[:HAS_LOAN_TYPE]->(lt2:LoanTypes)\nWHERE lt2.interest_rate > avgInterestRate\nRETURN COUNT(DISTINCT c2) AS customersWithHighInterestLoans",
+    "answer": "0",
+    "id": "7784a09d-281d-47bb-b5ac-ef30976a779e",
+    "llm_generation_time": 4.013699293136597,
+    "cypher_execution_time": 0.03168129920959473,
+    "total_token": 3635,
+    "success": true
+  },
+  {
+    "query": "How many customers have deposits with interest rates above the average deposit interest rate?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "5ce236d3-92fd-4060-a856-f5cfef318bf1",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have both accounts and transactions exceeding the average transaction amount?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "e28b8c37-85be-4b7c-b924-74c92a31b6f6",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have more than 2 different types of financial products (accounts, loans, deposits, cards)?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "71d39d89-e11e-46be-8af7-144ccfc30c8f",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers hold both loans of more than 50,000 and deposits of more than 50,000?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "7eebeb7c-163f-4d4f-8802-d4ea38df4281",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many branches have customers with blocked cards?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "b258bf24-5229-4a1b-ad86-f16ba1a83814",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many transactions occurred in branches where the average account balance is above 100,000?",
+    "cypher_command": "MATCH (b:Branches)<-[:BELONGS_TO_BRANCH]-(c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)\nWITH b, AVG(a.account_balance) AS avgBalance\nWHERE avgBalance > 100000\nMATCH (a)-[:HAS_TRANSACTION]->(t:Transactions)\nRETURN COUNT(t) AS transactionCount",
+    "answer": "0",
+    "id": "3cc1ce2e-2f9b-4ec4-ae2e-a1f387bf33d1",
+    "llm_generation_time": 2.3333840370178223,
+    "cypher_execution_time": 0.02799534797668457,
+    "total_token": 3599,
+    "success": true
+  },
+  {
+    "query": "How many customers took loans with interest rates higher than their deposit interest rates?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "60355c3e-316a-434e-92c3-97e76a4f2d86",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have expired deposits but active loans?",
+    "cypher_command": "",
+    "answer": "",
+    "id": "efb8c729-ced2-4d59-96ff-20e7e881cecb",
+    "llm_generation_time": 0,
+    "cypher_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have expired loans but active deposits?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Loans))\nAND EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Deposits))\nRETURN COUNT(DISTINCT c)",
+    "answer": "90",
+    "id": "99b8054f-6ed6-43c5-9785-fdb7ca20c4c0",
+    "llm_generation_time": 1.9954395294189453,
+    "cypher_execution_time": 0.0018448829650878906,
+    "total_token": 3567,
+    "success": true
+  },
+  {
+    "query": "How many accounts belong to customers who made transactions last year?",
+    "cypher_command": "MATCH (c:Customers)-[:BELONGS_TO_CUSTOMER]->(a:Accounts)\nWHERE EXISTS((a)-[:HAS_TRANSACTION]->(:Transactions))\nWITH c, COUNT(DISTINCT a) AS accountCount\nWHERE accountCount > 0\nRETURN COUNT(DISTINCT c) AS customerCount, SUM(accountCount) AS totalAccounts",
+    "answer": "0",
+    "id": "a3ef7f7d-fb69-4196-a345-c4e5a9d7ce2b",
+    "llm_generation_time": 5.58196496963501,
+    "cypher_execution_time": 0.02502298355102539,
+    "total_token": 3589,
+    "success": true
+  },
+  {
+    "query": "How many customers made no transactions in the last 6 months?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE NOT (\n  (c)<-[:BELONGS_TO_CUSTOMER]-(:Account)-[:HAS_TRANSACTION]->(:Transaction)\n  OR\n  (c)<-[:BELONGS_TO_CUSTOMER]-(:Loan)\n  OR\n  (c)<-[:BELONGS_TO_CUSTOMER]-(:Deposit)\n  OR\n  (c)<-[:BELONGS_TO_CUSTOMER]-(:Card)\n)\nRETURN COUNT(c) AS noTransactionCustomers",
+    "answer": "200",
+    "id": "39192efa-ddc0-43a9-9885-7dffa8ef7580",
+    "llm_generation_time": 3.9384217262268066,
+    "cypher_execution_time": 0.0419158935546875,
+    "total_token": 3616,
+    "success": true
+  },
+  {
+    "query": "How many customers have both blocked and unblocked cards?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Cards {is_blocked: true})) \nAND EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Cards {is_blocked: false}))\nRETURN COUNT(DISTINCT c)",
+    "answer": "22",
+    "id": "875894fd-32a1-4e0e-aeec-221efce23c2d",
+    "llm_generation_time": 4.045269966125488,
+    "cypher_execution_time": 0.028612375259399414,
+    "total_token": 3576,
+    "success": true
+  },
+  {
+    "query": "How many loans belong to customers who also made at least 10 transactions?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Loans))\nAND EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Accounts))\nMATCH (c)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)\nMATCH (a)-[:HAS_TRANSACTION]->(t:Transactions)\nWITH c, COUNT(t) AS transactionCount\nWHERE transactionCount >= 10\nMATCH (c)<-[:BELONGS_TO_CUSTOMER]-(l:Loans)\nRETURN COUNT(DISTINCT l) AS loanCount",
+    "answer": "0",
+    "id": "7fa8188e-d50c-4696-a730-f4105a12b144",
+    "llm_generation_time": 2.8134145736694336,
+    "cypher_execution_time": 0.04782676696777344,
+    "total_token": 3638,
+    "success": true
+  },
+  {
+    "query": "How many deposits belong to customers who also made at least 10 transactions?",
+    "cypher_command": "MATCH (c:Customers)\nWHERE EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Deposits))\nAND EXISTS((c)<-[:BELONGS_TO_CUSTOMER]-(:Accounts))\nWITH c\nMATCH (c)<-[:BELONGS_TO_CUSTOMER]-(a:Accounts)\nMATCH (a)-[:HAS_TRANSACTION]->(t:Transactions)\nWITH c, COUNT(t) AS transactionCount\nWHERE transactionCount >= 10\nRETURN COUNT(DISTINCT c) AS depositCustomerCount",
+    "answer": "0",
+    "id": "ec8e0e4e-3f5a-42f6-b4a5-b985d1910379",
+    "llm_generation_time": 2.6439216136932373,
+    "cypher_execution_time": 0.03749418258666992,
+    "total_token": 3625,
+    "success": true
+  }
+]

@@ -3,3 +3,5 @@ psycopg2-binary==2.9.10
 Faker==37.8.0
 neo4j==5.28.1
 vinagent==0.0.6
+langchain-ollama==0.1.3
+tiktoken==0.8.0
