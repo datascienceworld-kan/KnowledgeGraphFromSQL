@@ -22,8 +22,13 @@ from GroundTruthAccuracyEvaluator import GroundTruthAccuracyEvaluator
 class CombinedAgentRunner:
     """Runs SQLAgent, CypherAgent, and GroundTruthAccuracyEvaluator simultaneously in separate threads."""
     
-    def __init__(self):
-        """Initialize the combined agent runner."""
+    def __init__(self, model_name: str = "qwen3:8b"):
+        """Initialize the combined agent runner.
+        
+        Args:
+            model_name: Model name to use for all agents (default: "qwen3:8b")
+        """
+        self.model_name = model_name
         self.sql_agent = None
         self.cypher_agent = None
         self.accuracy_evaluator = None
@@ -53,7 +58,7 @@ class CombinedAgentRunner:
         """Run SQL Agent in a separate thread."""
         print(f"[SQL] Starting SQL Agent at {datetime.now().strftime('%H:%M:%S')}")
         try:
-            self.sql_agent = SQLAgent()
+            self.sql_agent = SQLAgent(model_name=self.model_name)
             
             if not self.sql_agent.test_connection():
                 print("[SQL] Failed to connect to PostgreSQL database.")
@@ -76,7 +81,7 @@ class CombinedAgentRunner:
         """Run Cypher Agent in a separate thread."""
         print(f"[CYPHER] Starting Cypher Agent at {datetime.now().strftime('%H:%M:%S')}")
         try:
-            self.cypher_agent = CypherAgent()
+            self.cypher_agent = CypherAgent(model_name=self.model_name)
             
             if not self.cypher_agent.test_connection():
                 print("[CYPHER] Failed to connect to Neo4j database.")
@@ -111,7 +116,8 @@ class CombinedAgentRunner:
         print("[ACCURACY] Both agents completed, starting accuracy evaluation...")
         
         try:
-            self.accuracy_evaluator = GroundTruthAccuracyEvaluator()
+            print(f"[ACCURACY] Using model_name: {self.model_name}")
+            self.accuracy_evaluator = GroundTruthAccuracyEvaluator(model_name=self.model_name)
             
             print("[ACCURACY] GroundTruthAccuracyEvaluator initialized!")
             
@@ -169,7 +175,8 @@ class CombinedAgentRunner:
                     
                     file_results.append(output_record)
                 
-                output_file = f"/home/lam/oldKG/output/sql/bfsi_sql_imp_{level}.json"
+                model_folder = self.model_name.split('/')[-1] if '/' in self.model_name else self.model_name
+                output_file = f"/home/lam/oldKG/output/{model_folder}/sql/bfsi_sql_imp_{level}.json"
                 os.makedirs(os.path.dirname(output_file), exist_ok=True)
                 
                 with open(output_file, 'w', encoding='utf-8') as f:
@@ -239,7 +246,8 @@ class CombinedAgentRunner:
                     
                     file_results.append(output_record)
                 
-                output_file = f"/home/lam/oldKG/output/cypher/bfsi_cypher_imp_{level}.json"
+                model_folder = self.model_name.split('/')[-1] if '/' in self.model_name else self.model_name
+                output_file = f"/home/lam/oldKG/output/{model_folder}/cypher/bfsi_cypher_imp_{level}.json"
                 os.makedirs(os.path.dirname(output_file), exist_ok=True)
                 
                 with open(output_file, 'w', encoding='utf-8') as f:
@@ -439,9 +447,10 @@ class CombinedAgentRunner:
                     print(f"      Both agents have equal success rates")
             
             print(f"\nOUTPUT FILES:")
-            print(f"   SQL Results: /home/lam/oldKG/output/sql/bfsi_sql_imp_[easy|medium|hard].json")
-            print(f"   Cypher Results: /home/lam/oldKG/output/cypher/bfsi_cypher_imp_[easy|medium|hard].json")
-            print(f"   Accuracy Results: /home/lam/oldKG/output/ground_truth_accuracy_evaluation.json")
+            model_folder = self.model_name.split('/')[-1] if '/' in self.model_name else self.model_name
+            print(f"   SQL Results: /home/lam/oldKG/output/{model_folder}/sql/bfsi_sql_imp_[easy|medium|hard].json")
+            print(f"   Cypher Results: /home/lam/oldKG/output/{model_folder}/cypher/bfsi_cypher_imp_[easy|medium|hard].json")
+            print(f"   Accuracy Results: /home/lam/oldKG/output/{model_folder}/ground_truth_accuracy_evaluation.json")
             
             print("\nCOMPLETE EVALUATION WITH ACCURACY FINISHED!")
             
@@ -542,18 +551,19 @@ class CombinedAgentRunner:
         if accuracy_results:
             comprehensive_results['ground_truth_accuracy'] = accuracy_results
         
+        model_folder = self.model_name.split('/')[-1] if '/' in self.model_name else self.model_name
         comprehensive_results['output_files'] = {
             'sql_results': [
-                '/home/lam/oldKG/output/sql/bfsi_sql_imp_easy.json',
-                '/home/lam/oldKG/output/sql/bfsi_sql_imp_medium.json',
-                '/home/lam/oldKG/output/sql/bfsi_sql_imp_hard.json'
+                f'/home/lam/oldKG/output/{model_folder}/sql/bfsi_sql_imp_easy.json',
+                f'/home/lam/oldKG/output/{model_folder}/sql/bfsi_sql_imp_medium.json',
+                f'/home/lam/oldKG/output/{model_folder}/sql/bfsi_sql_imp_hard.json'
             ],
             'cypher_results': [
-                '/home/lam/oldKG/output/cypher/bfsi_cypher_imp_easy.json',
-                '/home/lam/oldKG/output/cypher/bfsi_cypher_imp_medium.json',
-                '/home/lam/oldKG/output/cypher/bfsi_cypher_imp_hard.json'
+                f'/home/lam/oldKG/output/{model_folder}/cypher/bfsi_cypher_imp_easy.json',
+                f'/home/lam/oldKG/output/{model_folder}/cypher/bfsi_cypher_imp_medium.json',
+                f'/home/lam/oldKG/output/{model_folder}/cypher/bfsi_cypher_imp_hard.json'
             ],
-            'comprehensive_results': '/home/lam/oldKG/output/comprehensive_evaluation_results.json'
+            'comprehensive_results': f'/home/lam/oldKG/output/{model_folder}/comprehensive_evaluation_results.json'
         }
         
         return comprehensive_results
@@ -569,7 +579,12 @@ def main():
     print()
     
     try:
-        runner = CombinedAgentRunner()
+        # You can change the model name here for all agents
+        MODEL_NAME = "gemma3:4b"
+        print(f"Using model: {MODEL_NAME}")
+        print()
+        
+        runner = CombinedAgentRunner(model_name=MODEL_NAME)
         runner.run_both()
     except KeyboardInterrupt:
         print("\n\nProcess interrupted by user")

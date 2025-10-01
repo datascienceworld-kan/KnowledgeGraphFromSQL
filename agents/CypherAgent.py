@@ -38,11 +38,12 @@ class CypherAgent:
             neo4j_uri: Neo4j connection URI
             neo4j_user: Neo4j username
             neo4j_password: Neo4j password
-            model_name: Ollama model name
+            model_name: Ollama model name (e.g., 'llama3.1:latest', 'qwen2.5:latest')
         """
         self.neo4j_uri = neo4j_uri
         self.neo4j_user = neo4j_user
         self.neo4j_password = neo4j_password
+        self.model_name = model_name
         
         # Initialize Neo4j driver
         self.driver = GraphDatabase.driver(
@@ -53,13 +54,14 @@ class CypherAgent:
         # Initialize Ollama LLM
         self.llm = OllamaLLM(
             model=model_name,
-            reasoning=False
+            temperature=0,
+            reasoning=False,
         )
         
         # Load database schema from schema.md
         self.schema_context = self._load_schema_context()
         
-        logger.info(f"CypherAgent initialized with model: {model_name}")
+        logger.info(f"CypherAgent initialized with Ollama model: {model_name}")
         logger.info(f"Neo4j config: {neo4j_uri}")
     
     def _load_schema_context(self) -> str:
@@ -214,7 +216,8 @@ Extract the key answer value. Return ONLY the answer value (number, text, etc.) 
 Answer:"""
 
         try:
-            simplified_answer = self.llm.invoke(prompt).strip()
+            response = self.llm.invoke(prompt)
+            simplified_answer = response.strip()
             # Clean up common formatting issues
             simplified_answer = simplified_answer.replace('"', '').replace("'", "")
             if simplified_answer.lower() in ['null', 'none', 'n/a']:
@@ -249,7 +252,8 @@ Answer:"""
             
             # Time LLM generation
             llm_start_time = time.time()
-            cypher_query = self.llm.invoke(prompt).strip()
+            response = self.llm.invoke(prompt)
+            cypher_query = response.strip()
             llm_generation_time = time.time() - llm_start_time
             
             # Count tokens for response
@@ -462,7 +466,8 @@ def main():
             continue
     
         # Save results for this file
-        output_file = f"/home/lam/oldKG/output/cypher/bfsi_cypher_imp_{level}.json"
+        model_folder = agent.model_name.split('/')[-1] if '/' in agent.model_name else agent.model_name
+        output_file = f"/home/lam/oldKG/output/{model_folder}/cypher/bfsi_cypher_imp_{level}.json"
         
         # Ensure output directory exists
         os.makedirs(os.path.dirname(output_file), exist_ok=True)

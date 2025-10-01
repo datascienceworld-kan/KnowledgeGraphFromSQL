@@ -43,7 +43,7 @@ class SQLAgent:
             db_name: Database name
             db_user: Database username
             db_password: Database password
-            model_name: Ollama model name
+            model_name: Ollama model name (e.g., 'llama3.1:latest', 'qwen2.5:latest')
         """
         self.db_config = {
             'host': db_host,
@@ -52,17 +52,19 @@ class SQLAgent:
             'user': db_user,
             'password': db_password
         }
+        self.model_name = model_name
         
         # Initialize Ollama LLM
         self.llm = OllamaLLM(
             model=model_name,
-            reasoning=False
+            temperature=0,
+            reasoning=False,
         )
         
         # Load database schema from schema.md
         self.schema_context = self._load_schema_context()
         
-        logger.info(f"SQLAgent initialized with model: {model_name}")
+        logger.info(f"SQLAgent initialized with Ollama model: {model_name}")
         logger.info(f"Database config: {db_host}:{db_port}/{db_name}")
     
     def _load_schema_context(self) -> str:
@@ -127,7 +129,7 @@ IMPORTANT RULES:
 4. Use proper PostgreSQL syntax
 5. For aggregations, include appropriate GROUP BY clauses
 6. Use meaningful column aliases when needed
-
+/no_think
 QUESTION: {question}
 
 SQL QUERY:"""
@@ -234,7 +236,8 @@ Extract the key answer value. Return ONLY the answer value (number, text, etc.) 
 Answer:"""
 
         try:
-            simplified_answer = self.llm.invoke(prompt).strip()
+            response = self.llm.invoke(prompt)
+            simplified_answer = response.strip()
             # Clean up common formatting issues
             simplified_answer = simplified_answer.replace('"', '').replace("'", "")
             if simplified_answer.lower() in ['null', 'none', 'n/a']:
@@ -269,7 +272,8 @@ Answer:"""
             
             # Time LLM generation
             llm_start_time = time.time()
-            sql_query = self.llm.invoke(prompt).strip()
+            response = self.llm.invoke(prompt)
+            sql_query = response.strip()
             llm_generation_time = time.time() - llm_start_time
             
             # Count tokens for response
@@ -478,7 +482,8 @@ def main():
             continue
     
         # Save results for this file
-        output_file = f"/home/lam/oldKG/output/sql/bfsi_sql_imp_{level}.json"
+        model_folder = agent.model_name.split('/')[-1] if '/' in agent.model_name else agent.model_name
+        output_file = f"/home/lam/oldKG/output/{model_folder}/sql/bfsi_sql_imp_{level}.json"
         
         # Ensure output directory exists
         os.makedirs(os.path.dirname(output_file), exist_ok=True)

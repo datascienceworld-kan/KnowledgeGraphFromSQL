@@ -1,0 +1,3332 @@
+[
+  {
+    "query": "How many transactions were made by customers who have a loan?",
+    "sql_command": "",
+    "answer": "",
+    "id": "39bc230e-b369-4c10-b4b6-c62372c90fb4",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total balance of accounts belonging to customers who also have a deposit?",
+    "sql_command": "SELECT \n    SUM(A.account_balance) AS total_balance\nFROM \n    banking_new.\"Customers\" C\nJOIN \n    banking_new.\"Accounts\" A ON C.customer_id = A.customer_id\nJOIN \n    banking_new.\"Deposits\" D ON C.customer_id = D.customer_id AND D.deposit_type_id IN (SELECT deposit_type_id FROM banking_new.\"DepositTypes\")\nGROUP BY \n    C.customer_id;",
+    "answer": "132758.88",
+    "id": "88662d44-c546-45a5-80b0-f0e77b7353e3",
+    "llm_generation_time": 0.8890209197998047,
+    "sql_execution_time": 0.0055942535400390625,
+    "total_token": 894,
+    "success": true
+  },
+  {
+    "query": "What is the number of customers who have both a loan and a deposit?",
+    "sql_command": "",
+    "answer": "",
+    "id": "8d1abaa2-05ad-4447-bd2f-c790a06594e5",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total loan balance for customers who own at least one card?",
+    "sql_command": "SELECT \n    C.customer_name,\n    COALESCE(SUM(L.balance), 0) AS total_loan_balance\nFROM \n    banking_new.\"Customers\" C\nJOIN \n    banking_new.\"Cards\" B ON C.customer_id = B.customer_id\nJOIN \n    banking_new.\"Loans\" L ON B.customer_id = L.customer_id\nGROUP BY \n    C.customer_name;",
+    "answer": "-106777.66",
+    "id": "2e98c429-2190-4db3-b9ca-1f4d76b29582",
+    "llm_generation_time": 0.6608409881591797,
+    "sql_execution_time": 0.005504131317138672,
+    "total_token": 886,
+    "success": true
+  },
+  {
+    "query": "What is the total deposit balance for customers who made at least one transaction?",
+    "sql_command": "",
+    "answer": "",
+    "id": "2369786d-5a94-49e8-bb18-9514a5675195",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many transactions were made by customers who belong to branch 1?",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Customers\" c \nJOIN banking_new.\"Branches\" b ON c.branch_id = b.branch_id \nJOIN banking_new.\"Accounts\" a ON c.customer_id = a.customer_id \nJOIN banking_new.\"Transactions\" t ON a.account_id = t.account_id \nWHERE b.branch_code = '1';",
+    "answer": "0",
+    "id": "2fe7d701-e6af-4a7c-93ac-27aaa02bb4ac",
+    "llm_generation_time": 0.6150224208831787,
+    "sql_execution_time": 0.0052869319915771484,
+    "total_token": 875,
+    "success": true
+  },
+  {
+    "query": "What is the total number of accounts for customers who belong to each branch?",
+    "sql_command": "SELECT \n    b.branch_code,\n    COUNT(DISTINCT a.account_id) AS total_accounts\nFROM \n    banking_new.\"Customers\" c\nJOIN \n    banking_new.\"Branches\" b ON c.branch_id = b.branch_id\nJOIN \n    banking_new.\"Accounts\" a ON c.customer_id = a.customer_id\nGROUP BY \n    b.branch_code;",
+    "answer": "48\n84\n81\n87",
+    "id": "22e3e715-f2bd-470b-9cd8-6a9d637dff1c",
+    "llm_generation_time": 0.6552724838256836,
+    "sql_execution_time": 0.00690007209777832,
+    "total_token": 882,
+    "success": true
+  },
+  {
+    "query": "What is the number of customers with more than one account?",
+    "sql_command": "",
+    "answer": "",
+    "id": "0d8200ef-2a7c-4333-b07c-d097a03dbccd",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the number of customers with more than one loan?",
+    "sql_command": "",
+    "answer": "",
+    "id": "69963176-0f9f-43dd-b3b4-c736f4f95aec",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the number of customers with more than one deposit?",
+    "sql_command": "",
+    "answer": "",
+    "id": "6d2f762c-ea2e-4d91-926a-66aa606301c6",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the number of customers who made more than 10 transactions?",
+    "sql_command": "",
+    "answer": "",
+    "id": "795a7f09-567e-4bf9-be1f-055ede9b4d2e",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the average loan balance for customers with deposits?",
+    "sql_command": "",
+    "answer": "",
+    "id": "bf3c3f7c-f327-4afd-b8a4-40992c8a463a",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the average deposit balance for customers with loans?",
+    "sql_command": "",
+    "answer": "",
+    "id": "7b93faa4-874a-4b62-9121-b1b4bdf0258d",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total number of transactions for customers who have cards?",
+    "sql_command": "",
+    "answer": "",
+    "id": "84a35c4b-4e48-455e-bfa9-63a7adcb72ad",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many transactions were made in accounts with balance greater than 5000?",
+    "sql_command": "",
+    "answer": "",
+    "id": "c8be4fda-00f9-416e-a32e-67099e483504",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total balance of deposits for customers from branch 2?",
+    "sql_command": "SELECT \n    SUM(d.balance) AS total_balance\nFROM \n    banking_new.\"Customers\" c\nJOIN \n    banking_new.\"Branches\" b ON c.branch_id = b.branch_id\nJOIN \n    banking_new.\"Deposits\" d ON c.customer_id = d.customer_id AND b.branch_code = '2'\nGROUP BY \n    c.customer_name, c.date_of_birth, c.address, c.phone, c.email, b.branch_address;",
+    "answer": "",
+    "id": "c898f30a-df1d-4e60-88d5-178d25b108f2",
+    "llm_generation_time": 0.8181173801422119,
+    "sql_execution_time": 0.005617856979370117,
+    "total_token": 899,
+    "success": true
+  },
+  {
+    "query": "What is the total loan balance for customers from branch 3?",
+    "sql_command": "",
+    "answer": "",
+    "id": "0ab0e25e-ca01-448d-9bd2-c1c3bed912ea",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the number of blocked cards belonging to customers with loans?",
+    "sql_command": "",
+    "answer": "",
+    "id": "c13beed0-77b7-4d2f-bc2a-d7888c46bfbb",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the number of expired cards belonging to customers with deposits?",
+    "sql_command": "",
+    "answer": "",
+    "id": "b93fef84-dd8b-46fe-b9a2-46e053d19ecc",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the number of accounts created before 2020 for customers with loans?",
+    "sql_command": "",
+    "answer": "",
+    "id": "95fe1253-0f9e-467a-8fc5-1c78f69c97ec",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the number of deposits created after 2021 for customers with cards?",
+    "sql_command": "",
+    "answer": "",
+    "id": "ac2526be-0cc2-422b-9a13-37c18dfd11dc",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the number of loans created in the last year for customers with transactions?",
+    "sql_command": "",
+    "answer": "",
+    "id": "0202fbae-c86f-4911-8559-0f3f43f8295c",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total transaction amount of customers with deposits?",
+    "sql_command": "",
+    "answer": "",
+    "id": "6c3eb79d-405c-4ff0-9caf-9a0fff7b3698",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total transaction amount of customers with loans?",
+    "sql_command": "",
+    "answer": "",
+    "id": "38563b5a-dcb3-4bff-afda-e70bbdddb7ba",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the average number of accounts per customer?",
+    "sql_command": "",
+    "answer": "",
+    "id": "d5c598f1-1e90-4727-b25d-ef5693dcbb9a",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the average number of loans per customer?",
+    "sql_command": "",
+    "answer": "",
+    "id": "aadc1ee0-a0cf-4ebb-a65b-c82181614846",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the average number of deposits per customer?",
+    "sql_command": "SELECT \n    COALESCE(COUNT(DISTINCT banking_new.\"Deposits\".deposit_identifier), 0) / COUNT(banking_new.\"Customers\".customer_id)\nFROM \n    banking_new.\"Customers\"\nJOIN \n    banking_new.\"Deposits\" ON banking_new.\"Customers\".customer_id = banking_new.\"Deposits\".customer_id\nGROUP BY \n    banking_new.\"Customers\".customer_id;",
+    "answer": "1",
+    "id": "69215e01-3997-48a2-b277-4a13142201f2",
+    "llm_generation_time": 0.720587968826294,
+    "sql_execution_time": 0.006005764007568359,
+    "total_token": 886,
+    "success": true
+  },
+  {
+    "query": "What is the total balance of accounts for customers who have more than one card?",
+    "sql_command": "",
+    "answer": "",
+    "id": "7b1a902b-bbb4-454f-9ade-476bb3adb45b",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the number of customers with both blocked and expired cards?",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id)\nFROM banking_new.\"Customers\" c\nJOIN banking_new.\"Cards\" card ON c.customer_id = card.customer_id\nWHERE card.is_blocked = TRUE AND card.expiration_date < CURRENT_DATE;",
+    "answer": "0",
+    "id": "7dd1ed3b-8d6f-4b95-8013-ee3e4156f697",
+    "llm_generation_time": 0.8577308654785156,
+    "sql_execution_time": 0.006005048751831055,
+    "total_token": 853,
+    "success": true
+  },
+  {
+    "query": "What is the total deposit balance for customers who also made more than 5 transactions?",
+    "sql_command": "SELECT \n    COALESCE(SUM(d.balance), 0) AS total_deposit_balance\nFROM \n    banking_new.\"Customers\" c\nJOIN \n    banking_new.\"Deposits\" d ON c.customer_id = d.customer_id\nJOIN \n    banking_new.\"Transactions\" t ON d.deposit_id = t.account_id\nWHERE \n    c.customer_id IN (\n        SELECT \n            account_id\n        FROM \n            banking_new.\"Transactions\"\n        GROUP BY \n            account_id\n        HAVING \n            COUNT(*) > 5\n    );",
+    "answer": "1244508.89",
+    "id": "7689f548-86bc-498e-8b9b-3ca1926eea8d",
+    "llm_generation_time": 1.3384974002838135,
+    "sql_execution_time": 0.0069484710693359375,
+    "total_token": 922,
+    "success": true
+  },
+  {
+    "query": "What is the number of loans with interest rate greater than 10% for customers with deposits?",
+    "sql_command": "SELECT COUNT(DISTINCT T1.customer_id)\nFROM banking_new.\"Customers\" AS T1\nJOIN banking_new.\"Loans\" AS T2 ON T1.customer_id = T2.customer_id\nJOIN banking_new.\"Deposits\" AS T3 ON T1.customer_id = T3.customer_id\nWHERE T2.interest_rate > 10 AND T3.interest_rate > 0;",
+    "answer": "0",
+    "id": "8f76d541-7671-4349-9968-4540b1e43815",
+    "llm_generation_time": 0.9190170764923096,
+    "sql_execution_time": 0.009711503982543945,
+    "total_token": 893,
+    "success": true
+  },
+  {
+    "query": "What is the number of deposits with interest rate less than 5% for customers with loans?",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id)\nFROM banking_new.\"Customers\" c\nJOIN banking_new.\"Loans\" l ON c.customer_id = l.customer_id\nJOIN banking_new.\"Deposits\" d ON c.customer_id = d.customer_id\nWHERE d.interest_rate < 0.05;",
+    "answer": "0",
+    "id": "fc60cf4c-0c70-4900-8638-c14b45544353",
+    "llm_generation_time": 0.8856465816497803,
+    "sql_execution_time": 0.006292819976806641,
+    "total_token": 874,
+    "success": true
+  },
+  {
+    "query": "What is the number of customers who own both accounts and cards?",
+    "sql_command": "",
+    "answer": "",
+    "id": "a7b34aaa-e2c2-42f5-8ecf-01be4b572ef4",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the number of customers who own accounts, cards, and loans?",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id)\nFROM banking_new.\"Customers\" c\nJOIN banking_new.\"Accounts\" a ON c.customer_id = a.customer_id\nJOIN banking_new.\"Cards\" ca ON c.customer_id = ca.customer_id\nJOIN banking_new.\"Loans\" l ON c.customer_id = l.customer_id;",
+    "answer": "58",
+    "id": "c99fa623-0879-465b-8442-9f17139da836",
+    "llm_generation_time": 0.6000287532806396,
+    "sql_execution_time": 0.005118370056152344,
+    "total_token": 873,
+    "success": true
+  },
+  {
+    "query": "What is the number of customers who own accounts, cards, and deposits?",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id)\nFROM banking_new.\"Customers\" c\nJOIN banking_new.\"Accounts\" a ON c.customer_id = a.customer_id\nJOIN banking_new.\"Cards\" ca ON c.customer_id = ca.customer_id\nJOIN banking_new.\"Deposits\" d ON c.customer_id = d.customer_id;",
+    "answer": "53",
+    "id": "33df0e4b-9e43-4d26-862f-17b68bd25de4",
+    "llm_generation_time": 0.9934506416320801,
+    "sql_execution_time": 0.013571500778198242,
+    "total_token": 874,
+    "success": true
+  },
+  {
+    "query": "What is the number of customers who own loans, deposits, and cards?",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id) \nFROM banking_new.\"Customers\" c \nJOIN banking_new.\"Loans\" l ON c.customer_id = l.customer_id \nJOIN banking_new.\"Deposits\" d ON c.customer_id = d.customer_id \nJOIN banking_new.\"Cards\" card ON c.customer_id = card.customer_id;",
+    "answer": "49",
+    "id": "d5f86434-cdb7-41de-ae48-27532336809d",
+    "llm_generation_time": 0.832474946975708,
+    "sql_execution_time": 0.005441188812255859,
+    "total_token": 876,
+    "success": true
+  },
+  {
+    "query": "What is the number of customers who own accounts, loans, and deposits?",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id)\nFROM banking_new.\"Customers\" c\nJOIN banking_new.\"Accounts\" a ON c.customer_id = a.customer_id\nJOIN banking_new.\"Loans\" l ON c.customer_id = l.customer_id\nJOIN banking_new.\"Deposits\" d ON c.customer_id = d.customer_id;",
+    "answer": "70",
+    "id": "e89e4efd-bde4-4911-853f-af68e997e844",
+    "llm_generation_time": 0.8464946746826172,
+    "sql_execution_time": 0.005351543426513672,
+    "total_token": 875,
+    "success": true
+  },
+  {
+    "query": "What is the number of customers who have all four: accounts, loans, deposits, and cards?",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id)\nFROM banking_new.\"Customers\" c\nJOIN banking_new.\"Accounts\" a ON c.customer_id = a.customer_id\nJOIN banking_new.\"Loans\" l ON c.customer_id = l.customer_id\nJOIN banking_new.\"Deposits\" d ON c.customer_id = d.customer_id\nJOIN banking_new.\"Cards\" ca ON c.customer_id = ca.customer_id;",
+    "answer": "39",
+    "id": "a8bfe012-a1a3-42f3-a6da-5975cd024446",
+    "llm_generation_time": 0.709829568862915,
+    "sql_execution_time": 0.005414485931396484,
+    "total_token": 896,
+    "success": true
+  },
+  {
+    "query": "What is the total transaction amount for customers who own more than one account?",
+    "sql_command": "SELECT \n    C.customer_name,\n    COALESCE(SUM(T.transaction_amount), 0) AS total_transaction_amount\nFROM \n    banking_new.\"Customers\" C\nJOIN \n    banking_new.\"Accounts\" A ON C.customer_id = A.customer_id\nJOIN \n    banking_new.\"Transactions\" T ON A.account_id = T.account_id\nGROUP BY \n    C.customer_name\nHAVING \n    COUNT(DISTINCT A.account_id) > 1;",
+    "answer": "-6439.70",
+    "id": "3c216bac-c74e-44eb-8338-7934a4f7e250",
+    "llm_generation_time": 0.758737325668335,
+    "sql_execution_time": 0.007093906402587891,
+    "total_token": 902,
+    "success": true
+  },
+  {
+    "query": "What is the number of accounts belonging to customers with blocked cards?",
+    "sql_command": "",
+    "answer": "",
+    "id": "14438d86-31d6-4d85-aff5-8aa5a76a6fe8",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total loan balance for customers with expired cards?",
+    "sql_command": "",
+    "answer": "",
+    "id": "772e7071-322b-4c97-893c-5e6297df8962",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total number of deposits for customers with more than one loan?",
+    "sql_command": "SELECT COUNT(DISTINCT T1.customer_id) \nFROM banking_new.\"Customers\" AS T1 \nJOIN banking_new.\"Loans\" AS T2 ON T1.customer_id = T2.customer_id \nWHERE T2.loan_type_id IN (SELECT loan_type_id FROM banking_new.\"LoanTypes\" WHERE type LIKE '%more than one%') \nAND T1.customer_id NOT IN (\n  SELECT T3.customer_id \n  FROM banking_new.\"Customers\" AS T3 \n  JOIN banking_new.\"Loans\" AS T4 ON T3.customer_id = T4.customer_id \n  GROUP BY T3.customer_id \n  HAVING COUNT(T4.loan_type_id) > 1\n);",
+    "answer": "0",
+    "id": "0801b241-943d-41bb-8f27-ba10e9324a4f",
+    "llm_generation_time": 1.3641619682312012,
+    "sql_execution_time": 0.005049943923950195,
+    "total_token": 951,
+    "success": true
+  },
+  {
+    "query": "What is the total balance of accounts for customers who also own deposits with interest rate greater than 7%?",
+    "sql_command": "",
+    "answer": "",
+    "id": "e671e07f-04ee-42c5-8ee1-d895cd25cdb2",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the number of customers who own both a loan and an account with balance greater than 10000?",
+    "sql_command": "",
+    "answer": "",
+    "id": "ccf3c47e-cfd7-42e4-b9f1-fbe724f09787",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the number of customers with deposits and transactions larger than 5000?",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id)\nFROM banking_new.\"Customers\" c\nJOIN banking_new.\"Deposits\" d ON c.customer_id = d.customer_id\nJOIN banking_new.\"Transactions\" t ON c.customer_id = t.account_id\nWHERE d.balance > 5000 AND t.transaction_amount > 5000;",
+    "answer": "0",
+    "id": "e3181009-89fd-4dad-94b1-e1e5744a179d",
+    "llm_generation_time": 0.5943832397460938,
+    "sql_execution_time": 0.005629301071166992,
+    "total_token": 875,
+    "success": true
+  },
+  {
+    "query": "What is the number of customers from branch 4 with accounts, loans, and deposits?",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id) \nFROM banking_new.\"Customers\" c \nJOIN banking_new.\"Accounts\" a ON c.customer_id = a.customer_id \nJOIN banking_new.\"Loans\" l ON c.customer_id = l.customer_id \nJOIN banking_new.\"Deposits\" d ON c.customer_id = d.customer_id \nWHERE c.branch_id = 4;",
+    "answer": "15",
+    "id": "b69d29f2-2260-4b58-b82b-3da041aee57c",
+    "llm_generation_time": 0.6781044006347656,
+    "sql_execution_time": 0.005114316940307617,
+    "total_token": 887,
+    "success": true
+  },
+  {
+    "query": "What is the number of customers from branch 5 with at least one transaction?",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id) \nFROM banking_new.\"Customers\" c \nJOIN banking_new.\"Branches\" b ON c.branch_id = b.branch_id \nWHERE b.branch_code = '5' AND c.customer_id IN (\n  SELECT a.account_id \n  FROM banking_new.\"Accounts\" a \n  JOIN banking_new.\"Transactions\" t ON a.account_id = t.account_id \n  WHERE t.transaction_date >= NOW() - INTERVAL '1 year'\n);",
+    "answer": "0",
+    "id": "f0e62f3a-5686-4b5c-a69e-58d715979b25",
+    "llm_generation_time": 0.762275218963623,
+    "sql_execution_time": 0.005012035369873047,
+    "total_token": 904,
+    "success": true
+  },
+  {
+    "query": "Count the total number of unique customers with accounts.",
+    "sql_command": "",
+    "answer": "",
+    "id": "2b40d32e-6dce-475c-8b87-38713f01a145",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the total number of unique customers with deposits.",
+    "sql_command": "",
+    "answer": "",
+    "id": "8d2de494-2b7d-43b8-8d20-ace38b34bda4",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the total number of unique customers with loans.",
+    "sql_command": "",
+    "answer": "",
+    "id": "bfcabe8e-009e-4870-a6dd-3c1ce5207f86",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the total number of unique customers with cards.",
+    "sql_command": "",
+    "answer": "",
+    "id": "3278c2e1-07b5-415a-990d-436029dc7cb6",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of transactions per account with ID 123.",
+    "sql_command": "SELECT COUNT(*) AS transaction_count\nFROM banking_new.\"Transactions\"\nWHERE \"Transactions\".account_id = 123;",
+    "answer": "3",
+    "id": "48a51163-5cfe-4f2b-b589-34fabbc64099",
+    "llm_generation_time": 0.33609652519226074,
+    "sql_execution_time": 0.004271268844604492,
+    "total_token": 827,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits per customer with ID 123.",
+    "sql_command": "",
+    "answer": "",
+    "id": "dd162f6d-d5d6-484a-9553-1b91a24f1921",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans per customer with ID 123.",
+    "sql_command": "SELECT COUNT(DISTINCT loan_id) AS num_loans \nFROM banking_new.\"Loans\" \nWHERE customer_id = 123;",
+    "answer": "1",
+    "id": "bb3ec5db-486c-4713-bc4a-20c62a268b96",
+    "llm_generation_time": 0.6851251125335693,
+    "sql_execution_time": 0.005106210708618164,
+    "total_token": 832,
+    "success": true
+  },
+  {
+    "query": "Count the number of cards per customer with ID 123.",
+    "sql_command": "",
+    "answer": "",
+    "id": "7721f40c-a492-4e57-a114-ecf1b5330c28",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of accounts per branch with ID 123.",
+    "sql_command": "SELECT \n    b.branch_code, \n    COUNT(DISTINCT a.account_id) AS num_accounts\nFROM \n    banking_new.\"Branches\" b\nJOIN \n    banking_new.\"Customers\" c ON b.branch_id = c.branch_id\nJOIN \n    banking_new.\"Accounts\" a ON c.customer_id = a.customer_id\nWHERE \n    b.branch_id = 123\nGROUP BY \n    b.branch_code;",
+    "answer": "",
+    "id": "fd2f0240-ca98-46e9-8583-dff1d7020c1c",
+    "llm_generation_time": 0.9271323680877686,
+    "sql_execution_time": 0.005558013916015625,
+    "total_token": 890,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions with amount greater than average transaction amount.",
+    "sql_command": "",
+    "answer": "",
+    "id": "daaa5dfd-da53-4e66-b015-418ddd85bf14",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of deposits with balance above average deposit balance.",
+    "sql_command": "",
+    "answer": "",
+    "id": "ca8af448-cc2a-4fc0-b4f3-2776fe461ea5",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans with balance above average loan balance.",
+    "sql_command": "",
+    "answer": "",
+    "id": "ce497c31-9dfb-4090-912d-65bc62b8cff1",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with more than one account.",
+    "sql_command": "",
+    "answer": "",
+    "id": "56116f96-5da4-45dd-804f-338064aa79b8",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with more than one deposit.",
+    "sql_command": "",
+    "answer": "",
+    "id": "1a6a7049-f7df-4458-a6ab-2a7c4258ea5c",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with more than one loan.",
+    "sql_command": "",
+    "answer": "",
+    "id": "e6e1cb1a-f03e-4739-a687-e42e066ba6ed",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with more than one card.",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id) \nFROM banking_new.\"Customers\" c \nJOIN banking_new.\"Cards\" m ON c.customer_id = m.customer_id \nGROUP BY c.customer_id \nHAVING COUNT(m.card_id) > 1;",
+    "answer": "19",
+    "id": "7a1d1060-f4da-4c75-802f-0dd76438586b",
+    "llm_generation_time": 0.8327021598815918,
+    "sql_execution_time": 0.005246162414550781,
+    "total_token": 854,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions in the last month per account.",
+    "sql_command": "SELECT \n    A.account_number,\n    COUNT(T.transaction_id) AS transaction_count\nFROM \n    banking_new.\"Accounts\" A\nJOIN \n    banking_new.\"Transactions\" T ON A.account_id = T.account_id\nWHERE \n    EXTRACT(MONTH FROM T.transaction_date) = EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 month')\nGROUP BY \n    A.account_number;",
+    "answer": "1",
+    "id": "9fe541e7-7cb7-482f-8bc0-37d31a325eca",
+    "llm_generation_time": 0.6795129776000977,
+    "sql_execution_time": 0.005175590515136719,
+    "total_token": 885,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits with term greater than average term.",
+    "sql_command": "",
+    "answer": "",
+    "id": "3641d0ee-ef4c-415c-87d4-6b4af3f685c6",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans with interest rate above average interest rate.",
+    "sql_command": "",
+    "answer": "",
+    "id": "16cebeee-c436-4c78-80a0-0f118c068ace",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of accounts with balance above 1000 per branch.",
+    "sql_command": "SELECT \n    b.branch_code, \n    COUNT(DISTINCT a.account_id) AS num_accounts_above_1000\nFROM \n    banking_new.\"Customers\" c\nJOIN \n    banking_new.\"Accounts\" a ON c.customer_id = a.customer_id\nJOIN \n    banking_new.\"Branches\" b ON c.branch_id = b.branch_id\nWHERE \n    a.account_balance > 1000\nGROUP BY \n    b.branch_code;",
+    "answer": "45",
+    "id": "06ce7455-1c9b-4eb6-8348-c1442400c489",
+    "llm_generation_time": 0.9606006145477295,
+    "sql_execution_time": 0.005326747894287109,
+    "total_token": 897,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions with amount between 100 and 1000.",
+    "sql_command": "",
+    "answer": "",
+    "id": "6c46986c-bdaf-4c57-a5af-6e847a69cba9",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of deposits with start date after 2024.",
+    "sql_command": "",
+    "answer": "",
+    "id": "66a0bb2e-9556-4e6f-a9b8-5b41879bc5bd",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans with end date before 2026.",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Loans\" \nWHERE EXTRACT(YEAR FROM start_date) < 2026;",
+    "answer": "200",
+    "id": "09df6960-12c9-475e-81ac-cdc55155d253",
+    "llm_generation_time": 0.6946861743927002,
+    "sql_execution_time": 0.0046844482421875,
+    "total_token": 831,
+    "success": true
+  },
+  {
+    "query": "Count the number of customers with accounts created in 2025.",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id)\nFROM banking_new.\"Customers\" c\nJOIN banking_new.\"Accounts\" a ON c.customer_id = a.customer_id\nWHERE EXTRACT(YEAR FROM a.created_at) = 2025;",
+    "answer": "154",
+    "id": "bf74b338-9677-4f69-bf06-97f8f4be9a56",
+    "llm_generation_time": 0.4920363426208496,
+    "sql_execution_time": 0.0054171085357666016,
+    "total_token": 853,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per customer with ID 123.",
+    "sql_command": "SELECT COUNT(*) AS transaction_count\nFROM banking_new.\"Customers\"\nJOIN banking_new.\"Transactions\" ON banking_new.\"Customers\".customer_id = banking_new.\"Transactions\".account_id\nWHERE banking_new.\"Customers\".customer_id = 123;",
+    "answer": "3",
+    "id": "40855017-7cc2-45c3-b4ec-542df8b83b2f",
+    "llm_generation_time": 0.8736252784729004,
+    "sql_execution_time": 0.005161285400390625,
+    "total_token": 852,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits per branch with ID 123.",
+    "sql_command": "SELECT \n    b.branch_code, \n    COUNT(DISTINCT d.deposit_identifier) AS num_deposits\nFROM \n    banking_new.\"Customers\" c\nJOIN \n    banking_new.\"Branches\" b ON c.branch_id = b.branch_id\nJOIN \n    banking_new.\"Deposits\" d ON c.customer_id = d.customer_id\nWHERE \n    b.branch_id = 123\nGROUP BY \n    b.branch_code;",
+    "answer": "",
+    "id": "48973c19-4250-4326-b797-6eeffdb54829",
+    "llm_generation_time": 0.7381634712219238,
+    "sql_execution_time": 0.004950761795043945,
+    "total_token": 895,
+    "success": true
+  },
+  {
+    "query": "Count the number of loans per branch with ID 123.",
+    "sql_command": "SELECT COUNT(DISTINCT T2.branch_id) AS num_loans \nFROM banking_new.\"Loans\" T1 \nJOIN banking_new.\"Customers\" T2 ON T1.customer_id = T2.customer_id \nWHERE T2.branch_id = 123;",
+    "answer": "0",
+    "id": "d55b8503-1e4c-4c6a-9484-94c61b4ffa84",
+    "llm_generation_time": 0.7352535724639893,
+    "sql_execution_time": 0.004713773727416992,
+    "total_token": 857,
+    "success": true
+  },
+  {
+    "query": "Count the number of cards per branch with ID 123.",
+    "sql_command": "SELECT \n    b.branch_code, \n    COUNT(c.card_id) AS num_cards\nFROM \n    banking_new.\"Cards\" c\nJOIN \n    banking_new.\"Customers\" cu ON c.customer_id = cu.customer_id\nJOIN \n    banking_new.\"Branches\" b ON cu.branch_id = b.branch_id\nWHERE \n    b.branch_id = 123\nGROUP BY \n    b.branch_code;",
+    "answer": "",
+    "id": "50a5d376-475d-4f0a-89c0-a463248eaa92",
+    "llm_generation_time": 1.1209166049957275,
+    "sql_execution_time": 0.005255937576293945,
+    "total_token": 887,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions with amount greater than 500 per customer.",
+    "sql_command": "SELECT \n    C.customer_name,\n    COUNT(T.transaction_amount) AS transaction_count\nFROM \n    banking_new.\"Customers\" C\nJOIN \n    banking_new.\"Accounts\" A ON C.customer_id = A.customer_id\nJOIN \n    banking_new.\"Transactions\" T ON A.account_id = T.account_id\nWHERE \n    T.transaction_amount > 500\nGROUP BY \n    C.customer_name;",
+    "answer": "5",
+    "id": "4691b5fb-8ccf-43fc-9f37-e56f57cfcc9d",
+    "llm_generation_time": 0.9956173896789551,
+    "sql_execution_time": 0.005591869354248047,
+    "total_token": 887,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits with balance below 1000 per customer.",
+    "sql_command": "SELECT \n    C.customer_name,\n    COUNT(DISTINCT D.deposit_identifier) AS num_deposits\nFROM \n    banking_new.\"Customers\" C\nJOIN \n    banking_new.\"Deposits\" D ON C.customer_id = D.customer_id\nWHERE \n    D.balance < 1000\nGROUP BY \n    C.customer_name;",
+    "answer": "2",
+    "id": "3454a178-9530-46ee-8699-9d2ea68fdc65",
+    "llm_generation_time": 1.0706040859222412,
+    "sql_execution_time": 0.005272388458251953,
+    "total_token": 877,
+    "success": true
+  },
+  {
+    "query": "Count the number of loans with balance below 5000 per customer.",
+    "sql_command": "SELECT \n    C.customer_name,\n    COUNT(L.loan_identifier) AS loan_count\nFROM \n    banking_new.\"Customers\" C\nJOIN \n    banking_new.\"Loans\" L ON C.customer_id = L.customer_id\nWHERE \n    L.balance < 5000\nGROUP BY \n    C.customer_name;",
+    "answer": "3",
+    "id": "2d26552d-bf19-4af9-b21f-61ffe337b87f",
+    "llm_generation_time": 0.9569911956787109,
+    "sql_execution_time": 0.0051996707916259766,
+    "total_token": 871,
+    "success": true
+  },
+  {
+    "query": "Count the number of cards expiring before 2025 per customer.",
+    "sql_command": "",
+    "answer": "",
+    "id": "b5be4e38-6bf1-47cc-afe3-771105e6ac38",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with transactions in 2025.",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id)\nFROM banking_new.\"Customers\" c\nJOIN banking_new.\"Transactions\" t ON c.customer_id = t.account_id\nWHERE EXTRACT(YEAR FROM t.transaction_date) = 2025;",
+    "answer": "67",
+    "id": "f314770a-394f-43c8-b6ac-7188d8e13f5d",
+    "llm_generation_time": 0.7058398723602295,
+    "sql_execution_time": 0.005643129348754883,
+    "total_token": 852,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits with term between 6 and 12 months.",
+    "sql_command": "",
+    "answer": "",
+    "id": "5c284af0-53aa-47f0-8f78-af9c35bb5176",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans with payment term between 12 and 24 months.",
+    "sql_command": "",
+    "answer": "",
+    "id": "57f680ed-cfb5-41f7-a84c-c74dffbddbb4",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of transactions updated in the last week.",
+    "sql_command": "",
+    "answer": "",
+    "id": "6b24e36c-62aa-4f6d-92e3-427b1e9b0a3e",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with more than 5000 in deposits.",
+    "sql_command": "",
+    "answer": "",
+    "id": "0f8ba048-d553-4846-af42-05c6690e1a3a",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of accounts with transactions in the last 30 days.",
+    "sql_command": "SELECT COUNT(DISTINCT a.account_id)\nFROM banking_new.\"Accounts\" a\nJOIN banking_new.\"Transactions\" t ON a.account_id = t.account_id\nWHERE t.transaction_date >= NOW() - INTERVAL '30 day';",
+    "answer": "13",
+    "id": "e2935e55-c2de-43e0-b674-67aed61367ec",
+    "llm_generation_time": 0.7979276180267334,
+    "sql_execution_time": 0.0051326751708984375,
+    "total_token": 852,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits with end date in the next 6 months.",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Deposits\" d\nJOIN banking_new.\"Customers\" c ON d.customer_id = c.customer_id\nWHERE EXTRACT(MONTH FROM d.end_date) BETWEEN EXTRACT(MONTH FROM CURRENT_DATE) AND EXTRACT(MONTH FROM CURRENT_DATE + INTERVAL '6 month')\nAND EXTRACT(YEAR FROM d.end_date) = EXTRACT(YEAR FROM CURRENT_DATE);",
+    "answer": "0",
+    "id": "fb352274-16c4-4814-a746-9fa2d4ff5775",
+    "llm_generation_time": 1.1129083633422852,
+    "sql_execution_time": 0.004671812057495117,
+    "total_token": 892,
+    "success": true
+  },
+  {
+    "query": "Count the number of loans with interest rate between 3% and 5%.",
+    "sql_command": "",
+    "answer": "",
+    "id": "aa0af11d-a8df-42e6-a565-2a7178a1d274",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with cards and accounts.",
+    "sql_command": "",
+    "answer": "",
+    "id": "c0a4f1ff-957a-41f4-87d6-71b3e4de8c26",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of transactions per deposit type with ID 123.",
+    "sql_command": "",
+    "answer": "",
+    "id": "1f676cc9-d89d-4c5b-ae12-f87a740a311c",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans per loan type with ID 123.",
+    "sql_command": "",
+    "answer": "",
+    "id": "1ec8395b-ae87-4362-b0f5-ec5f3e3e78cc",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of deposits per deposit type with ID 123.",
+    "sql_command": "SELECT \n    dt.type AS \"Deposit Type\",\n    COUNT(*) AS \"Number of Deposits\"\nFROM \n    banking_new.\"Deposits\" d\nJOIN \n    banking_new.\"DepositTypes\" dt ON d.deposit_type_id = dt.deposit_type_id\nWHERE \n    dt.deposit_type_id = 123\nGROUP BY \n    dt.type;",
+    "answer": "",
+    "id": "a120b283-9143-4c31-bd3b-73daf485cad4",
+    "llm_generation_time": 0.6574153900146484,
+    "sql_execution_time": 0.004682064056396484,
+    "total_token": 879,
+    "success": true
+  },
+  {
+    "query": "Count the number of accounts with more than 1000 in transactions.",
+    "sql_command": "",
+    "answer": "",
+    "id": "9855fd0e-a005-48cd-9f32-91a564d59db2",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with loans and deposits.",
+    "sql_command": "SELECT \n    COUNT(DISTINCT c.customer_id) AS total_customers_with_loans_and_deposits\nFROM \n    banking_new.\"Customers\" c\nJOIN \n    banking_new.\"Loans\" l ON c.customer_id = l.customer_id\nJOIN \n    banking_new.\"Deposits\" d ON c.customer_id = d.customer_id;",
+    "answer": "90",
+    "id": "5ae9bdb8-7f4f-406c-be59-fd39d530f5a6",
+    "llm_generation_time": 0.6309788227081299,
+    "sql_execution_time": 0.005240917205810547,
+    "total_token": 874,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions with amount above 1000 in the last year.",
+    "sql_command": "",
+    "answer": "",
+    "id": "a790b945-07fb-4975-91ab-38fd88f72bf4",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of transactions per account with ID 124.",
+    "sql_command": "SELECT COUNT(*) AS transaction_count\nFROM banking_new.\"Transactions\"\nWHERE \"Transactions\".account_id = 124;",
+    "answer": "2",
+    "id": "d073693a-e684-424e-8914-a331dc8eb056",
+    "llm_generation_time": 0.72576904296875,
+    "sql_execution_time": 0.005086421966552734,
+    "total_token": 827,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits per customer with ID 124.",
+    "sql_command": "",
+    "answer": "",
+    "id": "80c4e4b7-402d-41e4-9d39-a967e81949e4",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans per customer with ID 124.",
+    "sql_command": "SELECT COUNT(DISTINCT T1.customer_id) AS num_loans \nFROM banking_new.\"Customers\" AS T1 \nJOIN banking_new.\"Loans\" AS T2 ON T1.customer_id = T2.customer_id \nWHERE T1.customer_id = 124;",
+    "answer": "0",
+    "id": "b1b552ba-ff51-4e46-8d50-95d7223df9b0",
+    "llm_generation_time": 0.5391860008239746,
+    "sql_execution_time": 0.004739999771118164,
+    "total_token": 859,
+    "success": true
+  },
+  {
+    "query": "Count the number of cards per customer with ID 124.",
+    "sql_command": "",
+    "answer": "",
+    "id": "ad83765b-f45d-4423-b4b0-302e8243f996",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of accounts per branch with ID 124.",
+    "sql_command": "SELECT \n    b.branch_code, \n    COUNT(a.account_id) AS account_count\nFROM \n    banking_new.\"Branches\" b\nJOIN \n    banking_new.\"Accounts\" a ON b.branch_id = a.customer_id\nWHERE \n    b.branch_id = 124\nGROUP BY \n    b.branch_code;",
+    "answer": "",
+    "id": "0c7e590c-2344-4c62-9c4e-0eb5b54260b5",
+    "llm_generation_time": 0.9415473937988281,
+    "sql_execution_time": 0.0051195621490478516,
+    "total_token": 869,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions with amount greater than average per customer.",
+    "sql_command": "",
+    "answer": "",
+    "id": "f2820c92-8919-4d21-bc60-0d99a17db7bb",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of deposits with balance above average per branch.",
+    "sql_command": "",
+    "answer": "",
+    "id": "b3451ab8-8563-4f7f-a4db-d22aba88b354",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans with balance above average per customer.",
+    "sql_command": "SELECT \n    c.customer_name,\n    AVG(l.balance) AS avg_balance\nFROM \n    banking_new.\"Customers\" c\nJOIN \n    banking_new.\"Loans\" l ON c.customer_id = l.customer_id\nGROUP BY \n    c.customer_name\nHAVING \n    AVG(l.balance) > (SELECT AVG(balance) FROM banking_new.\"Loans\")",
+    "answer": "5",
+    "id": "b20bef69-3338-42e8-9ff7-dceddcaf1560",
+    "llm_generation_time": 0.6628880500793457,
+    "sql_execution_time": 0.0055463314056396484,
+    "total_token": 878,
+    "success": true
+  },
+  {
+    "query": "Count the number of customers with more than two accounts.",
+    "sql_command": "",
+    "answer": "",
+    "id": "e54ba45f-0f3e-41a6-a374-80f4b3a73d9e",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with more than two deposits.",
+    "sql_command": "",
+    "answer": "",
+    "id": "d0c1812e-0e1d-468d-a440-fd8ee631047a",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with more than two loans.",
+    "sql_command": "",
+    "answer": "",
+    "id": "92e8e6f6-70bc-4eec-aa84-249408b47e1a",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with more than two cards.",
+    "sql_command": "",
+    "answer": "",
+    "id": "6a573ed1-c8ea-491e-a35f-b9e2fad97468",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of transactions in the last 60 days per account.",
+    "sql_command": "SELECT \n    A.account_number,\n    COUNT(T.transaction_id) AS transaction_count\nFROM \n    banking_new.\"Accounts\" A\nJOIN \n    banking_new.\"Transactions\" T ON A.account_id = T.account_id\nWHERE \n    T.transaction_date >= NOW() - INTERVAL '60 days'\nGROUP BY \n    A.account_number;",
+    "answer": "60",
+    "id": "2ca2eb44-e185-4f36-8641-368b04d7f7c7",
+    "llm_generation_time": 0.8700013160705566,
+    "sql_execution_time": 0.005523681640625,
+    "total_token": 874,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits with term greater than 12 months.",
+    "sql_command": "",
+    "answer": "",
+    "id": "d2e35a2b-ba5d-441f-b89a-84e1f18f4712",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans with interest rate above 6%.",
+    "sql_command": "",
+    "answer": "",
+    "id": "3db77a14-8b08-4c04-8671-6fe28944816e",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of accounts with balance above 5000 per branch.",
+    "sql_command": "SELECT \n    b.branch_code,\n    COUNT(DISTINCT a.account_id) AS num_accounts_balance_above_5000\nFROM \n    banking_new.\"Customers\" c\nJOIN \n    banking_new.\"Accounts\" a ON c.customer_id = a.customer_id\nJOIN \n    banking_new.\"Branches\" b ON c.branch_id = b.branch_id\nWHERE \n    a.account_balance > 5000\nGROUP BY \n    b.branch_code;",
+    "answer": "41\n72\n73\n80",
+    "id": "acaec589-7f13-4069-9e6b-61a5e561010e",
+    "llm_generation_time": 0.7470128536224365,
+    "sql_execution_time": 0.005800485610961914,
+    "total_token": 897,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions with amount between 50 and 200.",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Transactions\" \nWHERE transaction_amount BETWEEN 50 AND 200;",
+    "answer": "13",
+    "id": "84d8abcf-a19a-4d8d-aecf-4e5f2a07a64e",
+    "llm_generation_time": 0.586458683013916,
+    "sql_execution_time": 0.0048825740814208984,
+    "total_token": 827,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits with start date after 2023.",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Deposits\" d \nJOIN banking_new.\"Customers\" c ON d.customer_id = c.customer_id \nWHERE d.start_date > '2023-01-01';",
+    "answer": "200",
+    "id": "aaac5341-0d12-409d-bd3a-f08f2263722b",
+    "llm_generation_time": 0.8054120540618896,
+    "sql_execution_time": 0.005135059356689453,
+    "total_token": 848,
+    "success": true
+  },
+  {
+    "query": "Count the number of loans with end date before 2025.",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Loans\" \nWHERE EXTRACT(YEAR FROM start_date) < 2025;",
+    "answer": "130",
+    "id": "6d957359-d155-4e21-9a79-2f2a7bce8610",
+    "llm_generation_time": 0.6692228317260742,
+    "sql_execution_time": 0.009294509887695312,
+    "total_token": 831,
+    "success": true
+  },
+  {
+    "query": "Count the number of customers with accounts created in 2023.",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id)\nFROM banking_new.\"Customers\" c\nJOIN banking_new.\"Accounts\" a ON c.customer_id = a.customer_id\nWHERE EXTRACT(YEAR FROM a.created_at) = 2023;",
+    "answer": "0",
+    "id": "2fea290e-fd49-4720-8b78-56926c0c4513",
+    "llm_generation_time": 0.7169311046600342,
+    "sql_execution_time": 0.005658864974975586,
+    "total_token": 853,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per customer with ID 124.",
+    "sql_command": "SELECT COUNT(*) AS transaction_count\nFROM banking_new.\"Customers\"\nJOIN banking_new.\"Transactions\" ON banking_new.\"Customers\".customer_id = banking_new.\"Transactions\".account_id\nWHERE banking_new.\"Customers\".customer_id = 124;",
+    "answer": "2",
+    "id": "bb8c32d6-5bb0-4371-8cc0-39257b2f97e4",
+    "llm_generation_time": 0.7310857772827148,
+    "sql_execution_time": 0.004454851150512695,
+    "total_token": 852,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits per branch with ID 124.",
+    "sql_command": "",
+    "answer": "",
+    "id": "d81b5dd1-ad5d-4998-9d83-5580243c6fc2",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans per branch with ID 124.",
+    "sql_command": "",
+    "answer": "",
+    "id": "3b18bfe3-2dcf-412b-b244-598826c08662",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of cards per branch with ID 124.",
+    "sql_command": "",
+    "answer": "",
+    "id": "dc6c976b-5035-4aee-9c56-88e3879a7e6d",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of transactions with amount greater than 1000 per customer.",
+    "sql_command": "SELECT \n    C.customer_name,\n    COUNT(T.transaction_amount) AS transaction_count\nFROM \n    banking_new.\"Customers\" C\nJOIN \n    banking_new.\"Accounts\" A ON C.customer_id = A.customer_id\nJOIN \n    banking_new.\"Transactions\" T ON A.account_id = T.account_id\nWHERE \n    T.transaction_amount > 1000\nGROUP BY \n    C.customer_name;",
+    "answer": "7",
+    "id": "bdb48d0d-6128-4899-854e-bc8778d7e217",
+    "llm_generation_time": 0.6820077896118164,
+    "sql_execution_time": 0.006995201110839844,
+    "total_token": 889,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits with balance below 500 per customer.",
+    "sql_command": "SELECT \n    c.customer_name,\n    COUNT(DISTINCT d.deposit_identifier) AS num_deposits_below_500\nFROM \n    banking_new.\"Customers\" c\nJOIN \n    banking_new.\"Deposits\" d ON c.customer_id = d.customer_id\nWHERE \n    d.balance < 500\nGROUP BY \n    c.customer_name;",
+    "answer": "2",
+    "id": "2d52cfa2-c858-4c00-bdf9-ad390b3f5496",
+    "llm_generation_time": 0.9713904857635498,
+    "sql_execution_time": 0.006269216537475586,
+    "total_token": 878,
+    "success": true
+  },
+  {
+    "query": "Count the number of loans with balance below 1000 per customer.",
+    "sql_command": "SELECT \n    C.customer_name,\n    COUNT(L.loan_id) AS loan_count\nFROM \n    banking_new.\"Customers\" C\nJOIN \n    banking_new.\"Loans\" L ON C.customer_id = L.customer_id\nWHERE \n    L.balance < 1000\nGROUP BY \n    C.customer_name;",
+    "answer": "5",
+    "id": "5f43319c-3b0d-4559-8614-609ec5ee8218",
+    "llm_generation_time": 0.604109525680542,
+    "sql_execution_time": 0.0064961910247802734,
+    "total_token": 871,
+    "success": true
+  },
+  {
+    "query": "Count the number of customers with transactions in 2024.",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id)\nFROM banking_new.\"Customers\" c\nJOIN banking_new.\"Transactions\" t ON c.customer_id = t.account_id\nWHERE EXTRACT(YEAR FROM t.transaction_date) = 2024;",
+    "answer": "101",
+    "id": "e0a766e7-b3cb-497b-8044-5382d1b77aa8",
+    "llm_generation_time": 0.4888780117034912,
+    "sql_execution_time": 0.005124330520629883,
+    "total_token": 852,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits with term between 3 and 6 months.",
+    "sql_command": "",
+    "answer": "",
+    "id": "9c38a41c-00a3-4130-832e-1d39060b53cb",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans with payment term between 6 and 12 months.",
+    "sql_command": "",
+    "answer": "",
+    "id": "7a1f9124-84ec-459c-ad27-5ed927989f0b",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of transactions updated in the last 30 days.",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Transactions\" \nWHERE transaction_date >= NOW() - INTERVAL '30 day';",
+    "answer": "13",
+    "id": "079dc091-64bb-4f63-af36-daf7446e656b",
+    "llm_generation_time": 0.6440770626068115,
+    "sql_execution_time": 0.005805015563964844,
+    "total_token": 828,
+    "success": true
+  },
+  {
+    "query": "Count the number of customers with more than 1000 in deposits.",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id)\nFROM banking_new.\"Customers\" c\nJOIN banking_new.\"Deposits\" d ON c.customer_id = d.customer_id\nWHERE d.balance > 1000;",
+    "answer": "131",
+    "id": "8187fe43-2a96-41bb-bc28-8b4183e0d8ba",
+    "llm_generation_time": 0.8415195941925049,
+    "sql_execution_time": 0.00516510009765625,
+    "total_token": 849,
+    "success": true
+  },
+  {
+    "query": "Count the number of accounts with transactions in the last 15 days.",
+    "sql_command": "SELECT COUNT(DISTINCT a.account_id)\nFROM banking_new.\"Accounts\" a\nJOIN banking_new.\"Transactions\" t ON a.account_id = t.account_id\nWHERE t.transaction_date >= NOW() - INTERVAL '15 day';",
+    "answer": "5",
+    "id": "3ab3eaf6-072c-4eb1-9cd9-1ec34aa834ef",
+    "llm_generation_time": 0.9291939735412598,
+    "sql_execution_time": 0.0052869319915771484,
+    "total_token": 852,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits with end date in the next 12 months.",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Deposits\" d\nJOIN banking_new.\"Customers\" c ON d.customer_id = c.customer_id\nWHERE EXTRACT(MONTH FROM d.end_date) BETWEEN EXTRACT(MONTH FROM CURRENT_DATE) AND EXTRACT(MONTH FROM CURRENT_DATE + INTERVAL '12 month')\nAND EXTRACT(YEAR FROM d.end_date) = EXTRACT(YEAR FROM CURRENT_DATE + INTERVAL '12 month');",
+    "answer": "3",
+    "id": "3d973dc8-ece4-4a08-834b-e087f0e99656",
+    "llm_generation_time": 0.7334866523742676,
+    "sql_execution_time": 0.005408525466918945,
+    "total_token": 897,
+    "success": true
+  },
+  {
+    "query": "Count the number of loans with interest rate between 4% and 6%.",
+    "sql_command": "",
+    "answer": "",
+    "id": "4a6220b3-7807-475d-86b0-dcc7d4587d64",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with cards and loans.",
+    "sql_command": "SELECT \n    COUNT(DISTINCT c.customer_id) AS num_customers_with_cards,\n    COUNT(DISTINCT c.customer_id) AS num_customers_with_loans\nFROM \n    banking_new.\"Customers\" c\nJOIN \n    banking_new.\"Cards\" card ON c.customer_id = card.customer_id\nJOIN \n    banking_new.\"Loans\" loan ON c.customer_id = loan.customer_id;",
+    "answer": "70",
+    "id": "aab74d05-9269-414e-b4fc-d6b58cea4ef8",
+    "llm_generation_time": 0.9248778820037842,
+    "sql_execution_time": 0.0049648284912109375,
+    "total_token": 884,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per deposit type with ID 124.",
+    "sql_command": "",
+    "answer": "",
+    "id": "773480c4-2d77-428b-bf59-14ff1548509f",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans per loan type with ID 124.",
+    "sql_command": "",
+    "answer": "",
+    "id": "b8bf7e3b-5e22-4b80-9336-fc5f086471fb",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of deposits per deposit type with ID 124.",
+    "sql_command": "SELECT \n    dt.type AS \"Deposit Type\",\n    COUNT(*) AS \"Number of Deposits\"\nFROM \n    banking_new.\"Deposits\" d\nJOIN \n    banking_new.\"DepositTypes\" dt ON d.deposit_type_id = dt.deposit_type_id\nWHERE \n    dt.deposit_type_id = 124\nGROUP BY \n    dt.type;",
+    "answer": "",
+    "id": "6c696819-5f91-417c-b701-c46c75f7d2f0",
+    "llm_generation_time": 1.0424792766571045,
+    "sql_execution_time": 0.004666805267333984,
+    "total_token": 879,
+    "success": true
+  },
+  {
+    "query": "Count the number of accounts with more than 500 in transactions.",
+    "sql_command": "",
+    "answer": "",
+    "id": "263514db-7635-445e-a747-0ed35803f94b",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with loans and accounts.",
+    "sql_command": "",
+    "answer": "",
+    "id": "5f63a262-c056-492e-84e8-b18f349d3ba7",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of transactions with amount above 500 in the last 6 months.",
+    "sql_command": "",
+    "answer": "",
+    "id": "308d4450-b988-49ae-80e4-eb86d21fad8f",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of unique customers with transactions in the last year.",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id)\nFROM banking_new.\"Customers\" c\nJOIN banking_new.\"Transactions\" t ON c.customer_id = t.account_id\nWHERE EXTRACT(YEAR FROM t.transaction_date) = EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '1 year')\nAND EXTRACT(MONTH FROM t.transaction_date) = EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 year');",
+    "answer": "15",
+    "id": "4d9be2a7-ae1a-4835-a4d2-9a2c3c5b0644",
+    "llm_generation_time": 0.9810802936553955,
+    "sql_execution_time": 0.0067539215087890625,
+    "total_token": 888,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits with balance above 2000 per customer.",
+    "sql_command": "SELECT \n    C.customer_name,\n    COUNT(DISTINCT D.deposit_identifier) AS num_deposits_above_2000\nFROM \n    banking_new.\"Customers\" C\nJOIN \n    banking_new.\"Deposits\" D ON C.customer_id = D.customer_id\nWHERE \n    D.balance > 2000\nGROUP BY \n    C.customer_name;",
+    "answer": "3",
+    "id": "4612adbe-b00d-4ab9-a4ec-5a052def93d0",
+    "llm_generation_time": 0.8961060047149658,
+    "sql_execution_time": 0.005307197570800781,
+    "total_token": 881,
+    "success": true
+  },
+  {
+    "query": "Count the number of loans with interest rate below 4% per customer.",
+    "sql_command": "SELECT \n    C.customer_name,\n    COUNT(L.loan_id) AS num_loans\nFROM \n    banking_new.\"Customers\" C\nJOIN \n    banking_new.\"Loans\" L ON C.customer_id = L.customer_id\nWHERE \n    L.interest_rate < 4\nGROUP BY \n    C.customer_name;",
+    "answer": "5",
+    "id": "d71f4275-93c8-48bf-9532-fc1cabb04bcf",
+    "llm_generation_time": 0.8429617881774902,
+    "sql_execution_time": 0.00507807731628418,
+    "total_token": 874,
+    "success": true
+  },
+  {
+    "query": "Count the number of cards expiring in 2027 per customer.",
+    "sql_command": "",
+    "answer": "",
+    "id": "1d770d0d-9ecd-4bac-88a8-b16da9ea6303",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with deposits starting in 2024.",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id)\nFROM banking_new.\"Customers\" c\nJOIN banking_new.\"Deposits\" d ON c.customer_id = d.customer_id\nWHERE EXTRACT(YEAR FROM d.start_date) = 2024;",
+    "answer": "45",
+    "id": "81f803f9-1aa7-424b-a6a6-19dfe68e6c2b",
+    "llm_generation_time": 0.5143671035766602,
+    "sql_execution_time": 0.006158590316772461,
+    "total_token": 855,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per account with ID 125.",
+    "sql_command": "SELECT COUNT(*) AS transaction_count\nFROM banking_new.\"Transactions\"\nWHERE \"Transactions\".account_id = 125;",
+    "answer": "1",
+    "id": "57ee602e-6f01-4ba3-883b-b0bae1b3864e",
+    "llm_generation_time": 0.36479854583740234,
+    "sql_execution_time": 0.004808187484741211,
+    "total_token": 827,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits per customer with ID 125.",
+    "sql_command": "",
+    "answer": "",
+    "id": "49f3a00b-ca66-49c8-a494-d798edad13d4",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans per customer with ID 125.",
+    "sql_command": "",
+    "answer": "",
+    "id": "38663cca-623a-499b-acb6-199ff789e641",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of cards per customer with ID 125.",
+    "sql_command": "",
+    "answer": "",
+    "id": "df1532e0-7c1c-4973-91e5-aaa2e5e97fb6",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of accounts per branch with ID 125.",
+    "sql_command": "SELECT \n    b.branch_code, \n    COUNT(DISTINCT a.account_id) AS num_accounts\nFROM \n    banking_new.\"Branches\" b\nJOIN \n    banking_new.\"Customers\" c ON b.branch_id = c.branch_id\nJOIN \n    banking_new.\"Accounts\" a ON c.customer_id = a.customer_id\nWHERE \n    b.branch_id = 125\nGROUP BY \n    b.branch_code;",
+    "answer": "",
+    "id": "2dd695da-e084-4f42-ad92-fc62ac79f5d2",
+    "llm_generation_time": 0.74639892578125,
+    "sql_execution_time": 0.004862308502197266,
+    "total_token": 890,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions with amount greater than average per branch.",
+    "sql_command": "",
+    "answer": "",
+    "id": "838aaa91-720b-47d6-8f2e-c98080051903",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of deposits with balance above average per customer type.",
+    "sql_command": "SELECT \n    dt.type AS \"Customer Type\",\n    COUNT(DISTINCT c.customer_id) AS \"Number of Deposits\"\nFROM \n    banking_new.\"Customers\" c\nJOIN \n    banking_new.\"Deposits\" d ON c.customer_id = d.customer_id\nJOIN \n    banking_new.\"DepositTypes\" dt ON d.deposit_type_id = dt.deposit_type_id\nGROUP BY \n    dt.type\nHAVING \n    AVG(d.balance) > 0 AND COUNT(DISTINCT c.customer_id) > 0;",
+    "answer": "21",
+    "id": "fc2c3540-142b-49ac-990a-313b1697098b",
+    "llm_generation_time": 0.8533802032470703,
+    "sql_execution_time": 0.005418062210083008,
+    "total_token": 915,
+    "success": true
+  },
+  {
+    "query": "Count the number of loans with balance above average per loan type.",
+    "sql_command": "SELECT \n    L.loan_type_id,\n    AVG(L.balance) AS avg_balance,\n    COUNT(CASE WHEN L.balance > (SELECT AVG(balance) FROM banking_new.\"Loans\" L2 WHERE L2.loan_type_id = L.loan_type_id) THEN 1 END) AS above_average_loans\nFROM \n    banking_new.\"Loans\" L\nGROUP BY \n    L.loan_type_id;",
+    "answer": "10",
+    "id": "7968421f-ec88-4ae0-be83-98afc42a78fd",
+    "llm_generation_time": 1.0624191761016846,
+    "sql_execution_time": 0.008313894271850586,
+    "total_token": 891,
+    "success": true
+  },
+  {
+    "query": "Count the number of customers with more than three accounts.",
+    "sql_command": "",
+    "answer": "",
+    "id": "6d674149-fec4-46c5-bece-eab41c369687",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with more than three deposits.",
+    "sql_command": "",
+    "answer": "",
+    "id": "779e911c-e521-42c1-81ee-39b9036ebd4b",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with more than three loans.",
+    "sql_command": "",
+    "answer": "",
+    "id": "34c1f631-9c26-4333-93c8-9c72fc5d5c50",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with more than three cards.",
+    "sql_command": "",
+    "answer": "",
+    "id": "87a2ae0b-bf23-4ae4-839c-538b734110b4",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of transactions in the last 90 days per account.",
+    "sql_command": "SELECT \n    A.account_number,\n    COUNT(T.transaction_id) AS transaction_count\nFROM \n    banking_new.\"Accounts\" A\nJOIN \n    banking_new.\"Transactions\" T ON A.account_id = T.account_id\nWHERE \n    T.transaction_date >= NOW() - INTERVAL '90 days'\nGROUP BY \n    A.account_number;",
+    "answer": "90",
+    "id": "71875c1c-dbbc-4978-ad7f-19321818a616",
+    "llm_generation_time": 1.0740511417388916,
+    "sql_execution_time": 0.005117177963256836,
+    "total_token": 874,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits with term greater than 24 months.",
+    "sql_command": "",
+    "answer": "",
+    "id": "7ddec252-44be-4907-b2ef-947a23c761a1",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans with interest rate above 7%.",
+    "sql_command": "",
+    "answer": "",
+    "id": "95bc5180-01e1-4d25-bd01-08cee0951a41",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of accounts with balance above 10000 per branch.",
+    "sql_command": "SELECT \n    b.branch_code, \n    COUNT(DISTINCT a.account_id) AS num_accounts_above_10000\nFROM \n    banking_new.\"Customers\" c\nJOIN \n    banking_new.\"Accounts\" a ON c.customer_id = a.customer_id\nJOIN \n    banking_new.\"Branches\" b ON c.branch_id = b.branch_id\nWHERE \n    a.account_balance > 10000\nGROUP BY \n    b.branch_code;",
+    "answer": "69",
+    "id": "7cf508f0-4ddf-4290-b869-cbd17162a00d",
+    "llm_generation_time": 1.0371906757354736,
+    "sql_execution_time": 0.0058901309967041016,
+    "total_token": 897,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions with amount between 1000 and 5000.",
+    "sql_command": "",
+    "answer": "",
+    "id": "332256fb-3cd3-48a8-b86f-85f0a266ce52",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of deposits with start date after 2022.",
+    "sql_command": "",
+    "answer": "",
+    "id": "2f771eb5-f90b-4a18-aabd-72376f474617",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans with end date before 2024.",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Loans\" \nWHERE EXTRACT(YEAR FROM start_date) < 2024;",
+    "answer": "32",
+    "id": "9f763b93-7af8-4659-ba7c-0b588ed69ec8",
+    "llm_generation_time": 0.8433868885040283,
+    "sql_execution_time": 0.005402326583862305,
+    "total_token": 831,
+    "success": true
+  },
+  {
+    "query": "Count the number of customers with accounts created in 2022.",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id)\nFROM banking_new.\"Customers\" c\nJOIN banking_new.\"Accounts\" a ON c.customer_id = a.customer_id\nWHERE EXTRACT(YEAR FROM a.created_at) = 2022;",
+    "answer": "0",
+    "id": "40a70a8c-7853-4a27-894c-bb8f7913ee5a",
+    "llm_generation_time": 0.900545597076416,
+    "sql_execution_time": 0.005761623382568359,
+    "total_token": 853,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per customer with ID 125.",
+    "sql_command": "SELECT COUNT(*) AS transaction_count\nFROM banking_new.\"Customers\"\nJOIN banking_new.\"Transactions\" ON banking_new.\"Customers\".customer_id = banking_new.\"Transactions\".account_id\nWHERE banking_new.\"Customers\".customer_id = 125;",
+    "answer": "1",
+    "id": "2d9bb845-d84f-4bc1-a547-611c4bc8bc45",
+    "llm_generation_time": 0.8725082874298096,
+    "sql_execution_time": 0.011905193328857422,
+    "total_token": 852,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits per branch with ID 125.",
+    "sql_command": "SELECT \n    b.branch_code, \n    COUNT(DISTINCT d.deposit_identifier) AS num_deposits\nFROM \n    banking_new.\"Customers\" c\nJOIN \n    banking_new.\"Branches\" b ON c.branch_id = b.branch_id\nJOIN \n    banking_new.\"Deposits\" d ON c.customer_id = d.customer_id\nWHERE \n    b.branch_id = 125\nGROUP BY \n    b.branch_code;",
+    "answer": "",
+    "id": "d00a671c-5a60-4a4f-b1c3-bcf440d75417",
+    "llm_generation_time": 1.199925422668457,
+    "sql_execution_time": 0.004976987838745117,
+    "total_token": 895,
+    "success": true
+  },
+  {
+    "query": "Count the number of loans per branch with ID 125.",
+    "sql_command": "SELECT COUNT(DISTINCT T2.branch_id) AS num_loans \nFROM banking_new.\"Loans\" T1 \nJOIN banking_new.\"Customers\" T2 ON T1.customer_id = T2.customer_id \nWHERE T2.branch_id = 125;",
+    "answer": "0",
+    "id": "a5e82602-26d1-40dc-80b8-eb76adb27dfe",
+    "llm_generation_time": 0.812014102935791,
+    "sql_execution_time": 0.005767822265625,
+    "total_token": 857,
+    "success": true
+  },
+  {
+    "query": "Count the number of cards per branch with ID 125.",
+    "sql_command": "",
+    "answer": "",
+    "id": "cf45e51c-1995-4f27-82d2-fe35d655e115",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of transactions with amount greater than 2000 per customer.",
+    "sql_command": "SELECT \n    C.customer_name,\n    COUNT(T.transaction_amount) AS transaction_count\nFROM \n    banking_new.\"Customers\" C\nJOIN \n    banking_new.\"Accounts\" A ON C.customer_id = A.customer_id\nJOIN \n    banking_new.\"Transactions\" T ON A.account_id = T.account_id\nWHERE \n    T.transaction_amount > 2000\nGROUP BY \n    C.customer_name;",
+    "answer": "4",
+    "id": "3c0b207d-0e68-417c-8fd3-88d0c929ae8f",
+    "llm_generation_time": 0.6831657886505127,
+    "sql_execution_time": 0.005476236343383789,
+    "total_token": 889,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits with balance below 2000 per customer.",
+    "sql_command": "SELECT \n    c.customer_name,\n    COUNT(DISTINCT d.deposit_identifier) AS num_deposits\nFROM \n    banking_new.\"Customers\" c\nJOIN \n    banking_new.\"Deposits\" d ON c.customer_id = d.customer_id\nWHERE \n    d.balance < 2000\nGROUP BY \n    c.customer_name;",
+    "answer": "2",
+    "id": "1b5f0ff5-5960-413a-8541-1bb24241287b",
+    "llm_generation_time": 0.9205150604248047,
+    "sql_execution_time": 0.005072593688964844,
+    "total_token": 877,
+    "success": true
+  },
+  {
+    "query": "Count the number of loans with balance below 2000 per customer.",
+    "sql_command": "SELECT \n    C.customer_name,\n    COUNT(L.loan_identifier) AS loan_count\nFROM \n    banking_new.\"Customers\" C\nJOIN \n    banking_new.\"Loans\" L ON C.customer_id = L.customer_id\nWHERE \n    L.balance < 2000\nGROUP BY \n    C.customer_name;",
+    "answer": "3",
+    "id": "062b291a-3666-45bd-9ab4-523cdede0498",
+    "llm_generation_time": 0.9310634136199951,
+    "sql_execution_time": 0.00523066520690918,
+    "total_token": 871,
+    "success": true
+  },
+  {
+    "query": "Count the number of cards expiring before 2024 per customer.",
+    "sql_command": "",
+    "answer": "",
+    "id": "b55b444f-e906-49f7-a170-87c986fc0b01",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with transactions in 2023.",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id)\nFROM banking_new.\"Customers\" c\nJOIN banking_new.\"Transactions\" t ON c.customer_id = t.account_id\nWHERE EXTRACT(YEAR FROM t.transaction_date) = 2023;",
+    "answer": "94",
+    "id": "de19eafe-0c17-4842-9ca5-898352f05b64",
+    "llm_generation_time": 0.8298540115356445,
+    "sql_execution_time": 0.014054536819458008,
+    "total_token": 852,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits with term between 12 and 24 months.",
+    "sql_command": "",
+    "answer": "",
+    "id": "20593f96-dc74-4286-bbc8-1cdaeab20b78",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans with payment term between 24 and 36 months.",
+    "sql_command": "",
+    "answer": "",
+    "id": "ae1c7e62-a969-437c-a911-2c903f720f7a",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of transactions updated in the last 60 days.",
+    "sql_command": "",
+    "answer": "",
+    "id": "f6454690-37af-4813-b676-05f860d0b002",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with more than 2000 in deposits.",
+    "sql_command": "",
+    "answer": "",
+    "id": "28b1f2d5-7078-4fa3-aae5-69be9d11cca0",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of accounts with transactions in the last 60 days.",
+    "sql_command": "SELECT COUNT(DISTINCT a.account_id)\nFROM banking_new.\"Accounts\" a\nJOIN banking_new.\"Transactions\" t ON a.account_id = t.account_id\nWHERE t.transaction_date >= NOW() - INTERVAL '60 day';",
+    "answer": "27",
+    "id": "abc73626-bcae-4903-8597-13b2f916e755",
+    "llm_generation_time": 0.8695037364959717,
+    "sql_execution_time": 0.009068012237548828,
+    "total_token": 852,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits with end date in the next 3 months.",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Deposits\" d\nJOIN banking_new.\"Customers\" c ON d.customer_id = c.customer_id\nWHERE EXTRACT(MONTH FROM d.end_date) BETWEEN EXTRACT(MONTH FROM CURRENT_DATE) AND EXTRACT(MONTH FROM CURRENT_DATE + INTERVAL '3 month')\nAND EXTRACT(YEAR FROM d.end_date) = EXTRACT(YEAR FROM CURRENT_DATE);",
+    "answer": "0",
+    "id": "88014337-d659-4499-8b20-c873e8631437",
+    "llm_generation_time": 1.1459898948669434,
+    "sql_execution_time": 0.008476018905639648,
+    "total_token": 892,
+    "success": true
+  },
+  {
+    "query": "Count the number of loans with interest rate between 2% and 4%.",
+    "sql_command": "",
+    "answer": "",
+    "id": "9c3e89fc-9e5a-42ab-9381-90106df09ef0",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with deposits and cards.",
+    "sql_command": "SELECT \n    COUNT(DISTINCT c.customer_id) AS num_customers_with_deposits,\n    COUNT(DISTINCT c.customer_id) AS num_customers_with_cards\nFROM \n    banking_new.\"Customers\" c\nJOIN \n    banking_new.\"Cards\" card ON c.customer_id = card.customer_id\nJOIN \n    banking_new.\"Deposits\" d ON card.customer_id = d.customer_id;",
+    "answer": "66",
+    "id": "2e8b5028-e3a8-4ac5-a003-3bcfe4d313a5",
+    "llm_generation_time": 1.2363882064819336,
+    "sql_execution_time": 0.0057964324951171875,
+    "total_token": 886,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per deposit type with ID 125.",
+    "sql_command": "",
+    "answer": "",
+    "id": "4628a25d-9673-4cff-9abb-ae301df5e45d",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans per loan type with ID 125.",
+    "sql_command": "",
+    "answer": "",
+    "id": "a1bed20f-f97f-434b-a6b0-2a522dbb262b",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of deposits per deposit type with ID 125.",
+    "sql_command": "SELECT \n    dt.type AS \"Deposit Type\",\n    COUNT(*) AS \"Number of Deposits\"\nFROM \n    banking_new.\"Deposits\" d\nJOIN \n    banking_new.\"DepositTypes\" dt ON d.deposit_type_id = dt.deposit_type_id\nWHERE \n    dt.deposit_type_id = 125\nGROUP BY \n    dt.type;",
+    "answer": "",
+    "id": "6eb98794-b84a-42ac-bb12-c2e973bf365f",
+    "llm_generation_time": 1.0060195922851562,
+    "sql_execution_time": 0.004954814910888672,
+    "total_token": 879,
+    "success": true
+  },
+  {
+    "query": "Count the number of accounts with more than 2000 in transactions.",
+    "sql_command": "",
+    "answer": "",
+    "id": "53adfe1a-b673-4858-a58f-5652a0496c5c",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of customers with accounts and loans.",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id) AS num_customers_with_accounts\nFROM banking_new.\"Customers\" c\nJOIN banking_new.\"Accounts\" a ON c.customer_id = a.customer_id\nUNION ALL\nSELECT COUNT(DISTINCT l.customer_id) AS num_customers_with_loans\nFROM banking_new.\"Customers\" c\nJOIN banking_new.\"Loans\" l ON c.customer_id = l.customer_id;",
+    "answer": "154",
+    "id": "f0ffcc51-4b85-461f-8e11-c49a2fe114d4",
+    "llm_generation_time": 0.7348215579986572,
+    "sql_execution_time": 0.005277156829833984,
+    "total_token": 888,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions with amount above 100 in the last 3 months.",
+    "sql_command": "",
+    "answer": "",
+    "id": "31f46726-e652-4bd7-a398-3af6cf81217e",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of transactions per account with ID 126.",
+    "sql_command": "SELECT COUNT(*) AS transaction_count\nFROM banking_new.\"Transactions\"\nWHERE \"Transactions\".account_id = 126;",
+    "answer": "2",
+    "id": "3db3a75d-976e-4455-af5e-1081aa5369bf",
+    "llm_generation_time": 0.33692002296447754,
+    "sql_execution_time": 0.004787445068359375,
+    "total_token": 827,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits per customer with ID 126.",
+    "sql_command": "",
+    "answer": "",
+    "id": "441f8962-17c1-490c-a570-c1a72e3c3e70",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans per customer with ID 126.",
+    "sql_command": "SELECT COUNT(DISTINCT T1.customer_id) AS num_loans \nFROM banking_new.\"Customers\" AS T1 \nJOIN banking_new.\"Loans\" AS T2 ON T1.customer_id = T2.customer_id \nWHERE T1.customer_id = 126;",
+    "answer": "0",
+    "id": "7c4837b5-77f3-447a-926c-7e9afebbff4f",
+    "llm_generation_time": 1.1987652778625488,
+    "sql_execution_time": 0.005272388458251953,
+    "total_token": 859,
+    "success": true
+  },
+  {
+    "query": "Count the number of cards per customer with ID 126.",
+    "sql_command": "",
+    "answer": "",
+    "id": "47dbc525-f894-40dd-85cb-dd51e1154f89",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of accounts per branch with ID 126.",
+    "sql_command": "SELECT \n    b.branch_code, \n    COUNT(DISTINCT a.account_id) AS num_accounts\nFROM \n    banking_new.\"Branches\" b\nJOIN \n    banking_new.\"Customers\" c ON b.branch_id = c.branch_id\nJOIN \n    banking_new.\"Accounts\" a ON c.customer_id = a.customer_id\nWHERE \n    b.branch_id = 126\nGROUP BY \n    b.branch_code;",
+    "answer": "",
+    "id": "5af9c97a-22b5-4c0b-994a-096c65a036c5",
+    "llm_generation_time": 1.1055872440338135,
+    "sql_execution_time": 0.005805015563964844,
+    "total_token": 890,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per customer with ID 126.",
+    "sql_command": "SELECT COUNT(*) AS transaction_count\nFROM banking_new.\"Customers\"\nJOIN banking_new.\"Transactions\" ON banking_new.\"Customers\".customer_id = banking_new.\"Transactions\".account_id\nWHERE banking_new.\"Customers\".customer_id = 126;",
+    "answer": "2",
+    "id": "75712724-9760-4de7-89da-d9e1a20dba0a",
+    "llm_generation_time": 0.5034873485565186,
+    "sql_execution_time": 0.0051691532135009766,
+    "total_token": 852,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits per branch with ID 126.",
+    "sql_command": "",
+    "answer": "",
+    "id": "3767abbc-8e65-4b4d-a688-da5b732f7870",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans per branch with ID 126.",
+    "sql_command": "SELECT COUNT(DISTINCT T1.branch_id) AS loan_count \nFROM banking_new.\"Customers\" AS T1 \nJOIN banking_new.\"Loans\" AS T2 ON T1.customer_id = T2.customer_id \nWHERE T1.branch_id = 126;",
+    "answer": "0",
+    "id": "92a8cef1-d13f-40b1-aef7-eb6011a26e55",
+    "llm_generation_time": 0.8065974712371826,
+    "sql_execution_time": 0.006196260452270508,
+    "total_token": 858,
+    "success": true
+  },
+  {
+    "query": "Count the number of cards per branch with ID 126.",
+    "sql_command": "",
+    "answer": "",
+    "id": "5dc2a160-6b45-4791-9b80-406c06f5c152",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of transactions per deposit type with ID 126.",
+    "sql_command": "SELECT \n    dt.type AS \"Deposit Type\",\n    COUNT(t.transaction_id) AS \"Number of Transactions\"\nFROM \n    banking_new.\"Transactions\" t\nJOIN \n    banking_new.\"Deposits\" d ON t.account_id = d.customer_id AND t.transaction_amount > 0\nJOIN \n    banking_new.\"DepositTypes\" dt ON d.deposit_type_id = dt.deposit_type_id\nWHERE \n    dt.deposit_type_id = 126\nGROUP BY \n    dt.type;",
+    "answer": "",
+    "id": "0d63a8c8-bf21-45b4-b818-407fcd40eb68",
+    "llm_generation_time": 0.8188555240631104,
+    "sql_execution_time": 0.00577235221862793,
+    "total_token": 906,
+    "success": true
+  },
+  {
+    "query": "Count the number of loans per loan type with ID 126.",
+    "sql_command": "",
+    "answer": "",
+    "id": "66fb3c83-b4c7-4dd6-a00d-942cbe4a2447",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of deposits per deposit type with ID 126.",
+    "sql_command": "SELECT \n    dt.type AS \"Deposit Type\",\n    COUNT(*) AS \"Number of Deposits\"\nFROM \n    banking_new.\"Deposits\" d\nJOIN \n    banking_new.\"DepositTypes\" dt ON d.deposit_type_id = dt.deposit_type_id\nWHERE \n    dt.deposit_type_id = 126\nGROUP BY \n    dt.type;",
+    "answer": "",
+    "id": "13ecd21c-fca2-4a65-b9bb-7921bd04caba",
+    "llm_generation_time": 0.6428124904632568,
+    "sql_execution_time": 0.004472017288208008,
+    "total_token": 879,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per account with ID 127.",
+    "sql_command": "SELECT COUNT(*) AS transaction_count\nFROM banking_new.\"Transactions\"\nWHERE \"Transactions\".account_id = 127;",
+    "answer": "2",
+    "id": "dac61d45-f0f3-4d45-b486-de4d57220b83",
+    "llm_generation_time": 0.6579341888427734,
+    "sql_execution_time": 0.004759311676025391,
+    "total_token": 827,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits per customer with ID 127.",
+    "sql_command": "",
+    "answer": "",
+    "id": "bc8a507c-6a1e-4cd9-91ff-7e73574d0b0e",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans per customer with ID 127.",
+    "sql_command": "",
+    "answer": "",
+    "id": "aa0dce6a-f469-43d7-a191-5e5ce25f3a48",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of cards per customer with ID 127.",
+    "sql_command": "",
+    "answer": "",
+    "id": "68f502f5-3dd4-44b7-b5e1-48b801cb8afd",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of accounts per branch with ID 127.",
+    "sql_command": "SELECT \n    B.branch_code, \n    COUNT(A.account_id) AS num_accounts\nFROM \n    banking_new.\"Branches\" B\nJOIN \n    banking_new.\"Accounts\" A ON B.branch_id = A.customer_id\nWHERE \n    B.branch_id = 127\nGROUP BY \n    B.branch_code;",
+    "answer": "",
+    "id": "d742add0-c8cd-44b0-b2b9-2ee6862c8c71",
+    "llm_generation_time": 0.9541952610015869,
+    "sql_execution_time": 0.005686044692993164,
+    "total_token": 869,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per customer with ID 127.",
+    "sql_command": "SELECT COUNT(*) AS transaction_count\nFROM banking_new.\"Customers\"\nJOIN banking_new.\"Transactions\" ON banking_new.\"Customers\".customer_id = banking_new.\"Transactions\".account_id\nWHERE banking_new.\"Customers\".customer_id = 127;",
+    "answer": "2",
+    "id": "59843346-eddd-4166-acb3-4d9f1067c71b",
+    "llm_generation_time": 0.8030247688293457,
+    "sql_execution_time": 0.005083799362182617,
+    "total_token": 852,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits per branch with ID 127.",
+    "sql_command": "",
+    "answer": "",
+    "id": "c68f7791-f2c7-48b6-9eb8-616dc11098b1",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans per branch with ID 127.",
+    "sql_command": "",
+    "answer": "",
+    "id": "ec8f33cc-71a0-4d01-9a16-e29ac49c4a69",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of cards per branch with ID 127.",
+    "sql_command": "SELECT \n    b.branch_code, \n    COUNT(c.card_id) AS num_cards\nFROM \n    banking_new.\"Cards\" c\nJOIN \n    banking_new.\"Customers\" cu ON c.customer_id = cu.customer_id\nJOIN \n    banking_new.\"Branches\" b ON cu.branch_id = b.branch_id\nWHERE \n    b.branch_id = 127\nGROUP BY \n    b.branch_code;",
+    "answer": "",
+    "id": "0d07e340-f26f-4a2c-b4e5-feacc73bd523",
+    "llm_generation_time": 1.0710575580596924,
+    "sql_execution_time": 0.005261421203613281,
+    "total_token": 887,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per deposit type with ID 127.",
+    "sql_command": "",
+    "answer": "",
+    "id": "8a4a6bd1-dad7-4d5d-a71e-d3c54be7af88",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans per loan type with ID 127.",
+    "sql_command": "SELECT \n    L.loan_type_id,\n    L.type AS loan_type_name,\n    COUNT(*) AS num_loans\nFROM \n    banking_new.\"LoanTypes\" L\nJOIN \n    banking_new.\"Loans\" LO ON L.loan_type_id = LO.loan_type_id\nGROUP BY \n    L.loan_type_id, L.type\nHAVING \n    L.loan_type_id = 127;",
+    "answer": "",
+    "id": "fd94cbc6-3453-42d9-beaa-2ccd074449d5",
+    "llm_generation_time": 1.0633552074432373,
+    "sql_execution_time": 0.00478672981262207,
+    "total_token": 890,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits per deposit type with ID 127.",
+    "sql_command": "SELECT \n    dt.type AS \"Deposit Type\",\n    COUNT(*) AS \"Number of Deposits\"\nFROM \n    banking_new.\"Deposits\" d\nJOIN \n    banking_new.\"DepositTypes\" dt ON d.deposit_type_id = dt.deposit_type_id\nWHERE \n    dt.deposit_type_id = 127\nGROUP BY \n    dt.type;",
+    "answer": "",
+    "id": "16d4f6df-ac18-4b96-ac78-a8bb1ec14463",
+    "llm_generation_time": 0.9800324440002441,
+    "sql_execution_time": 0.005696773529052734,
+    "total_token": 879,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per account with ID 128.",
+    "sql_command": "SELECT COUNT(*) AS transaction_count\nFROM banking_new.\"Transactions\"\nWHERE \"Transactions\".account_id = 128;",
+    "answer": "4",
+    "id": "0c043855-9154-48fb-b4da-164e30c3cea1",
+    "llm_generation_time": 0.6637904644012451,
+    "sql_execution_time": 0.00468897819519043,
+    "total_token": 827,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits per customer with ID 128.",
+    "sql_command": "",
+    "answer": "",
+    "id": "785a55f2-f844-4054-b4d2-a4c9462e5b86",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans per customer with ID 128.",
+    "sql_command": "SELECT COUNT(DISTINCT T1.customer_id) AS num_loans \nFROM banking_new.\"Customers\" AS T1 \nJOIN banking_new.\"Loans\" AS T2 ON T1.customer_id = T2.customer_id \nWHERE T1.customer_id = 128;",
+    "answer": "1",
+    "id": "72074bba-f6dd-4be3-9793-f26c0404205e",
+    "llm_generation_time": 0.9214859008789062,
+    "sql_execution_time": 0.004792213439941406,
+    "total_token": 859,
+    "success": true
+  },
+  {
+    "query": "Count the number of cards per customer with ID 128.",
+    "sql_command": "",
+    "answer": "",
+    "id": "7770c2a0-9020-42f8-b36b-2fbdcbf65dcc",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of accounts per branch with ID 128.",
+    "sql_command": "SELECT \n    b.branch_code, \n    COUNT(a.account_id) AS account_count\nFROM \n    banking_new.\"Branches\" b\nJOIN \n    banking_new.\"Accounts\" a ON b.branch_id = a.customer_id\nWHERE \n    b.branch_id = 128\nGROUP BY \n    b.branch_code;",
+    "answer": "",
+    "id": "00767fb6-3c82-41f3-be6b-e21c61958916",
+    "llm_generation_time": 0.8635561466217041,
+    "sql_execution_time": 0.004672050476074219,
+    "total_token": 869,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per customer with ID 128.",
+    "sql_command": "SELECT COUNT(*) AS transaction_count\nFROM banking_new.\"Customers\"\nJOIN banking_new.\"Accounts\" ON banking_new.\"Customers\".customer_id = banking_new.\"Accounts\".customer_id\nJOIN banking_new.\"Transactions\" ON banking_new.\"Accounts\".account_id = banking_new.\"Transactions\".account_id\nWHERE banking_new.\"Customers\".customer_id = 128;",
+    "answer": "0",
+    "id": "af9aa552-757a-4b2c-8b63-731a7b60ef23",
+    "llm_generation_time": 0.6267118453979492,
+    "sql_execution_time": 0.0059506893157958984,
+    "total_token": 875,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits per branch with ID 128.",
+    "sql_command": "SELECT \n    b.branch_code, \n    COUNT(DISTINCT d.deposit_identifier) AS num_deposits\nFROM \n    banking_new.\"Customers\" c\nJOIN \n    banking_new.\"Branches\" b ON c.branch_id = b.branch_id\nJOIN \n    banking_new.\"Deposits\" d ON c.customer_id = d.customer_id\nWHERE \n    b.branch_id = 128\nGROUP BY \n    b.branch_code;",
+    "answer": "",
+    "id": "ffc1d5a0-fdb5-4ea1-ba34-090643e8e24a",
+    "llm_generation_time": 0.7376463413238525,
+    "sql_execution_time": 0.004809379577636719,
+    "total_token": 895,
+    "success": true
+  },
+  {
+    "query": "Count the number of loans per branch with ID 128.",
+    "sql_command": "SELECT COUNT(DISTINCT T2.branch_id) AS num_loans \nFROM banking_new.\"Loans\" T1 \nJOIN banking_new.\"Customers\" T2 ON T1.customer_id = T2.customer_id \nWHERE T2.branch_id = 128;",
+    "answer": "0",
+    "id": "aaba9c67-2399-4fe4-bfe9-1668a77ef80d",
+    "llm_generation_time": 0.8285706043243408,
+    "sql_execution_time": 0.004523038864135742,
+    "total_token": 857,
+    "success": true
+  },
+  {
+    "query": "Count the number of cards per branch with ID 128.",
+    "sql_command": "SELECT \n    b.branch_code, \n    COUNT(c.card_id) AS num_cards\nFROM \n    banking_new.\"Cards\" c\nJOIN \n    banking_new.\"Customers\" cu ON c.customer_id = cu.customer_id\nJOIN \n    banking_new.\"Branches\" b ON cu.branch_id = b.branch_id\nWHERE \n    b.branch_id = 128\nGROUP BY \n    b.branch_code;",
+    "answer": "",
+    "id": "415d8aa9-0cc9-43ef-a0a0-c1795b1e0836",
+    "llm_generation_time": 1.0649423599243164,
+    "sql_execution_time": 0.0050394535064697266,
+    "total_token": 887,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per deposit type with ID 128.",
+    "sql_command": "",
+    "answer": "",
+    "id": "3b35c344-cb08-4940-98fe-0582c634bee8",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans per loan type with ID 128.",
+    "sql_command": "",
+    "answer": "",
+    "id": "f8963a37-7d92-401b-97f0-361bd38abd69",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of deposits per deposit type with ID 128.",
+    "sql_command": "SELECT \n    dt.type AS \"Deposit Type\",\n    COUNT(*) AS \"Number of Deposits\"\nFROM \n    banking_new.\"Deposits\" d\nJOIN \n    banking_new.\"DepositTypes\" dt ON d.deposit_type_id = dt.deposit_type_id\nWHERE \n    dt.deposit_type_id = 128\nGROUP BY \n    dt.type;",
+    "answer": "",
+    "id": "667ad1fe-dd91-4d20-b4f8-6aeb989ba813",
+    "llm_generation_time": 1.0795323848724365,
+    "sql_execution_time": 0.004606962203979492,
+    "total_token": 879,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per account with ID 129.",
+    "sql_command": "SELECT COUNT(*) AS transaction_count\nFROM banking_new.\"Transactions\"\nWHERE \"Transactions\".account_id = 129;",
+    "answer": "3",
+    "id": "38c92431-9273-4dac-b069-dfdea3755679",
+    "llm_generation_time": 0.7833657264709473,
+    "sql_execution_time": 0.004746913909912109,
+    "total_token": 827,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits per customer with ID 129.",
+    "sql_command": "",
+    "answer": "",
+    "id": "b2c2305d-d123-4648-9ae7-a0d9a361a21c",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans per customer with ID 129.",
+    "sql_command": "",
+    "answer": "",
+    "id": "7e4f10ee-131c-4a0f-8a58-a009ce75f8e3",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of cards per customer with ID 129.",
+    "sql_command": "",
+    "answer": "",
+    "id": "7787ae2b-aca4-4784-8372-5d788558c7fa",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of accounts per branch with ID 129.",
+    "sql_command": "SELECT \n    b.branch_code, \n    COUNT(DISTINCT a.account_id) AS num_accounts\nFROM \n    banking_new.\"Branches\" b\nJOIN \n    banking_new.\"Customers\" c ON b.branch_id = c.branch_id\nJOIN \n    banking_new.\"Accounts\" a ON c.customer_id = a.customer_id\nWHERE \n    b.branch_id = 129\nGROUP BY \n    b.branch_code;",
+    "answer": "",
+    "id": "a663ee0a-9d37-4b5b-a03e-a8e988233e0f",
+    "llm_generation_time": 0.6972079277038574,
+    "sql_execution_time": 0.005015850067138672,
+    "total_token": 890,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per customer with ID 129.",
+    "sql_command": "SELECT COUNT(*) AS transaction_count\nFROM banking_new.\"Customers\"\nJOIN banking_new.\"Transactions\" ON banking_new.\"Customers\".customer_id = banking_new.\"Transactions\".account_id\nWHERE banking_new.\"Customers\".customer_id = 129;",
+    "answer": "3",
+    "id": "d02b45e7-48a3-4237-850d-6699b9eab909",
+    "llm_generation_time": 0.8585340976715088,
+    "sql_execution_time": 0.007723569869995117,
+    "total_token": 852,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits per branch with ID 129.",
+    "sql_command": "",
+    "answer": "",
+    "id": "c1f5ddc8-18f3-4d06-8bfe-fb6eaa1c5036",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans per branch with ID 129.",
+    "sql_command": "SELECT COUNT(DISTINCT T2.branch_id) AS num_loans \nFROM banking_new.\"Loans\" T1 \nJOIN banking_new.\"Customers\" T2 ON T1.customer_id = T2.customer_id \nWHERE T2.branch_id = 129;",
+    "answer": "0",
+    "id": "866e085b-d3c6-466c-a298-8a489a48cda3",
+    "llm_generation_time": 0.5187954902648926,
+    "sql_execution_time": 0.0047130584716796875,
+    "total_token": 857,
+    "success": true
+  },
+  {
+    "query": "Count the number of cards per branch with ID 129.",
+    "sql_command": "SELECT \n    b.branch_code, \n    COUNT(c.card_id) AS num_cards\nFROM \n    banking_new.\"Cards\" c\nJOIN \n    banking_new.\"Customers\" cu ON c.customer_id = cu.customer_id\nJOIN \n    banking_new.\"Branches\" b ON cu.branch_id = b.branch_id\nWHERE \n    b.branch_id = 129\nGROUP BY \n    b.branch_code;",
+    "answer": "",
+    "id": "a809664a-8610-426c-b694-314c9ed39d2e",
+    "llm_generation_time": 1.055243968963623,
+    "sql_execution_time": 0.005127429962158203,
+    "total_token": 887,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per deposit type with ID 129.",
+    "sql_command": "",
+    "answer": "",
+    "id": "8303913d-16e2-4d3d-b398-95711336addc",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans per loan type with ID 129.",
+    "sql_command": "",
+    "answer": "",
+    "id": "725c07b5-f5b4-449b-8ec5-8b8a28a44c02",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of deposits per deposit type with ID 129.",
+    "sql_command": "SELECT \n    dt.type AS \"Deposit Type\",\n    COUNT(*) AS \"Number of Deposits\"\nFROM \n    banking_new.\"Deposits\" d\nJOIN \n    banking_new.\"DepositTypes\" dt ON d.deposit_type_id = dt.deposit_type_id\nWHERE \n    dt.deposit_type_id = 129\nGROUP BY \n    dt.type;",
+    "answer": "",
+    "id": "168358e9-97a7-4298-95fa-e8919c62cf12",
+    "llm_generation_time": 0.6420547962188721,
+    "sql_execution_time": 0.004919767379760742,
+    "total_token": 879,
+    "success": true
+  },
+  {
+    "query": "Count the number of transactions per account with ID 130.",
+    "sql_command": "SELECT COUNT(*) AS transaction_count\nFROM banking_new.\"Transactions\"\nWHERE \"Transactions\".account_id = 130;",
+    "answer": "4",
+    "id": "825ea22a-1dc3-4b5d-81b5-a49313294153",
+    "llm_generation_time": 0.6875736713409424,
+    "sql_execution_time": 0.0044596195220947266,
+    "total_token": 827,
+    "success": true
+  },
+  {
+    "query": "Count the number of deposits per customer with ID 130.",
+    "sql_command": "",
+    "answer": "",
+    "id": "67bb77a9-d716-4fbc-92a8-c364d6d80b44",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of loans per customer with ID 130.",
+    "sql_command": "",
+    "answer": "",
+    "id": "40f3b813-018e-4672-992a-d1393d50b22c",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "Count the number of cards per customer with ID 130.",
+    "sql_command": "SELECT COUNT(DISTINCT T1.card_id) AS num_cards \nFROM banking_new.\"Cards\" T1 \nJOIN banking_new.\"Customers\" T2 ON T1.customer_id = T2.customer_id \nWHERE T2.customer_id = 130;",
+    "answer": "1",
+    "id": "692531ea-ea54-47d9-a12f-52b7030b1045",
+    "llm_generation_time": 0.8460867404937744,
+    "sql_execution_time": 0.0048029422760009766,
+    "total_token": 855,
+    "success": true
+  },
+  {
+    "query": "Count the number of accounts per branch with ID 130.",
+    "sql_command": "SELECT \n    B.branch_code, \n    COUNT(DISTINCT A.account_id) AS num_accounts\nFROM \n    banking_new.\"Branches\" B\nJOIN \n    banking_new.\"Customers\" C ON B.branch_id = C.branch_id\nJOIN \n    banking_new.\"Accounts\" A ON C.customer_id = A.customer_id\nWHERE \n    B.branch_id = 130\nGROUP BY \n    B.branch_code;",
+    "answer": "",
+    "id": "e730faf5-149a-44e6-bd4c-b9d1a85bed1e",
+    "llm_generation_time": 0.7128558158874512,
+    "sql_execution_time": 0.0054168701171875,
+    "total_token": 890,
+    "success": true
+  },
+  {
+    "query": "How many customers belong to each branch in total?",
+    "sql_command": "",
+    "answer": "",
+    "id": "073d9147-6101-47b7-898c-0c386260280a",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many transactions are linked to accounts owned by customers?",
+    "sql_command": "",
+    "answer": "",
+    "id": "b74de8fd-57c9-40a2-8070-a51e5cdeb656",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many loans are linked to customers?",
+    "sql_command": "",
+    "answer": "",
+    "id": "1be106a7-4449-4b4a-90b5-fa75253051bf",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many deposits are linked to customers?",
+    "sql_command": "",
+    "answer": "",
+    "id": "4e301b23-25bd-4d71-8fd0-4e11e8b8ebba",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total balance of accounts belonging to customers?",
+    "sql_command": "",
+    "answer": "",
+    "id": "dcda2e5d-d35e-4ebe-8f94-327140caad00",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total loan balance for all customers?",
+    "sql_command": "",
+    "answer": "",
+    "id": "cc719a16-4080-4aeb-bb5a-f39625a4e810",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total deposit balance for all customers?",
+    "sql_command": "",
+    "answer": "",
+    "id": "caed05a7-06b6-45be-8f5e-50101f0e1428",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the average loan interest rate across all loan types?",
+    "sql_command": "",
+    "answer": "",
+    "id": "093dc1ee-b080-48e3-ac25-84f605627315",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the average deposit interest rate across all deposit types?",
+    "sql_command": "",
+    "answer": "",
+    "id": "b29504ed-4e30-4da8-a992-64b1ea91f28f",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many accounts exist per branch?",
+    "sql_command": "SELECT \n    b.branch_code, \n    COUNT(a.account_id) AS num_accounts_per_branch\nFROM \n    banking_new.\"Branches\" b\nJOIN \n    banking_new.\"Customers\" c ON b.branch_id = c.branch_id\nJOIN \n    banking_new.\"Accounts\" a ON c.customer_id = a.customer_id\nGROUP BY \n    b.branch_code;",
+    "answer": "84",
+    "id": "16089c0a-ad22-4113-856f-9cfa51e4fe00",
+    "llm_generation_time": 1.051400899887085,
+    "sql_execution_time": 0.00541996955871582,
+    "total_token": 874,
+    "success": true
+  },
+  {
+    "query": "How many customers have both loans and deposits?",
+    "sql_command": "",
+    "answer": "",
+    "id": "70c62fc3-7fe8-4c58-a764-91e52aadf819",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total transaction amount for customers with loans?",
+    "sql_command": "",
+    "answer": "",
+    "id": "72aedee6-424d-48a6-99ae-d9208581d43a",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total balance of accounts in branches with more than 10 customers?",
+    "sql_command": "",
+    "answer": "",
+    "id": "562146be-14b8-4c9c-bf57-30aaaf2dd85c",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many cards are linked to customers with deposits?",
+    "sql_command": "",
+    "answer": "",
+    "id": "e349454f-de1d-42ad-bd02-20a7d2be3ad5",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many cards are linked to customers with loans?",
+    "sql_command": "",
+    "answer": "",
+    "id": "063a221c-1d1f-435b-90d2-ac083539777c",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total deposit balance of customers who also have loans?",
+    "sql_command": "",
+    "answer": "",
+    "id": "9677fa8d-d5b0-46ed-87f0-8df648f71d66",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total loan balance of customers who also have deposits?",
+    "sql_command": "",
+    "answer": "",
+    "id": "1150dc61-f0fb-4ec4-8868-c5cff95ef23c",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the number of transactions for customers with cards?",
+    "sql_command": "",
+    "answer": "",
+    "id": "a24fe6fe-d765-4527-b6f0-c81dfe2541aa",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the number of blocked cards linked to customers with loans?",
+    "sql_command": "",
+    "answer": "",
+    "id": "01bd2538-0567-455f-98cc-b3f9b9164308",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the number of deposits linked to customers per branch?",
+    "sql_command": "SELECT \n    b.branch_code,\n    COUNT(DISTINCT c.customer_id) AS num_deposits_per_branch\nFROM \n    banking_new.\"Customers\" c\nJOIN \n    banking_new.\"Branches\" b ON c.branch_id = b.branch_id\nJOIN \n    banking_new.\"Deposits\" d ON c.customer_id = d.customer_id\nGROUP BY \n    b.branch_code;",
+    "answer": "28",
+    "id": "3b0f42d7-cc57-4ba3-a6e6-a1feb6e0b259",
+    "llm_generation_time": 1.0972061157226562,
+    "sql_execution_time": 0.005179643630981445,
+    "total_token": 885,
+    "success": true
+  },
+  {
+    "query": "What is the number of loans linked to customers per branch?",
+    "sql_command": "SELECT \n    b.branch_code,\n    COUNT(l.loan_id) AS num_loans_per_branch\nFROM \n    banking_new.\"Customers\" c\nJOIN \n    banking_new.\"Branches\" b ON c.branch_id = b.branch_id\nJOIN \n    banking_new.\"Loans\" l ON c.customer_id = l.customer_id\nGROUP BY \n    b.branch_code;",
+    "answer": "64",
+    "id": "0d0e4579-edc5-4518-8151-5487e89810e6",
+    "llm_generation_time": 0.6692473888397217,
+    "sql_execution_time": 0.007609367370605469,
+    "total_token": 881,
+    "success": true
+  },
+  {
+    "query": "How many transactions exist for each branch?",
+    "sql_command": "SELECT \n    b.branch_code, \n    COUNT(t.transaction_id) AS transaction_count\nFROM \n    banking_new.\"Branches\" b\nJOIN \n    banking_new.\"Customers\" c ON b.branch_id = c.branch_id\nJOIN \n    banking_new.\"Accounts\" a ON c.customer_id = a.customer_id\nJOIN \n    banking_new.\"Transactions\" t ON a.account_id = t.account_id\nGROUP BY \n    b.branch_code;",
+    "answer": "280\n268\n272\n180",
+    "id": "9cb4c340-b228-4ae8-8d2d-9d35f7c75261",
+    "llm_generation_time": 0.7799496650695801,
+    "sql_execution_time": 0.0056879520416259766,
+    "total_token": 891,
+    "success": true
+  },
+  {
+    "query": "What is the total account balance for each branch?",
+    "sql_command": "SELECT \n    b.branch_code,\n    SUM(a.account_balance) AS total_account_balance\nFROM \n    banking_new.\"Customers\" c\nJOIN \n    banking_new.\"Accounts\" a ON c.customer_id = a.customer_id\nJOIN \n    banking_new.\"Branches\" b ON c.branch_id = b.branch_id\nGROUP BY \n    b.branch_code;",
+    "answer": "3728911.44\n3911293.40\n2198433.26\n3957402.39",
+    "id": "40698261-dca0-49d2-9c95-82f21d4befb4",
+    "llm_generation_time": 0.6590380668640137,
+    "sql_execution_time": 0.005415678024291992,
+    "total_token": 875,
+    "success": true
+  },
+  {
+    "query": "What is the total loan balance per branch?",
+    "sql_command": "",
+    "answer": "",
+    "id": "4e7177b3-22b7-4d02-ac2d-53b7645a3980",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total deposit balance per branch?",
+    "sql_command": "SELECT \n    b.branch_code,\n    SUM(d.balance) AS total_deposit_balance\nFROM \n    banking_new.\"Deposits\" d\nJOIN \n    banking_new.\"Customers\" c ON d.customer_id = c.customer_id\nJOIN \n    banking_new.\"Branches\" b ON c.branch_id = b.branch_id\nGROUP BY \n    b.branch_code;",
+    "answer": "1463967.16",
+    "id": "050972c8-8273-49d1-939a-996987de52ad",
+    "llm_generation_time": 1.07320237159729,
+    "sql_execution_time": 0.00673365592956543,
+    "total_token": 875,
+    "success": true
+  },
+  {
+    "query": "What is the total transaction amount per branch?",
+    "sql_command": "SELECT \n    b.branch_code,\n    SUM(t.transaction_amount) AS total_transaction_amount\nFROM \n    banking_new.\"Branches\" b\nJOIN \n    banking_new.\"Customers\" c ON b.branch_id = c.branch_id\nJOIN \n    banking_new.\"Accounts\" a ON c.customer_id = a.customer_id\nJOIN \n    banking_new.\"Transactions\" t ON a.account_id = t.account_id\nGROUP BY \n    b.branch_code;",
+    "answer": "26146.63\n46365.68\n18322.69\n100191.83",
+    "id": "45645563-f46f-4974-99a1-901905f33ac2",
+    "llm_generation_time": 1.1618249416351318,
+    "sql_execution_time": 0.006447553634643555,
+    "total_token": 892,
+    "success": true
+  },
+  {
+    "query": "How many customers have accounts and cards?",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id) \nFROM banking_new.\"Customers\" c \nJOIN banking_new.\"Accounts\" a ON c.customer_id = a.customer_id \nJOIN banking_new.\"Cards\" ca ON c.customer_id = ca.customer_id;",
+    "answer": "85",
+    "id": "0297be39-9953-49ca-a8d5-cd7afe3c61b9",
+    "llm_generation_time": 0.9457452297210693,
+    "sql_execution_time": 0.005183219909667969,
+    "total_token": 850,
+    "success": true
+  },
+  {
+    "query": "How many customers have accounts and transactions?",
+    "sql_command": "",
+    "answer": "",
+    "id": "dd9dd26e-3435-4743-9675-88ac30840925",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total balance of customers with both accounts and cards?",
+    "sql_command": "",
+    "answer": "",
+    "id": "0df6c18f-163d-47d5-89e2-9a3b95113cfb",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the number of expired deposits linked to customers?",
+    "sql_command": "",
+    "answer": "",
+    "id": "1ea8fa8f-265b-4b3b-9e0c-5cbc7e3a7a85",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the number of expired loans linked to customers?",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Loans\" l \nJOIN banking_new.\"Customers\" c ON l.customer_id = c.customer_id \nWHERE EXTRACT(MONTH FROM l.start_date) > EXTRACT(MONTH FROM CURRENT_DATE) OR EXTRACT(YEAR FROM l.start_date) > EXTRACT(YEAR FROM CURRENT_DATE);",
+    "answer": "42",
+    "id": "08b47fa2-f7aa-4c73-a42b-01e114c36c12",
+    "llm_generation_time": 0.9003937244415283,
+    "sql_execution_time": 0.0050089359283447266,
+    "total_token": 872,
+    "success": true
+  },
+  {
+    "query": "What is the number of active deposits linked to customers?",
+    "sql_command": "",
+    "answer": "",
+    "id": "83c317ad-7088-4b66-81c7-54512c025ea1",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the number of active loans linked to customers?",
+    "sql_command": "",
+    "answer": "",
+    "id": "ba971bfd-8bc2-4490-be67-423d13f8d6a0",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total deposit balance for customers with active loans?",
+    "sql_command": "",
+    "answer": "",
+    "id": "b30f5496-d7c6-48be-a6cc-55f5d0405042",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total loan balance for customers with active deposits?",
+    "sql_command": "",
+    "answer": "",
+    "id": "ce0c9dc9-cabf-436f-9bca-5ef7b6ecab66",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total number of transactions for customers with both loans and deposits?",
+    "sql_command": "",
+    "answer": "",
+    "id": "fce482ee-fe65-452e-89e0-dbcbd6a2d19d",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many transactions were made by customers with blocked cards?",
+    "sql_command": "",
+    "answer": "",
+    "id": "194ab387-9924-40b4-9b75-8777d4c0c5eb",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total transaction amount for customers with unblocked cards?",
+    "sql_command": "",
+    "answer": "",
+    "id": "2cfe29f5-b2b8-4ec1-ab32-378c38c60d42",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many transactions were made in accounts belonging to customers with deposits?",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Transactions\" t\nJOIN banking_new.\"Accounts\" a ON t.account_id = a.account_id\nJOIN banking_new.\"Customers\" c ON a.customer_id = c.customer_id\nJOIN banking_new.\"Deposits\" d ON a.account_id = d.customer_id AND d.deposit_type_id IN (\n  SELECT deposit_type_id \n  FROM banking_new.\"DepositTypes\" \n  WHERE type = 'deposit'\n);",
+    "answer": "0",
+    "id": "b6b9b542-c212-420c-b02b-02e8784705cf",
+    "llm_generation_time": 1.0961716175079346,
+    "sql_execution_time": 0.00830388069152832,
+    "total_token": 897,
+    "success": true
+  },
+  {
+    "query": "How many transactions were made in accounts belonging to customers with loans?",
+    "sql_command": "",
+    "answer": "",
+    "id": "1bca3131-971f-42e5-b787-f587b8b39d89",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total account balance of customers who made transactions this year?",
+    "sql_command": "SELECT \n    COALESCE(SUM(A.account_balance), 0) AS total_account_balance\nFROM \n    banking_new.\"Customers\" C\nJOIN \n    banking_new.\"Accounts\" A ON C.customer_id = A.customer_id\nJOIN \n    banking_new.\"Transactions\" T ON A.account_id = T.account_id\nWHERE \n    EXTRACT(YEAR FROM T.transaction_date) = EXTRACT(YEAR FROM CURRENT_DATE)\nGROUP BY \n    C.customer_name;",
+    "answer": "164551.33",
+    "id": "ae89c1ae-8334-40d8-8354-1077a95abe8a",
+    "llm_generation_time": 1.0642077922821045,
+    "sql_execution_time": 0.006134510040283203,
+    "total_token": 901,
+    "success": true
+  },
+  {
+    "query": "How many customers have both transactions and loans?",
+    "sql_command": "",
+    "answer": "",
+    "id": "a75faa1f-0611-42fa-afd8-d017bfd88763",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have both transactions and deposits?",
+    "sql_command": "SELECT COUNT(DISTINCT c.customer_id)\nFROM banking_new.\"Customers\" c\nJOIN banking_new.\"Transactions\" t ON c.customer_id = t.account_id\nJOIN banking_new.\"Deposits\" d ON c.customer_id = d.customer_id AND d.deposit_type_id IN (SELECT deposit_type_id FROM banking_new.\"DepositTypes\" WHERE type = 'deposit')",
+    "answer": "0",
+    "id": "69ca5ce2-b4b3-416b-850f-ceaae5a83828",
+    "llm_generation_time": 0.9633040428161621,
+    "sql_execution_time": 0.007229328155517578,
+    "total_token": 876,
+    "success": true
+  },
+  {
+    "query": "How many customers have both transactions and cards?",
+    "sql_command": "",
+    "answer": "",
+    "id": "d90c6b9f-4806-4547-b3e9-9f70bb3abc92",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total number of blocked cards linked to branches?",
+    "sql_command": "",
+    "answer": "",
+    "id": "31c44d7f-bff7-44e2-95df-07f8ee686c99",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "What is the total number of unblocked cards linked to branches?",
+    "sql_command": "",
+    "answer": "",
+    "id": "3817a63b-c7ed-4018-be99-abf1b99c7010",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many accounts are registered in the bank?",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Accounts\" AS a;",
+    "answer": "300",
+    "id": "2a97ffb6-d83f-4846-aa32-ec8e04650a2d",
+    "llm_generation_time": 0.2792165279388428,
+    "sql_execution_time": 0.004315853118896484,
+    "total_token": 814,
+    "success": true
+  },
+  {
+    "query": "How many loans are active in the bank?",
+    "sql_command": "",
+    "answer": "",
+    "id": "6b5b474b-dfb6-4906-b6c3-79755c67fc3e",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many deposits exist in the bank?",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Deposits\"",
+    "answer": "200",
+    "id": "4edd026e-cb19-4c1d-acb2-c265f4d934b4",
+    "llm_generation_time": 0.6255850791931152,
+    "sql_execution_time": 0.004272937774658203,
+    "total_token": 812,
+    "success": true
+  },
+  {
+    "query": "How many transactions have been recorded?",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Transactions\"",
+    "answer": "1000",
+    "id": "6fefdeaa-e337-43a4-8613-dd94713d7e8a",
+    "llm_generation_time": 0.6415958404541016,
+    "sql_execution_time": 0.004572868347167969,
+    "total_token": 809,
+    "success": true
+  },
+  {
+    "query": "How many employees work in the bank?",
+    "sql_command": "SELECT COUNT(DISTINCT customer_id) \nFROM banking_new.\"Customers\"\nWHERE customer_name ILIKE '%employee%';",
+    "answer": "0",
+    "id": "bb515142-1f66-49f8-b496-eb2d7b34e920",
+    "llm_generation_time": 0.6529331207275391,
+    "sql_execution_time": 0.004736900329589844,
+    "total_token": 823,
+    "success": true
+  },
+  {
+    "query": "How many branches does the bank have?",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Branches\"",
+    "answer": "4",
+    "id": "6bb590a5-bc9d-4547-a66b-5cf382cc7b9a",
+    "llm_generation_time": 0.6365973949432373,
+    "sql_execution_time": 0.004403591156005859,
+    "total_token": 811,
+    "success": true
+  },
+  {
+    "query": "How many customers are female?",
+    "sql_command": "",
+    "answer": "",
+    "id": "4253b44b-4e82-4394-8d50-551c908bd138",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers are male?",
+    "sql_command": "",
+    "answer": "",
+    "id": "b4eea654-2110-483a-b9e5-765035678aa6",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers were born after 1990?",
+    "sql_command": "",
+    "answer": "",
+    "id": "401e9655-8a95-482e-86e5-eef9f190c0c1",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers were born before 1980?",
+    "sql_command": "SELECT COUNT(DISTINCT customer_id)\nFROM banking_new.\"Customers\"\nWHERE EXTRACT(YEAR FROM date_of_birth) < 1980;",
+    "answer": "92",
+    "id": "17dbb20b-0fd4-4ab2-93e3-13cb02ce6bae",
+    "llm_generation_time": 0.7509212493896484,
+    "sql_execution_time": 0.004760026931762695,
+    "total_token": 831,
+    "success": true
+  },
+  {
+    "query": "How many accounts are savings accounts?",
+    "sql_command": "",
+    "answer": "",
+    "id": "1ff0ffeb-02bb-4fd3-a4fa-07bfaafadcb0",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many accounts are checking accounts?",
+    "sql_command": "",
+    "answer": "",
+    "id": "b3e5e088-db02-46ad-a8fa-c909538f69d0",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many loans are for more than 10000?",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Loans\" \nWHERE balance > 10000;",
+    "answer": "0",
+    "id": "6ea8e91c-eb1c-4225-8100-3dbe02f7264a",
+    "llm_generation_time": 0.6423344612121582,
+    "sql_execution_time": 0.004666566848754883,
+    "total_token": 822,
+    "success": true
+  },
+  {
+    "query": "How many deposits are less than 5000?",
+    "sql_command": "",
+    "answer": "",
+    "id": "495cf582-0425-4d88-a251-efcbd83a3f7e",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many transactions are above 1000?",
+    "sql_command": "",
+    "answer": "",
+    "id": "19a0f958-f1ec-44fc-81c2-2a87de9d70ff",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many employees have 'Manager' as their job title?",
+    "sql_command": "",
+    "answer": "",
+    "id": "afff2662-f083-4c0b-af32-1bb9de386f77",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many branches are located in New York?",
+    "sql_command": "",
+    "answer": "",
+    "id": "cbadd048-8f9c-46ef-abc5-a17c3add32fb",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have an email registered?",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Customers\" c \nWHERE c.email IS NOT NULL;",
+    "answer": "200",
+    "id": "ddbbcc6f-def9-498a-8245-43fce5f50397",
+    "llm_generation_time": 0.7243044376373291,
+    "sql_execution_time": 0.0043027400970458984,
+    "total_token": 819,
+    "success": true
+  },
+  {
+    "query": "How many customers have a phone number registered?",
+    "sql_command": "SELECT COUNT(DISTINCT customer_id)\nFROM banking_new.\"Customers\"\nWHERE phone IS NOT NULL;",
+    "answer": "200",
+    "id": "000df651-c2b8-4040-bd22-164af22507a2",
+    "llm_generation_time": 0.32483768463134766,
+    "sql_execution_time": 0.0051310062408447266,
+    "total_token": 821,
+    "success": true
+  },
+  {
+    "query": "How many employees were hired after 2020?",
+    "sql_command": "",
+    "answer": "",
+    "id": "562ab14e-a7e7-4b6e-ab7d-185cfa5a25aa",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many employees were hired before 2010?",
+    "sql_command": "",
+    "answer": "",
+    "id": "cff0209b-b579-451f-a6a7-c37809a097c9",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many accounts have a balance greater than 5000?",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Accounts\" \nWHERE account_balance > 5000;",
+    "answer": "266",
+    "id": "3b744903-5665-4852-9bea-76b31bb1ab42",
+    "llm_generation_time": 0.3144810199737549,
+    "sql_execution_time": 0.004901885986328125,
+    "total_token": 823,
+    "success": true
+  },
+  {
+    "query": "How many loans have a balance equal to 0?",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Loans\" \nWHERE balance = 0;",
+    "answer": "0",
+    "id": "6e21d16a-0b3b-4a79-9684-c21f41e9c34c",
+    "llm_generation_time": 0.33510541915893555,
+    "sql_execution_time": 0.005269289016723633,
+    "total_token": 821,
+    "success": true
+  },
+  {
+    "query": "How many deposits have a balance greater than 20000?",
+    "sql_command": "",
+    "answer": "",
+    "id": "ac29ea9b-2461-4b00-8db2-3f67d4c33a9d",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers live in California?",
+    "sql_command": "",
+    "answer": "",
+    "id": "a3bd1e26-fe2c-46a0-968f-846e640b20eb",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers live in Texas?",
+    "sql_command": "",
+    "answer": "",
+    "id": "82b55269-af5c-4673-8093-103e2b498ba7",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many employees work in the 'Finance' department?",
+    "sql_command": "",
+    "answer": "",
+    "id": "cf66d0cd-8a44-45ba-9122-0d17198bdf87",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many employees work in the 'IT' department?",
+    "sql_command": "",
+    "answer": "",
+    "id": "0f06b745-8b1a-4e0a-9e86-0bab3815ec13",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many transactions happened in 2024?",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Transactions\" \nWHERE EXTRACT(YEAR FROM transaction_date) = 2024;",
+    "answer": "222",
+    "id": "5f3d2c68-65d8-4eff-8c28-2b6c5e7ea836",
+    "llm_generation_time": 0.6839568614959717,
+    "sql_execution_time": 0.0052683353424072266,
+    "total_token": 826,
+    "success": true
+  },
+  {
+    "query": "How many transactions happened in 2023?",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Transactions\" \nWHERE EXTRACT(YEAR FROM transaction_date) = 2023;",
+    "answer": "196",
+    "id": "14193a03-583d-4938-8305-c3ad23c45692",
+    "llm_generation_time": 0.7128117084503174,
+    "sql_execution_time": 0.005083560943603516,
+    "total_token": 826,
+    "success": true
+  },
+  {
+    "query": "How many accounts were opened before 2015?",
+    "sql_command": "",
+    "answer": "",
+    "id": "124f09f7-7c8f-4cac-9793-27eed2d9b570",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many accounts were opened after 2020?",
+    "sql_command": "",
+    "answer": "",
+    "id": "e799ddb7-0860-4504-89b3-3094399d8b6d",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many loans were approved in 2022?",
+    "sql_command": "",
+    "answer": "",
+    "id": "64602413-ea9d-4e89-ae8f-7afc2ecca882",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many deposits were made in 2021?",
+    "sql_command": "SELECT COUNT(DISTINCT d.deposit_identifier)\nFROM banking_new.\"Deposits\" d\nJOIN banking_new.\"Customers\" c ON d.customer_id = c.customer_id\nWHERE EXTRACT(YEAR FROM d.start_date) = 2021;",
+    "answer": "0",
+    "id": "5686d22c-2f33-43c9-b8cd-c716889a450f",
+    "llm_generation_time": 0.4969761371612549,
+    "sql_execution_time": 0.005131721496582031,
+    "total_token": 853,
+    "success": true
+  },
+  {
+    "query": "How many customers have last names starting with 'S'?",
+    "sql_command": "",
+    "answer": "",
+    "id": "0b8554d3-5947-4f65-a07a-ec808ec794e6",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers have first names starting with 'A'?",
+    "sql_command": "",
+    "answer": "",
+    "id": "c686d5bb-ba3c-41ef-85eb-1f5e51f5a867",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many employees have salaries greater than 50000?",
+    "sql_command": "",
+    "answer": "",
+    "id": "eb0b19ab-ff4c-45a4-8b83-2d6ee3816280",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many employees have salaries less than 30000?",
+    "sql_command": "",
+    "answer": "",
+    "id": "cbb2d72a-591a-4cf6-827d-7e2ac0d91f0d",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many branches are in Los Angeles?",
+    "sql_command": "SELECT COUNT(*) \nFROM banking_new.\"Branches\" \nWHERE branch_address ILIKE '%Los Angeles%';",
+    "answer": "0",
+    "id": "6288c0b8-b7c2-41bc-8f1e-e7d3e2f15551",
+    "llm_generation_time": 0.5920374393463135,
+    "sql_execution_time": 0.004477977752685547,
+    "total_token": 822,
+    "success": true
+  },
+  {
+    "query": "How many customers have zip codes starting with '90'?",
+    "sql_command": "",
+    "answer": "",
+    "id": "1c09856d-78b9-4132-805c-54e3c8385859",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many loans are overdue?",
+    "sql_command": "",
+    "answer": "",
+    "id": "77e32818-27e8-4e09-9807-d490562236f0",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many loans are closed?",
+    "sql_command": "",
+    "answer": "",
+    "id": "bfcde7bd-89fd-417d-9722-5c6c80c2a504",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many deposits are currently active?",
+    "sql_command": "",
+    "answer": "",
+    "id": "ff725398-4746-4584-8b0b-1dffcdc509e5",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many deposits are closed?",
+    "sql_command": "",
+    "answer": "",
+    "id": "eb005205-b812-4060-852b-b166dd14b3d0",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many transactions are marked as 'Failed'?",
+    "sql_command": "",
+    "answer": "",
+    "id": "4a2afd53-f465-46c3-8bab-8fb31a6f1551",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many transactions are marked as 'Successful'?",
+    "sql_command": "",
+    "answer": "",
+    "id": "dd3b2e88-63df-4fed-a8e7-50a672a03951",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers registered in 2022?",
+    "sql_command": "SELECT COUNT(DISTINCT customer_id) \nFROM banking_new.\"Customers\" \nWHERE EXTRACT(YEAR FROM date_of_birth) = 2022;",
+    "answer": "0",
+    "id": "8d3723e0-1ea9-4e62-8a81-e72a5de463a4",
+    "llm_generation_time": 0.7341697216033936,
+    "sql_execution_time": 0.005130767822265625,
+    "total_token": 832,
+    "success": true
+  },
+  {
+    "query": "How many customers registered in 2023?",
+    "sql_command": "",
+    "answer": "",
+    "id": "e36c318b-eb31-4b46-aefa-7131f466bfee",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many employees are supervisors?",
+    "sql_command": "",
+    "answer": "",
+    "id": "341b6773-250c-4afa-b147-7d54307569ed",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  },
+  {
+    "query": "How many customers are under 18 years old?",
+    "sql_command": "",
+    "answer": "",
+    "id": "98d12476-12a9-462c-92f4-3bd7b19d8999",
+    "llm_generation_time": 0,
+    "sql_execution_time": 0,
+    "total_token": 0,
+    "success": false
+  }
+]

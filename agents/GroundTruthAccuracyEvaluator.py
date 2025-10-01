@@ -12,12 +12,13 @@ from datetime import datetime
 from typing import Dict, List, Any
 
 class GroundTruthAccuracyEvaluator:
-    def __init__(self, sample_size=None):        
+    def __init__(self, sample_size=None, model_name=None):        
         logging.basicConfig(
             level=logging.INFO,
             format='%(levelname)s:%(name)s:%(message)s'
         )
         self.logger = logging.getLogger(__name__)
+        self.model_name = model_name
         
         self.sample_size = sample_size
         if sample_size:
@@ -31,23 +32,35 @@ class GroundTruthAccuracyEvaluator:
             'hard': '/home/lam/oldKG/database/structured_database/bfsi_ground_truth_hard.json'
         }
         
+        # Create output paths based on model name
+        if self.model_name:
+            model_folder = self.model_name.split('/')[-1] if '/' in self.model_name else self.model_name
+            base_output = f'/home/lam/oldKG/output/{model_folder}'
+            self.logger.info(f"Using model-based output path: {base_output}")
+        else:
+            base_output = '/home/lam/oldKG/output'
+            self.logger.info(f"Using default output path: {base_output}")
+        
         self.sql_files = {
-            'easy': '/home/lam/oldKG/output/sql/bfsi_sql_imp_easy.json',
-            'medium': '/home/lam/oldKG/output/sql/bfsi_sql_imp_medium.json',
-            'hard': '/home/lam/oldKG/output/sql/bfsi_sql_imp_hard.json'
+            'easy': f'{base_output}/sql/bfsi_sql_imp_easy.json',
+            'medium': f'{base_output}/sql/bfsi_sql_imp_medium.json',
+            'hard': f'{base_output}/sql/bfsi_sql_imp_hard.json'
         }
         
         self.cypher_files = {
-            'easy': '/home/lam/oldKG/output/cypher/bfsi_cypher_imp_easy.json',
-            'medium': '/home/lam/oldKG/output/cypher/bfsi_cypher_imp_medium.json',
-            'hard': '/home/lam/oldKG/output/cypher/bfsi_cypher_imp_hard.json'
+            'easy': f'{base_output}/cypher/bfsi_cypher_imp_easy.json',
+            'medium': f'{base_output}/cypher/bfsi_cypher_imp_medium.json',
+            'hard': f'{base_output}/cypher/bfsi_cypher_imp_hard.json'
         }
 
     def _load_json_file(self, file_path: str) -> List[Dict]:
         """Load JSON file safely"""
         try:
+            self.logger.info(f"Attempting to load file: {file_path}")
             with open(file_path, 'r', encoding='utf-8') as f:
-                return json.load(f)
+                data = json.load(f)
+                self.logger.info(f"Successfully loaded {len(data)} items from {file_path}")
+                return data
         except Exception as e:
             self.logger.error(f"Error loading {file_path}: {e}")
             return []
@@ -310,7 +323,16 @@ class GroundTruthAccuracyEvaluator:
             'difficulty_breakdown': all_results
         }
         
-        output_path = '/home/lam/oldKG/output/ground_truth_accuracy_evaluation.json'
+        # Create output path based on model name
+        if self.model_name:
+            model_folder = self.model_name.split('/')[-1] if '/' in self.model_name else self.model_name
+            output_path = f'/home/lam/oldKG/output/{model_folder}/ground_truth_accuracy_evaluation.json'
+            # Ensure directory exists
+            import os
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        else:
+            output_path = '/home/lam/oldKG/output/ground_truth_accuracy_evaluation.json'
+            
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(comprehensive_results, f, indent=2, ensure_ascii=False)
         
@@ -367,7 +389,13 @@ def main():
     
     evaluator.print_summary_report(results)
     
-    print(f"\nDetailed results saved to: /home/lam/oldKG/output/ground_truth_accuracy_evaluation.json")
+    # Dynamic output path based on model name
+    if hasattr(evaluator, 'model_name') and evaluator.model_name:
+        model_folder = evaluator.model_name.split('/')[-1] if '/' in evaluator.model_name else evaluator.model_name
+        output_path = f"/home/lam/oldKG/output/{model_folder}/ground_truth_accuracy_evaluation.json"
+    else:
+        output_path = "/home/lam/oldKG/output/ground_truth_accuracy_evaluation.json"
+    print(f"\nDetailed results saved to: {output_path}")
 
 if __name__ == "__main__":
     main()
